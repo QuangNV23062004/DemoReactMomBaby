@@ -1,0 +1,18 @@
+.Footer{
+    background-color: #c1e3e1;
+    color: white;
+    text-align: center;
+    padding: 30px;
+    font-size: 110%;
+    width: 100%;
+    display: block;
+}
+.LinkFooter{
+    text-decoration: none;
+    color: #744e7d;
+    
+}
+.position{
+    display: inline-block;
+    width:100%
+}

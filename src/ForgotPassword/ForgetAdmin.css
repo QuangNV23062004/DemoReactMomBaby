@@ -1,0 +1,63 @@
+.full-page-wrapper {
+    min-height: 100vh; /* Full viewport height */
+    background-image: url("Images/background.webp");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    margin-top: 0px;
+    padding-top: 0px;
+    display: flex;
+    align-items: center;
+    
+}
+.center {
+    width: 30%;
+    margin: 5% 35%;
+    background-color: rgba(171, 119, 157, 0.27);
+    padding: 20px 0px;
+}
+
+.center h2 {
+    text-align: center;
+    font-family: sans-serif;
+    color: #8b5c7e;
+    font-size: 2em;
+}
+
+.inputboxForget {
+    margin: 6%;
+    width: 80%;
+    padding: 4%;
+    margin-bottom: 20px;
+    background-color: transparent;
+    border: 1px solid white;    
+    color: white;
+}
+.forgot{
+    
+    color: white;
+    font-size: 120%;
+    font-weight: bold;
+
+}
+.right{
+    text-align: right;
+    margin: 10px 20px;
+}
+
+.inputboxForget::placeholder {
+    color: white;
+}
+.Reset{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 40px;
+}
+.ButtonReset{
+    background-color: #f0bcb4;
+    padding: 20px 40px;
+    border: none;
+    color: white;
+    font-size: 110%;
+}

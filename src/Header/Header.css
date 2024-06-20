@@ -1,0 +1,55 @@
+
+body{
+    background-color: white;
+}
+.logo{
+    width: 150px;
+    height: auto;
+    display: inline;
+}
+nav li{
+    list-style: none;
+    display: inline;
+    margin: 10px;
+}
+nav{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0px 5%;
+}
+.glass{
+    position: absolute;
+  right: 0;
+  top: 3px;
+  padding: 10px 10px;
+  
+}
+.search{
+    position: relative;
+}
+.searchInput{
+    width: 300px;
+    padding: 10px 20px;
+}
+.nav span{
+    margin: 10px;
+}
+.home{
+    border-bottom: 2px solid rgb(3, 1, 31);
+}
+.nav span:hover{
+    border-bottom: 2px solid rgb(3, 1, 31);
+}
+.icon{
+    display: inline-block;
+    margin-right: 10px;
+} 
+
+#top-header {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: #1F51FF;
+    color: #ffffff;
+    text-align: center;
+}

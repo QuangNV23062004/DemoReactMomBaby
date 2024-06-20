@@ -1,0 +1,64 @@
+.full-page-wrapper {
+    min-height: 100vh; /* Full viewport height */
+    background-image: url("Images/background.webp");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    margin-top: 0px;
+    padding-top: 0px;
+    display: flex;
+    align-items: center;
+    
+}
+
+
+.center {
+    width: 30%; 
+    margin: 5% 35%;
+    background-color: rgba(171, 119, 157, 0.27);
+    padding: 20px 0px;
+}
+
+.center h2 {
+    text-align: center;
+    font-family: sans-serif;
+    color: #8b5c7e;
+    font-size: 2em;
+}
+
+.inputboxLogin {
+    margin: 6%;
+    width: 80%;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: transparent;
+    border: 1px solid rgb(255, 255, 255);    
+    color: white;
+}
+.inputbox::placeholder {
+    color: white;
+}
+.forgot{
+    
+    color: white;
+    font-size: 120%;
+    font-weight: bold;
+    
+}
+
+.Forgot{
+    text-align: right;
+    margin: 10px 20px;
+}
+.login{
+    background-color: #f0bcb4;
+    margin-top: 20px;
+    color: white;
+    font-size: 110%;
+    border: none;
+    padding: 20px 40px;
+}
+.LoginDiv{
+    display: flex;
+    justify-content: center;
+}

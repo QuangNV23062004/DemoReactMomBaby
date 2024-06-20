@@ -1,0 +1,100 @@
+.Bigger {
+    background-color: #F5F7FD;
+    padding: 1px 0px 20px 0px;
+}
+
+.Container {
+    display: flex;
+    justify-content: center;
+    width: 80%;
+    margin: 50px 10%;
+    background-color: white;
+    padding-bottom: 100px;
+}
+
+.ImageHalf {
+    padding: 10px;
+    width: 80%;
+
+}
+
+.ImageHalf img {
+    width: 80%;
+}
+
+.FormHalf {
+    padding: 10px;
+    width: 60%;
+    display: flex;
+    align-items: center;
+
+}
+
+.LoginForm {
+    width: 70%;
+    margin-top: 40px;
+}
+
+
+.Head {
+    background-color: white;
+}
+
+.Foot {
+    background-color: white;
+}
+
+.inputbox {
+    margin: 5px 0px;
+    width: 368px;
+    padding: 4%;
+    margin-bottom: 20px;
+    background-color: transparent;
+    border: 1px solid rgb(195, 195, 195);
+    color: rgb(195, 195, 195);
+}
+
+.inputbox::placeholder {
+    color: rgb(195, 195, 195);
+}
+
+.LoginButton {
+    padding: 5px 10px;
+    color: #fff;
+    background-color: #007FFF;
+    border: 2px solid #002D62;
+    margin-bottom: 20px;
+    border-radius: 10px;
+
+}
+
+.Login {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    width: 170%;
+}
+
+
+.Register {
+    text-align: center;
+    text-decoration: none;
+}
+
+.BellowLink {
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+}
+.UpRegisterButton{
+
+}
+.RegisterButton {
+    width: 400px;
+    padding: 10px 20px;
+    color: #fff;
+    background-color: #39FF14;
+    border-radius: 10px;
+    border: 2px solid #004953;
+    margin-bottom: 20px;
+}
