@@ -1,40 +1,38 @@
-
-
+import React from 'react';
+import { Link } from 'react-router-dom'; // Import Link
+import './SideBar.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
 
-
-import React from 'react'
-import './SideBar.css'
 function SideBar() {
-    return (
-        <div className='SideBar'>
-            <div className='sideButton'>
-                <a href="#" className='sideButtonLink'>Home</a>
-            </div>
-            <div className='sideButton'>
-                <a href="#" className='sideButtonLink'>
-                    <FontAwesomeIcon className='MessageIcon' icon={faMessage} />
-                Go to chat
-                </a>
-            </div>
-            <div className='sideButton'>
-                <a href="#" className='sideButtonLink'>Category</a>
-            </div>
-            <div className='sideButton'>
-                <a href="#" className='sideButtonLink'>Brand</a>
-            </div>
-            <div className='sideButton'>
-                <a href="#" className='sideButtonLink'>Producer</a>
-            </div>
-            <div className='sideButton'>
-                <a href="#" className='sideButtonLink'>Product</a>
-            </div>
-            <div className='sideButton'>
-                <a href="#" className='sideButtonLink'>Account</a>
-            </div>
-        </div>
-    )
+  return (
+    <div className='SideBar'>
+      <div className='sideButton'>
+        <Link to='/SWP391-MomAndBaby/admin'>Home</Link>
+      </div>
+      <div className='sideButton'>
+        <Link to='/SWP391-MomAndBaby/admin/chat'>
+          <FontAwesomeIcon className='MessageIcon' icon={faMessage} />
+          Go to chat
+        </Link>
+      </div>
+      <div className='sideButton'>
+        <Link to='/SWP391-MomAndBaby/admin/category'>Category</Link>
+      </div>
+      <div className='sideButton'>
+        <Link to='/SWP391-MomAndBaby/admin/brand'>Brand</Link>
+      </div>
+      <div className='sideButton'>
+        <Link to='/SWP391-MomAndBaby/admin/producer'>Producer</Link>
+      </div>
+      <div className='sideButton'>
+        <Link to='/SWP391-MomAndBaby/admin/product'>Product</Link>
+      </div>
+      <div className='sideButton'>
+        <Link to='/SWP391-MomAndBaby/admin/account'>Account</Link>
+      </div>
+    </div>
+  );
 }
 
-export default SideBar
+export default SideBar;

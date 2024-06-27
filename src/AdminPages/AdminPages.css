@@ -1,0 +1,73 @@
+
+.full-page-wrappers {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-image: url("../../assets/background.webp");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.main-content{
+    display: flex;
+    width: 100%;
+}
+
+.content{
+    display: flex;
+    justify-content: space-evenly;
+    width: 96%;
+    margin:20px 30px;
+    border-radius: 5px;
+    
+}
+.PaddingWhite{
+    width: 100%;
+    background-color: white;
+    margin: 0px 20px;
+    
+}
+.Foot{
+    display: flex;
+    width: 100% ;
+}
+.FootContainer{
+    width: 100%;
+}
+
+.AddSection{
+    background-color: white;
+    display: flex;
+    justify-content: center;
+}
+
+.sidebarFooterContent{
+    width: 84%;
+}
+.contentCa{
+    background-color: white;
+    padding: 15px;
+    display: flex;
+    width: 96%;
+    margin-left: 2%;
+    margin-top: 1%;
+    border-radius: 5px;
+    justify-content: center;
+}
+.contentCa button{
+    padding: 5px 10px;
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+    border-radius: 5px;
+}
+.SomethingCa{
+    height: 79.5vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.Outline{
+    background-color: #fff4fc;
+}
