@@ -2,14 +2,22 @@ body{
     background-color: white;
 }
 .footerImage{
-    display: flex;
-    justify-content: center;
+    
     font-family: sans-serif;
     align-items: start;
 }
-.footerImage img{
-    width: 20%;
+.footerImage ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
 }
+.footerImage ul li a{
+    font-size: 40px;
+    margin: 0px 5px;
+    text-decoration: none;
+    color: black;
+}
+
 .footerContainer{
     display: flex;
     margin: 10px 10%;
@@ -38,15 +46,26 @@ body{
 width: 25%;
 display: inline-block;
 }
-.socialContact img{
-    width: 50%;
-}
+
 .icon{
     display: inline-block;
     margin-right: 10px;
 } 
 .footerContainer div span {
     display: inline-block;
-    margin: 10px 0;
+    margin: 10px 0px;
     color: rgb(65, 65, 65);
+}
+
+.socialContact ul li a{
+    text-decoration: none;
+    color: black;
+    padding: 0px 10px;
+}
+.socialContact ul {
+    list-style: none;
+}
+a{
+    text-decoration: none;
+    color: black;
 }

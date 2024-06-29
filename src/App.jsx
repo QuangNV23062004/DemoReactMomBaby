@@ -1,13 +1,13 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
-import LoginAdminAndStaff from './LoginForm/LoginAdminAndStaff.jsx';
-import LoginForm from './LoginUser/LoginForm.jsx';
-import Register from './Register/Register.jsx';
-import Home from './AdminPages/Home/Home.jsx';
-import AdminPages from './AdminPages/AdminPages.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Forgot from './ForgotPassword/ForgetAdmin.jsx'
-import Category from './AdminPages/Category/Category.jsx';
+import LoginAdminAndStaff from './LoginForm/LoginAdminAndStaff';
+import LoginForm from './UserPages/LoginUser/LoginForm';
+import Forgot from './ForgotPassword/ForgetAdmin.jsx';
+import Register from './UserPages/Register/Register';
+import Home from './AdminPages/AdminPages.jsx';
+import AdminPages from './AdminPages/AdminPages.jsx';
+import UserPage from './UserPages/UserPage.jsx'
 function App() {
   return (
     <>
@@ -19,6 +19,8 @@ function App() {
         <Route path='/SWP391-MomAndBaby/register' element={<Register />} />
         <Route path='/SWP391-MomAndBaby/admin' element={<Home />} />
         <Route path='/SWP391-MomAndBaby/admin/*' element={<AdminPages />} />
+        <Route path='/SWP391-MomAndBaby/*' element= {<UserPage/> }></Route>
+        
       </Routes>
     </BrowserRouter>
     </>

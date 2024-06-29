@@ -1,7 +1,9 @@
-[
+const Account = [
 { "ID": 24, "username": "phuocnguyen", "password": "123456789", "email": "mr.thienphuocfat@gmail.com", "phone": "0938680987", "status": 1, "fullname": "Nguyen Ngoc Thien Phuoc", "date": "2024-05-28T22:29:11.350", "role": 1, "avatar": "./static-admin/assets/images/default_avatar.jpg", "balance": 0.000000000000000e+000 }, 
 { "ID": 25, "username": "quangnv2", "password": "1", "email": "mr.mailcoicode@gmail.com", "phone": "0938680987", "status": 1, "fullname": "Quang", "date": "2024-05-28T22:29:11.350", "role": 2, "avatar": "./static-admin/assets/images/default_avatar.jpg", "balance": 0.000000000000000e+000 },
 { "ID": 26, "username": "quangnv1", "password": "1", "email": "mr.mailcoicode@gmail.com", "phone": "0938680987", "status": 1, "fullname": "Quang", "date": "2024-05-28T22:29:11.350", "role": 1, "avatar": "./static-admin/assets/images/default_avatar.jpg", "balance": 0.000000000000000e+000 },
-{ "ID": 28, "username": "quangnv3", "password": "1", "email": "mr.mailcoicode@gmail.com", "phone": "0938680987", "status": 1, "fullname": "Quang", "date": "2024-05-28T22:29:11.350", "role": 3, "avatar": "./static-admin/assets/images/default_avatar.jpg", "balance": 0.000000000000000e+000 }, { "ID": 29, "username": "nvq12345", "password": "12345678", "email": "quangnvse182949@fpt.edu.vn", "phone": "0328927512", "status": 1, "fullname": "nvq1", "date": "2024-06-12T09:53:38.790", "role": 2, "avatar": "./static-admin/assets/images/default_avatar.jpg", "balance": 0.000000000000000e+000 },
+{ "ID": 28, "username": "quangnv3", "password": "1", "email": "mr.mailcoicode@gmail.com", "phone": "0938680987", "status": 1, "fullname": "Quang", "date": "2024-05-28T22:29:11.350", "role": 3, "avatar": "./static-admin/assets/images/default_avatar.jpg", "balance": 0.000000000000000e+000 },
+{ "ID": 29, "username": "nvq12345", "password": "12345678", "email": "quangnvse182949@fpt.edu.vn", "phone": "0328927512", "status": 1, "fullname": "nvq1", "date": "2024-06-12T09:53:38.790", "role": 2, "avatar": "./static-admin/assets/images/default_avatar.jpg", "balance": 0.000000000000000e+000 },
 { "ID": 33, "username": "DemoLogin1", "password": "12345678", "email": "quangnv23062004@gmail.com", "phone": "0328927512", "status": 1, "fullname": "quan1", "date": "2024-06-15T19:57:08.677", "role": 2, "avatar": "./static-admin/assets/images/default_avatar.jpg", "balance": 0.000000000000000e+000 }
-]
+];
+export default Account
