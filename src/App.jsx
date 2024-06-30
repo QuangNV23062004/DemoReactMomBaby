@@ -9,6 +9,7 @@ import Home from './AdminPages/AdminPages.jsx';
 import AdminPages from './AdminPages/AdminPages.jsx';
 import UserPage from './UserPages/UserPage.jsx'
 import NotFound from './NotFound.jsx';
+import UpdateAccount from './AdminPages/Account/UpdateAccount.jsx';
 function App() {
   return (
     <>

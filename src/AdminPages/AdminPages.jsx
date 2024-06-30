@@ -3,36 +3,75 @@ import './AdminPages.css';
 import SideBar from './Components/SideBar/SideBar';
 import Footer from './Components/Footer/Footer';
 import Header from './Components/Header/Header';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Category from './Category/Category';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Product from './Product/Product';
-import Producer from './Producer/Producer';
 import Account from './Account/Account';
-import Brand from './Brand/Brand';
+import UpdateAccount from './Account/UpdateAccount';
+import AddAccount from './Account/AddAccount';
 
 export default function AdminPages() {
   const location = useLocation();
   const currentUrl = location.pathname;
+const nav = useNavigate();
+  const extractIdFromUrl = (url) => {
+    const match = url.match(/\/SWP391-MomAndBaby\/admin\/account\/update\/(\d+)/);
+    return match ? match[1] : null;
+  };
+
+  const accountId = extractIdFromUrl(currentUrl);
+  const handleAddAccount =() =>{
+    nav('/SWP391-MomAndBaby/admin/account/add');
+  }
   return (
     <div className='full-page-wrappers'>
       <Header />
       <div className='main-content'>
         <SideBar className="Side" />
         <div className='sidebarFooterContent'>
-          <div className='contentCa'>
-            <button className='AddButton'>Add new</button>
-          </div>
-          <div className='SomethingCa'>
-            <div className='PaddingWhite'>
-              {currentUrl === "/SWP391-MomAndBaby/admin/category" ? <Category/> : <></> }
-              {currentUrl === "/SWP391-MomAndBaby/admin/product" ? <Product/> : <></> }
-              {currentUrl === "/SWP391-MomAndBaby/admin/producer" ? <Producer/> : <></> }
-              {currentUrl === "/SWP391-MomAndBaby/admin/account" ? <Account/> : <></> }
-              {currentUrl === "/SWP391-MomAndBaby/admin/brand" ? <Brand/> : <></> }
+          {currentUrl === "/SWP391-MomAndBaby/admin/product" && (
+            <>
+              <div className='contentCa'>
+                <button className='AddButton'>Add new</button>
+              </div>
+              <div className='SomethingCa'>
+                <div className='PaddingWhite'>
+                  <Product />
+                </div>
+              </div>
+            </>
+          )}
+          {currentUrl === "/SWP391-MomAndBaby/admin/account" && (
+            <>
+              <div className='contentCa'>
+                <button className='AddButton' onClick={()=> handleAddAccount()}>Add new</button>
+              </div>
+              <div className='SomethingCa'>
+                <div className='PaddingWhite'>
+                  <Account />
+                </div>
+              </div>
+            </>
+          )}
+          {currentUrl.startsWith("/SWP391-MomAndBaby/admin/account/update") && accountId && (
+            <>
               
-            </div>
-          </div>
+              <div className='SomethingCa'>
+                <div className='PaddingWhite'>
+                  <UpdateAccount id={accountId} />
+                </div>
+              </div>
+            </>
+          )}
+          {currentUrl==="/SWP391-MomAndBaby/admin/account/add" &&(
+            <>
+              
+              <div className='SomethingCa'>
+                <div className='PaddingWhite'>
+                  <AddAccount></AddAccount>
+                </div>
+              </div>
+            </>
+          )} 
           <div className='FootContainer'>
             <Footer className="Foot" />
           </div>

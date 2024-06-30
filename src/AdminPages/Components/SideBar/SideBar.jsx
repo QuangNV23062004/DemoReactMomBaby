@@ -16,15 +16,7 @@ function SideBar() {
           Go to chat
         </Link>
       </div>
-      <div className='sideButton'>
-        <Link to='/SWP391-MomAndBaby/admin/category'>Category</Link>
-      </div>
-      <div className='sideButton'>
-        <Link to='/SWP391-MomAndBaby/admin/brand'>Brand</Link>
-      </div>
-      <div className='sideButton'>
-        <Link to='/SWP391-MomAndBaby/admin/producer'>Producer</Link>
-      </div>
+      
       <div className='sideButton'>
         <Link to='/SWP391-MomAndBaby/admin/product'>Product</Link>
       </div>
