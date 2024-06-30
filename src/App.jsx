@@ -8,6 +8,7 @@ import Register from './UserPages/Register/Register';
 import Home from './AdminPages/AdminPages.jsx';
 import AdminPages from './AdminPages/AdminPages.jsx';
 import UserPage from './UserPages/UserPage.jsx'
+import NotFound from './NotFound.jsx';
 function App() {
   return (
     <>
@@ -20,9 +21,9 @@ function App() {
         <Route path='/SWP391-MomAndBaby/admin' element={<Home />} />
         <Route path='/SWP391-MomAndBaby/admin/*' element={<AdminPages />} />
         <Route path='/SWP391-MomAndBaby/*' element= {<UserPage/> }></Route>
-        
+        <Route path='/*' element={<NotFound/>}></Route>
       </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
     </>
   );
 }
