@@ -10,6 +10,9 @@ import AdminPages from './AdminPages/AdminPages.jsx';
 import UserPage from './UserPages/UserPage.jsx'
 import NotFound from './NotFound.jsx';
 import UpdateAccount from './AdminPages/Account/UpdateAccount.jsx';
+import Header from './UserPages/Header/Header.jsx';
+import Footer from './UserPages/Footer/Footer.jsx';
+import Cart from './UserPages/Cart.jsx'
 function App() {
   return (
     <>
@@ -21,10 +24,11 @@ function App() {
         <Route path='/SWP391-MomAndBaby/register' element={<Register />} />
         <Route path='/SWP391-MomAndBaby/admin' element={<Home />} />
         <Route path='/SWP391-MomAndBaby/admin/*' element={<AdminPages />} />
+        <Route path='/SWP391-MomAndBaby/cart/*' element={<Cart />} />
         <Route path='/SWP391-MomAndBaby/*' element= {<UserPage/> }></Route>
-        <Route path='/*' element={<NotFound/>}></Route>
+        <Route path='/*' element={<><Header/><NotFound/><Footer/></>}></Route>
       </Routes>
-      </BrowserRouter>
+      </BrowserRouter> 
     </>
   );
 }

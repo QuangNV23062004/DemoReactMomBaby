@@ -1,4 +1,3 @@
-
 import "./Header.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,10 +6,8 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import PersonIcon from '@mui/icons-material/Person';
 import * as React from 'react';
 import Badge from '@mui/material/Badge';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 function Header() {
   return (
@@ -43,14 +40,12 @@ function Header() {
           </div>
         </li>
         <li>
-        
-        <Badge badgeContent={4} color="error">
-        <FontAwesomeIcon fontSize={20} icon={faCartShopping} style={{margin: "0px 10px"}}/>
-    </Badge>
-    
-       
-          
-    <FontAwesomeIcon  fontSize={20} icon={faUser} style={{margin: "0px 10px"}}/>
+          <Link to={'/SWP391-MomAndBaby/cart'}>
+            <Badge badgeContent={4} color="error">
+              <FontAwesomeIcon fontSize={20} icon={faCartShopping} style={{margin: "0px 10px"}}/>
+            </Badge>
+          </Link>
+          <FontAwesomeIcon fontSize={20} icon={faUser} style={{margin: "0px 10px"}}/>
         </li>
       </nav>
     </div>
