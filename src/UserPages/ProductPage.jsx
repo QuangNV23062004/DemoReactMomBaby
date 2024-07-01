@@ -7,11 +7,14 @@ import Typography from '@mui/material/Typography';
 import { Col, Row } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import FilterSidebar from './FilterSidebar';
+import { useCart } from './cartContext'; // Import useCart
+import { Link } from 'react-router-dom'; // Import Link
 
 export default function ProductPage() {
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
   const [data, setData] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const { addToCart } = useCart(); // Get addToCart from useCart
 
   const fetchApi = () => {
     fetch(baseURL)
@@ -49,6 +52,10 @@ export default function ProductPage() {
     });
   };
 
+  const handleAddToCart = (product) => {
+    addToCart(product); // Add product to cart
+  };
+
   return (
     <Row style={{ display: 'flex', justifyContent: 'space-evenly', margin: 10, marginBottom: 50 }}>
       <Col md={3} style={{ height: "100%" }}>
@@ -68,8 +75,13 @@ export default function ProductPage() {
                 title={product.name}
               />
               {product.hovered && (
-                <div style={{ position: "absolute",padding: "5px 20px", bottom: 200, left: 0, width: "100%", backgroundColor: "rgb(255,35,127)", textAlign: "center" }}>
-                  <button style={{ backgroundColor: "#ffffff", padding: "5px 20px", border: "none", cursor: "pointer", borderRadius: 25, width: "80%" ,color: "rgb(255,35,127)"}}>Add to Cart</button>
+                <div style={{ position: "absolute", padding: "5px 20px", bottom: 200, left: 0, width: "100%", backgroundColor: "rgb(255,35,127)", textAlign: "center" }}>
+                  <button 
+                    style={{ backgroundColor: "#ffffff", padding: "5px 20px", border: "none", cursor: "pointer", borderRadius: 25, width: "80%", color: "rgb(255,35,127)" }} 
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    Add to Cart
+                  </button>
                 </div>
               )}
               <CardContent>
