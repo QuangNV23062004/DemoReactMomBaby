@@ -1,19 +1,22 @@
-.full-page-wrapper {
-    min-height: 100vh; /* Full viewport height */
+body {
     background-image: url("Images/background.webp");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+}
+
+.full-page-wrapper {
+    min-height: 100vh;
     margin-top: 0px;
     padding-top: 0px;
     display: flex;
     align-items: center;
-    
+
 }
 
 
 .center {
-    width: 30%; 
+    width: 30%;
     margin: 5% 35%;
     background-color: rgba(171, 119, 157, 0.27);
     padding: 20px 0px;
@@ -26,31 +29,34 @@
     font-size: 2em;
 }
 
-.inputboxLogin {
+input {
     margin: 6%;
     width: 80%;
     padding: 20px;
     margin-bottom: 20px;
     background-color: transparent;
-    border: 1px solid rgb(255, 255, 255);    
+    border: 1px solid rgb(255, 255, 255);
     color: white;
 }
+
 .inputbox::placeholder {
     color: white;
 }
-.forgot{
-    
+
+.forgot {
+
     color: white;
     font-size: 120%;
     font-weight: bold;
-    
+
 }
 
-.Forgot{
+.Forgot {
     text-align: right;
     margin: 10px 20px;
 }
-.login{
+
+.login {
     background-color: #f0bcb4;
     margin-top: 20px;
     color: white;
@@ -58,7 +64,8 @@
     border: none;
     padding: 20px 40px;
 }
-.LoginDiv{
+
+.LoginDiv {
     display: flex;
     justify-content: center;
 }
