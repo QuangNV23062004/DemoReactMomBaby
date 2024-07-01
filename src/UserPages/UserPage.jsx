@@ -26,7 +26,7 @@ export default function UserPage() {
   }
 
   return (
-    <>
+    <React.Fragment>
       <Header />
       <br />
       <Container>
@@ -34,6 +34,6 @@ export default function UserPage() {
       </Container>
       <br />
       <Footer />
-    </>
+    </React.Fragment>
   );
 }
