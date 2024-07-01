@@ -13,6 +13,7 @@ import UpdateAccount from './AdminPages/Account/UpdateAccount.jsx';
 import Header from './UserPages/Header/Header.jsx';
 import Footer from './UserPages/Footer/Footer.jsx';
 import Cart from './UserPages/Cart.jsx'
+import AboutPage from './UserPages/AboutPage.jsx';
 import { CartProvider } from './UserPages/cartContext.jsx';
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
           <Route path='/SWP391-MomAndBaby/*' element={user ? <UserPage /> : <Navigate to='/SWP391-MomAndBaby/login' />} />
           <Route path='/SWP391-MomAndBaby/cart/*' element={<Cart />} />
           <Route path='/SWP391-MomAndBaby/*' element={<UserPage />}></Route>
+          <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />
           <Route path='/*' element={<><Header /><NotFound /><Footer /></>}></Route>
         </Routes>
       </BrowserRouter>

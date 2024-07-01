@@ -21,6 +21,9 @@ export default function UserPage() {
     case "/SWP391-MomAndBaby/product":
       content = <ProductPage />;
       break;
+    case "/SWP391-MomAndBaby/about":
+      content = <AboutPage />;
+      break;
     default:
       content = <NotFound />;
   }

@@ -61,7 +61,7 @@ export default function Footer() {
           <h2>
             <b>QUICK LINK</b>
           </h2>
-          <span><Link to={'/SWP391-MomAndBaby/'}>About</Link></span>
+          <span><Link to={'/SWP391-MomAndBaby/about'}>About</Link></span>
           <br />
           <span><Link to={'/SWP391-MomAndBaby/'}>Contact</Link></span> <br />
           <span><Link to={'/SWP391-MomAndBaby/'}>Blog</Link></span>
