@@ -75,11 +75,27 @@ export default function ProductPage() {
                 title={product.name}
               />
               {product.hovered && (
-                <div style={{ position: "absolute", padding: "5px 20px", bottom: 200, left: 0, width: "100%", backgroundColor: "rgb(255,35,127)", textAlign: "center" }}>
-                  <button 
-                    style={{ backgroundColor: "#ffffff", padding: "5px 20px", border: "none", cursor: "pointer", borderRadius: 25, width: "80%", color: "rgb(255,35,127)" }} 
-                    onClick={() => handleAddToCart(product)}
-                  >
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  opacity: 1,
+                  transition: 'opacity 0.3s ease'
+                }}>
+                  <button style={{
+                    backgroundColor: '#ff469e',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    cursor: 'pointer'
+                  }} 
+                  onClick={() => handleAddToCart(product)}>
                     Add to Cart
                   </button>
                 </div>
