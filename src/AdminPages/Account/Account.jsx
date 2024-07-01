@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
-import { Button, Row, Modal } from "react-bootstrap";
+import { Button, Row, Modal, Pagination } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
@@ -12,7 +12,10 @@ export default function Account() {
   const [data, setData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const [dataToDelete, setDataToDelete] = useState(null); // Store the ID of the item to delete
+  const [dataToDelete, setDataToDelete] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [entriesToShow, setEntriesToShow] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/Account";
 
@@ -20,7 +23,6 @@ export default function Account() {
     fetch(baseURL)
       .then((response) => response.json())
       .then((data) => {
-        // Add a 'selected' property to each item for checkbox control
         const updatedData = data.map((item) => ({ ...item, selected: false }));
         setData(updatedData);
       })
@@ -48,22 +50,62 @@ export default function Account() {
 
   const handleDeleteAcc = (id) => {
     setShowDeleteConfirmation(true);
-    setDataToDelete(id);
+    setDataToDelete([id]);
+  };
+
+  const handleDeleteAllChecked = () => {
+    const selectedIds = data.filter((item) => item.selected).map((item) => item.id);
+
+    if (selectedIds.length === 0) {
+      toast.error("Please select at least one account to delete");
+      return;
+    }
+
+    setDataToDelete(selectedIds);
+    setShowDeleteConfirmation(true);
   };
 
   const handleConfirmedDelete = () => {
-    fetch(baseURL + "/" + dataToDelete, {
-      method: "DELETE",
-    })
+    Promise.all(
+      dataToDelete.map((id) =>
+        fetch(`${baseURL}/${id}`, {
+          method: "DELETE",
+        })
+      )
+    )
       .then(() => {
-        fetchApi(); // Refresh data after deletion
-        setShowDeleteConfirmation(false); // Hide confirmation modal
-        toast.success("Account deleted successfully");
+        fetchApi();
+        setShowDeleteConfirmation(false);
+        toast.success("Accounts deleted successfully");
       })
       .catch((error) => {
         console.log(error);
-        toast.error("Failed to delete account");
+        toast.error("Failed to delete accounts");
       });
+  };
+
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleEntriesChange = (event) => {
+    setEntriesToShow(parseInt(event.target.value));
+    setCurrentPage(1);
+  };
+
+  const filteredData = data.filter((acc) =>
+    acc.fullname.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const startIndex = (currentPage - 1) * entriesToShow;
+  const endIndex = startIndex + entriesToShow;
+  const displayedData = filteredData.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(filteredData.length / entriesToShow);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -89,6 +131,7 @@ export default function Account() {
               lineHeight: 1.5,
               marginLeft: 40,
             }}
+            onClick={handleDeleteAllChecked}
           >
             Delete all checked
           </Button>
@@ -107,11 +150,13 @@ export default function Account() {
               <Form.Select
                 style={{ display: "inline", width: 70, height: 40, margin: 2 }}
                 aria-label=""
+                value={entriesToShow}
+                onChange={handleEntriesChange}
               >
+                <option value="5">5</option>
                 <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
               </Form.Select>{" "}
               entries{" "}
             </b>
@@ -126,6 +171,8 @@ export default function Account() {
                   border: "1px solid #aaa",
                 }}
                 type="text"
+                value={searchQuery}
+                onChange={handleSearch}
               />
             </b>
           </span>
@@ -147,12 +194,11 @@ export default function Account() {
               <th>Phone</th>
               <th>Username</th>
               <th>Role</th>
-              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {data.map((acc, index) => (
+            {displayedData.map((acc, index) => (
               <tr key={acc.id}>
                 <td style={{ alignItems: "center" }}>
                   <Form.Check
@@ -180,20 +226,7 @@ export default function Account() {
                     {acc.role}
                   </div>
                 </td>
-                <td>
-                  <div
-                    style={{
-                      color: "white",
-                      backgroundColor: "#5cb85c",
-                      width: "60px",
-                      textAlign: "center",
-                      borderRadius: 5,
-                      fontSize: 13,
-                    }}
-                  >
-                    Active
-                  </div>
-                </td>
+
                 <td>
                   <div
                     style={{
@@ -234,7 +267,18 @@ export default function Account() {
           </tbody>
         </Table>
 
-        {/* Confirmation Modal for Delete */}
+        <Pagination className="justify-content-center">
+          {[...Array(totalPages)].map((_, idx) => (
+            <Pagination.Item
+              key={idx + 1}
+              active={idx + 1 === currentPage}
+              onClick={() => handlePageChange(idx + 1)}
+            >
+              {idx + 1}
+            </Pagination.Item>
+          ))}
+        </Pagination>
+
         <Modal
           show={showDeleteConfirmation}
           onHide={() => setShowDeleteConfirmation(false)}
@@ -242,7 +286,7 @@ export default function Account() {
           <Modal.Header closeButton>
             <Modal.Title>Confirm Delete</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Are you sure you want to delete this account?</Modal.Body>
+          <Modal.Body>Are you sure you want to delete the selected accounts?</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowDeleteConfirmation(false)}>
               Cancel
@@ -253,7 +297,6 @@ export default function Account() {
           </Modal.Footer>
         </Modal>
 
-        {/* Toast Container for notifications */}
         <ToastContainer />
       </div>
     </div>
