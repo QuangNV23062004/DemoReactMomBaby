@@ -36,8 +36,10 @@ export default function LoginForm() {
 
       // Redirect to the appropriate page or perform necessary actions
       console.log("Login successful");
+      console.log(localStorage.getItem('userId'));
       setLoginError('');
       nav('/SWP391-MomAndBaby/');
+
     } else {
       setLoginError('Invalid username, password, or you do not have the correct role.');
     }
