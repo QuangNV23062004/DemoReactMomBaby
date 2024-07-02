@@ -54,7 +54,7 @@ export default function Home() {
 
   const renderProductCard = (product, index, setState) => (
     <Col 
-      key={product.ID} 
+      key={product.id} 
       onMouseEnter={() => handleMouseEnter(index, setState)} 
       onMouseLeave={() => handleMouseLeave(index, setState)}
       style={{ position: 'relative' }}
@@ -134,7 +134,9 @@ export default function Home() {
       <br />
       <Row>
         <Carousel responsive={responsive}>
-          {priorityTwoData.map((product, index) => {<React.Fragment key={index}>{renderProductCard(product, index, setPriorityTwoData)}</React.Fragment>})}
+          {priorityTwoData.map((product, index) => (
+            renderProductCard(product, index, setPriorityTwoData)
+          ))}
         </Carousel>
       </Row>
       <Row>
@@ -179,7 +181,9 @@ export default function Home() {
       </Row>
       <br />
       <Carousel responsive={responsive}>
-        {priorityOneData.map((product, index) =>  {<React.Fragment key={index}>{renderProductCard(product, index, setPriorityOneData)}</React.Fragment>})}
+        {priorityOneData.map((product, index) => (
+          renderProductCard(product, index, setPriorityOneData)
+        ))}
       </Carousel>
       <Row>
         <div className="col-md-12 text-center" style={{ marginTop: "55px" }}>
@@ -203,7 +207,9 @@ export default function Home() {
       </Row>
       <br />
       <Carousel responsive={responsive}>
-        {data.map((product, index) =>{<React.Fragment key={index}>{renderProductCard(product, index, setData)}</React.Fragment>} )}
+        {data.map((product, index) => (
+          renderProductCard(product, index, setData)
+        ))}
       </Carousel>
       <Row>
         <div className="col-md-12 text-center" style={{ marginTop: "55px" }}>
