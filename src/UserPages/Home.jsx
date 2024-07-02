@@ -9,6 +9,7 @@ import Carouseler from "./Carouseler";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "./CartContext"; // Import useCart
 
 export default function Home() {
   const [data, setData] = useState([]);
@@ -16,12 +17,40 @@ export default function Home() {
   const [priorityOneData, setPriorityOneData] = useState([]);
   const [brands, setBrands] = useState([]);
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
+  const cartURL = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart"; // MockAPI URL for the cart resource
   const nav = useNavigate();
-  const handleAddToCart = () => {
+  const { addToCart } = useCart(); // Destructure addToCart from useCart
+
+  const handleAddToCart = async (product) => {
     const userId = sessionStorage.getItem('userId');
-    console.log(userId);
-    userId == null ? nav("/SWP391-MomAndBaby/login"): <></>
-  }
+    if (userId == null) {
+      nav("/SWP391-MomAndBaby/login");
+    } else {
+      // Add the product to the cart context
+      addToCart(product);
+
+      // Save the cart information to the user's account in MockAPI
+      try {
+        const response = await fetch(cartURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ...product, userId }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to add product to cart');
+        }
+
+        const data = await response.json();
+        console.log('Product added to cart:', data);
+      } catch (error) {
+        console.error('Error adding product to cart:', error);
+      }
+    }
+  };
+
   const fetchApi = () => {
     fetch(baseURL)
       .then((response) => response.json())
@@ -87,7 +116,7 @@ export default function Home() {
               border: 'none',
               padding: '10px 20px',
               cursor: 'pointer'
-            }} onClick={() => handleAddToCart()}>
+            }} onClick={() => handleAddToCart(product)}>
               Add to Cart
             </button>
           </div>

@@ -5,7 +5,8 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Col, Row } from 'react-bootstrap';
-import { useCart } from './cartContext'; // Import useCart
+import { useState, useEffect } from 'react';
+import FilterSidebar from './FilterSidebar';
 import { Link, useNavigate } from 'react-router-dom'; // Import Link
 import FilterSidebar from './FilterSidebar'
 export default function ProductPage() {
@@ -13,7 +14,6 @@ export default function ProductPage() {
   const cartAPI = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart";
   const [data, setData] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const { addToCart } = useCart(); // Get addToCart from useCart
 
   const fetchApi = () => {
     fetch(baseURL)
