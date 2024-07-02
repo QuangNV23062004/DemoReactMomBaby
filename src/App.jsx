@@ -14,7 +14,7 @@ import Header from './UserPages/Header/Header.jsx';
 import Footer from './UserPages/Footer/Footer.jsx';
 import Cart from './UserPages/Cart.jsx'
 import AboutPage from './UserPages/AboutPage.jsx';
-import { CartProvider } from './UserPages/cartContext.jsx';
+import { CartProvider } from './UserPages/CartContext.jsx';
 
 function App() {
   const [user, setUser] = useState(null);

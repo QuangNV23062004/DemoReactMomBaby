@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import { Col, Row } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import FilterSidebar from './FilterSidebar';
-import { useCart } from './cartContext'; // Import useCart
+import { useCart } from './CartContext'; // Import useCart
 import { Link, useNavigate } from 'react-router-dom'; // Import Link
 
 export default function ProductPage() {

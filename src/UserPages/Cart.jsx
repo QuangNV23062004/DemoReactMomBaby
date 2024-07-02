@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Button, Table } from 'react-bootstrap';
-import { useCart } from './cartContext'; // Import useCart
+import { useCart } from './CartContext'; // Import useCart
 import { Link } from 'react-router-dom';
 import Header from './Header/Header';
 import Footer from './Footer/Footer';
