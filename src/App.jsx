@@ -15,6 +15,7 @@ import Footer from './UserPages/Footer/Footer.jsx';
 import Cart from './UserPages/Cart.jsx'
 import AboutPage from './UserPages/AboutPage.jsx';
 import { CartProvider } from './UserPages/cartContext.jsx';
+import DetailProduct from './UserPages/DetailProduct.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -49,6 +50,7 @@ function App() {
           <Route path='/SWP391-MomAndBaby/cart/*' element={<Cart />} />
           <Route path='/SWP391-MomAndBaby/*' element={<UserPage />}></Route>
           <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />
+          <Route path='/demo' element={<DetailProduct/>}></Route>
           <Route path='/*' element={<><Header /><NotFound /><Footer /></>}></Route>
         </Routes>
       </BrowserRouter>

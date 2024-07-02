@@ -1,17 +1,16 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Col, Row } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
-import FilterSidebar from './FilterSidebar';
 import { useCart } from './cartContext'; // Import useCart
 import { Link, useNavigate } from 'react-router-dom'; // Import Link
-
+import FilterSidebar from './FilterSidebar'
 export default function ProductPage() {
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
+  const cartAPI = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart";
   const [data, setData] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const { addToCart } = useCart(); // Get addToCart from useCart
@@ -51,15 +50,117 @@ export default function ProductPage() {
       return updatedProducts;
     });
   };
+  
   const nav = useNavigate();
-  const handleAddToCart = (product) => {
-    
+
+  const handleAddToCart = async (product) => {
     const userId = sessionStorage.getItem("userId");
-    
-    userId == null ?
-    nav('/SWP391-MomAndBaby/login') : addToCart(product) ; // Add product to cart
-    console.log(userId)
+  
+    if (!userId) {
+      // Redirect to login if user is not logged in
+      nav('/SWP391-MomAndBaby/login');
+      return;
+    }
+  
+    try {
+      // Fetch the user's cart
+      const response = await fetch(`${cartAPI}?userID=${userId}`);
+      const cartItems = await response.json();
+  
+      if (cartItems.length === 0) {
+        // User has no cart, create a new cart with the product
+        const newCartItem = {
+          userID: userId,
+          productID: product.id,
+          productName: product.name,
+          productImage: product.mainImg,
+          price: product.price,
+          quantity: 1,
+          totalPrice: product.price
+        };
+  
+        const createResponse = await fetch(cartAPI, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newCartItem)
+        });
+  
+        if (!createResponse.ok) {
+          throw new Error('Failed to create cart');
+        }
+  
+        const createdCartItem = await createResponse.json();
+        console.log("Product added to new cart:", createdCartItem);
+        addToCart(product);
+      } else {
+        // User has an existing cart, check if product is already in the cart
+        const existingCartItem = cartItems.find(item => item.productID === product.id);
+  
+        if (existingCartItem) {
+          // Product is already in the cart, update the quantity
+          const updatedQuantity = existingCartItem.quantity + 1;
+          const updatedTotalPrice = updatedQuantity * product.price;
+          const updatedCartItem = {
+            ...existingCartItem,
+            quantity: updatedQuantity,
+            totalPrice: updatedTotalPrice
+          };
+  
+          const updateResponse = await fetch(`${cartAPI}/${existingCartItem.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedCartItem)
+          });
+  
+          if (!updateResponse.ok) {
+            throw new Error('Failed to update cart item');
+          }
+  
+          const updatedItem = await updateResponse.json();
+          console.log("Product quantity updated in cart:", updatedItem);
+          addToCart(product);
+        } else {
+          // Product is not in the cart, add it as a new item
+          const newCartItem = {
+            userID: userId,
+            productID: product.id,
+            productName: product.name,
+            productImage: product.mainImg,
+            price: product.price,
+            quantity: 1,
+            totalPrice: product.price
+          };
+  
+          const createResponse = await fetch(cartAPI, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newCartItem)
+          });
+  
+          if (!createResponse.ok) {
+            throw new Error('Failed to add product to cart');
+          }
+  
+          const createdCartItem = await createResponse.json();
+          console.log("Product added to cart:", createdCartItem);
+          addToCart(product);
+        }
+      }
+  
+      // Navigate to the cart page
+      nav('/SWP391-MomAndBaby/cart');
+    } catch (error) {
+      console.error("Error handling add to cart:", error);
+      // Optionally show error message to the user
+    }
   };
+  
 
   return (
     <Row style={{ display: 'flex', justifyContent: 'space-evenly', margin: 10, marginBottom: 50 }}>
