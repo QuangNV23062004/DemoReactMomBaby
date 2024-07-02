@@ -92,7 +92,7 @@ export default function Product() {
 
   return (
     <div className="category-table-wrapper">
-      <div style={{ background: "white" }}>
+      <div style={{ background: "white"}}>
         <Row
           style={{
             padding: "5px 10px",

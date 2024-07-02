@@ -15,7 +15,7 @@ import Footer from './UserPages/Footer/Footer.jsx';
 import Cart from './UserPages/Cart.jsx'
 import AboutPage from './UserPages/AboutPage.jsx';
 import DetailProduct from './UserPages/DetailProduct.jsx';
-
+import Home from './AdminPages/Home/Home'; // Import the Home component for admin
 
 function App() {
   const [user, setUser] = useState(null);
@@ -47,6 +47,7 @@ function App() {
           <Route path='/SWP391-MomAndBaby/admin/forgot' element={<Forgot />} />
           <Route path='/SWP391-MomAndBaby/register' element={<Register />} />
           <Route path='/SWP391-MomAndBaby/admin/*' element={user ? <AdminPages onLogout={handleLogout} /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} />
+          <Route path='/SWP391-MomAndBaby/admin' element={user ? <Home /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> {/* Admin Home */}
           <Route path='/SWP391-MomAndBaby/cart/*' element={<Cart />} />
           <Route path='/SWP391-MomAndBaby/*' element={<UserPage />}></Route>
           <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />

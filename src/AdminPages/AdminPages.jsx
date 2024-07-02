@@ -123,23 +123,23 @@ export default function AdminPages() {
   }
 
   return (
-    <div className="full-page-wrappers">
-      <Header className="header" />
-      <Container fluid className="main-content">
-        <Row>
-          <Col xs={2} className="p-0">
-            <SideBar className="Side" style={{ width: "100%" }} />
-          </Col>
-          <Col xs={10} className="sidebarFooterContent">
-            {content}
-            <Row style={{ marginTop: 9 }} className="FootContainer">
-              <Col>
-                <Footer className="Foot" />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </Container>
-    </div>
+      <div className="full-page-wrappers">
+        <Header className="header" />
+        <Container fluid className="main-content">
+          <Row>
+            <Col xs={2} className="p-0">
+              <SideBar className="Side" style={{ width: "100%", display:"block"}} />
+            </Col>
+            <Col xs={10} className="sidebarFooterContent">
+              {content}
+              <Row style={{ marginTop: 9 }} className="FootContainer">
+                <Col>
+                  <Footer className="Foot" />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </Container>
+      </div>
   );
 }

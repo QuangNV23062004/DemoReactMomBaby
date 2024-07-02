@@ -110,7 +110,7 @@ export default function Account() {
 
   return (
     <div className="category-table-wrapper">
-      <div style={{ background: "white" }}>
+      <div style={{ background: "white", borderRadius:"5px"}}>
         <Row
           style={{
             padding: "5px 10px",
@@ -215,6 +215,7 @@ export default function Account() {
                 <td>
                   <div
                     style={{
+                      display: "inline-block",
                       color: "white",
                       backgroundColor: "#5cb85c",
                       width: "60px",

@@ -9,8 +9,8 @@ const styles = {
     display: 'inline-block',
     backgroundColor: 'rgba(118, 155, 186, 0.78)',
     color: 'white',
-    height: '90.5vh',
-    width: "95%"
+    height: '100%',
+    width: "305px",
   },
   sideButton: {
     padding: '18px 0 18px 25px',

@@ -1,28 +1,34 @@
+/* AdminPages.css */
+
 .full-page-wrappers {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
+    /* Ensure the page covers the full viewport height */
     background-image: url("../../assets/background.webp");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
 }
 
-.sidebarFooterContent{
+.sidebarFooterContent {
     margin-top: 20px;
 }
 
-
-.contentCa, .SomethingCa {
+.contentCa,
+.SomethingCa {
     background-color: white;
     border-radius: 5px;
-
-
+    padding: 20px;
+    /* Add padding for content */
+    margin-bottom: 20px;
+    /* Add space between sections */
+    width: 1585.83px;
 }
 
 .AddButton {
     padding: 10px 20px;
-    margin: 10px 0px;
+    margin-bottom: 10px;
     color: #fff;
     background-color: #5cb85c;
     border-color: #4cae4c;
@@ -33,14 +39,23 @@
 
 .FootContainer {
     background-color: white;
+    border-radius: 5px;
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.FootContainer.row {
+    width: 1585.83px;
 }
 
 .PaddingWhite {
-    width: 100%;
     background-color: white;
-
     border-radius: 5px;
+    padding: 20px;
+    /* Adjust padding as needed */
 }
-.maxHeight{
+
+.maxHeight {
     max-height: 50vh;
+    /* Limit the height of certain elements */
 }
