@@ -55,49 +55,53 @@ export default function ProductPage() {
 
   const handleAddToCart = async (product) => {
     const userId = sessionStorage.getItem("userId");
-
+  
     if (!userId) {
       // Redirect to login if user is not logged in
       nav('/SWP391-MomAndBaby/login');
       return;
     }
-
+  
     try {
       // Fetch the user's cart
       const response = await fetch(`${cartAPI}?userID=${userId}`);
-      const cartItems = await response.json();
-
-      if (cartItems.length === 0) {
-        // User has no cart, create a new cart with the product
-        const newCartItem = {
-          userID: userId,
-          productID: product.id,
-          productName: product.name,
-          productImage: product.mainImg,
-          price: product.price,
-          quantity: 1,
-          totalPrice: product.price
-        };
-
-        const createResponse = await fetch(cartAPI, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(newCartItem)
-        });
-
-        if (!createResponse.ok) {
-          throw new Error('Failed to create cart');
+  
+      if (!response.ok) {
+        if (response.status === 404) {
+          // User has no cart, create a new cart with the product
+          const newCartItem = {
+            userID: userId,
+            productID: product.id,
+            productName: product.name,
+            productImage: product.mainImg,
+            price: product.price,
+            quantity: 1,
+            totalPrice: product.price
+          };
+  
+          const createResponse = await fetch(cartAPI, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newCartItem)
+          });
+  
+          if (!createResponse.ok) {
+            throw new Error('Failed to create cart');
+          }
+  
+          const createdCartItem = await createResponse.json();
+          console.log("Product added to new cart:", createdCartItem);
+          showSuccessToast(product.name);
+        } else {
+          throw new Error('Failed to fetch user cart');
         }
-
-        const createdCartItem = await createResponse.json();
-        console.log("Product added to new cart:", createdCartItem);
-        showSuccessToast(product.name);
       } else {
         // User has an existing cart, check if product is already in the cart
+        const cartItems = await response.json();
         const existingCartItem = cartItems.find(item => item.productID === product.id);
-
+  
         if (existingCartItem) {
           // Product is already in the cart, update the quantity
           const updatedQuantity = existingCartItem.quantity + 1;
@@ -107,7 +111,7 @@ export default function ProductPage() {
             quantity: updatedQuantity,
             totalPrice: updatedTotalPrice
           };
-
+  
           const updateResponse = await fetch(`${cartAPI}/${existingCartItem.id}`, {
             method: 'PUT',
             headers: {
@@ -115,11 +119,11 @@ export default function ProductPage() {
             },
             body: JSON.stringify(updatedCartItem)
           });
-
+  
           if (!updateResponse.ok) {
             throw new Error('Failed to update cart item');
           }
-
+  
           const updatedItem = await updateResponse.json();
           console.log("Product quantity updated in cart:", updatedItem);
           showSuccessToast(product.name);
@@ -134,7 +138,7 @@ export default function ProductPage() {
             quantity: 1,
             totalPrice: product.price
           };
-
+  
           const createResponse = await fetch(cartAPI, {
             method: 'POST',
             headers: {
@@ -142,11 +146,11 @@ export default function ProductPage() {
             },
             body: JSON.stringify(newCartItem)
           });
-
+  
           if (!createResponse.ok) {
             throw new Error('Failed to add product to cart');
           }
-
+  
           const createdCartItem = await createResponse.json();
           console.log("Product added to cart:", createdCartItem);
           showSuccessToast(product.name);
@@ -154,18 +158,9 @@ export default function ProductPage() {
       }
     } catch (error) {
       console.error("Error handling add to cart:", error);
+      // Handle error scenarios, e.g., show error message to user
+      // Example: showErrorToast("Failed to add product to cart. Please try again later.");
     }
-  };
-  const showSuccessToast = (productName) => {
-    toast.success(`${productName} added to cart!`, {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
   };
 
   return (
