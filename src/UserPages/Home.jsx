@@ -8,6 +8,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import Carouseler from "./Carouseler";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [data, setData] = useState([]);
@@ -15,7 +16,12 @@ export default function Home() {
   const [priorityOneData, setPriorityOneData] = useState([]);
   const [brands, setBrands] = useState([]);
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
-
+  const nav = useNavigate();
+  const handleAddToCart = () => {
+    const userId = sessionStorage.getItem('userId');
+    console.log(userId);
+    userId == null ? nav("/SWP391-MomAndBaby/login"): <></>
+  }
   const fetchApi = () => {
     fetch(baseURL)
       .then((response) => response.json())
@@ -81,7 +87,7 @@ export default function Home() {
               border: 'none',
               padding: '10px 20px',
               cursor: 'pointer'
-            }}>
+            }} onClick={() => handleAddToCart()}>
               Add to Cart
             </button>
           </div>

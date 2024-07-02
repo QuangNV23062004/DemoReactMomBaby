@@ -19,7 +19,7 @@ export default function LoginAdmin({ onLogin }) {
                 user => user.username === username && user.password === password && user.role === 'admin'
             );
             if (user) {
-                localStorage.setItem('adminUser', JSON.stringify(user)); 
+                sessionStorage.setItem('adminUser', JSON.stringify(user)); 
                 onLogin(user); 
                 navigate('/SWP391-MomAndBaby/admin');
             } else {

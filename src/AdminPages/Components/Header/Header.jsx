@@ -68,14 +68,14 @@ export default function Header() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const loggedInUser = JSON.parse(localStorage.getItem('adminUser'));
+        const loggedInUser = JSON.parse(sessionStorage.getItem('adminUser'));
         if (loggedInUser) {
             setFullName(loggedInUser.fullname);
         }
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem('adminUser'); // Remove user from localStorage
+        sessionStorage.removeItem('adminUser'); // Remove user from sessionStorage
         navigate('/SWP391-MomAndBaby/admin/login'); // Redirect to login page
     };
 

@@ -20,7 +20,7 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const loggedInUser = localStorage.getItem('adminUser');
+    const loggedInUser = sessionStorage.getItem('adminUser');
     if (loggedInUser) {
       setUser(JSON.parse(loggedInUser));
     }
@@ -28,12 +28,12 @@ function App() {
 
   const handleLogin = (user) => {
     setUser(user);
-    localStorage.setItem('adminUser', JSON.stringify(user));
+    sessionStorage.setItem('adminUser', JSON.stringify(user));
   };
 
   const handleLogout = () => {
     setUser(null);
-    localStorage.removeItem('adminUser');
+    sessionStorage.removeItem('adminUser');
     navigate('/SWP391-MomAndBaby/admin/login'); // Redirect to login page
   };
 
@@ -46,7 +46,6 @@ function App() {
           <Route path='/SWP391-MomAndBaby/admin/forgot' element={<Forgot />} />
           <Route path='/SWP391-MomAndBaby/register' element={<Register />} />
           <Route path='/SWP391-MomAndBaby/admin/*' element={user ? <AdminPages onLogout={handleLogout} /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} />
-          <Route path='/SWP391-MomAndBaby/*' element={user ? <UserPage /> : <Navigate to='/SWP391-MomAndBaby/login' />} />
           <Route path='/SWP391-MomAndBaby/cart/*' element={<Cart />} />
           <Route path='/SWP391-MomAndBaby/*' element={<UserPage />}></Route>
           <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />

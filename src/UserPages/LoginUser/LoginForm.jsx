@@ -30,13 +30,13 @@ export default function LoginForm() {
     const user = Account.find(user => user.username === username && user.password === password && user.role === "user");
     if (user) {
       // Store the user ID in local storage
-      localStorage.setItem('userId', user.id);
+      sessionStorage.setItem('userId', user.id);
       //getItem:
-      //const userId = localStorage.getItem('userId');
+      //const userId = sessionStorage.getItem('userId');
 
       // Redirect to the appropriate page or perform necessary actions
       console.log("Login successful");
-      console.log(localStorage.getItem('userId'));
+      console.log(sessionStorage.getItem('userId'));
       setLoginError('');
       nav('/SWP391-MomAndBaby/');
 

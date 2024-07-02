@@ -15,14 +15,16 @@ function Header() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('user'); 
+    sessionStorage.removeItem('userId'); 
     navigate('/SWP391-MomAndBaby/login'); 
   };
 
   const toggleDropdown = () => {
     setUserHovered(!userHovered);
   };
-
+  const handleLogin = () => {
+  navigate('/SWP391-MomAndBaby/login');
+  }
   return (
     <div className="HeadContain">
       <div id="top-header">
@@ -68,7 +70,9 @@ function Header() {
             <FontAwesomeIcon fontSize={20} icon={faUser} style={{margin: "0px 10px"}}/>
             {userHovered && (
               <div className="dropdown-content">
-                <div className="dropdown-item" onClick={handleLogout}>Logout</div>
+                {sessionStorage.getItem('userId') == null 
+                ? <div className="dropdown-item" onClick={handleLogout}>Login</div> 
+                : <div className="dropdown-item" onClick={handleLogin}>Logout</div>}
               </div>
             )}
           </div>

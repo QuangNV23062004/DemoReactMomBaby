@@ -8,7 +8,7 @@ import { Col, Row } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import FilterSidebar from './FilterSidebar';
 import { useCart } from './cartContext'; // Import useCart
-import { Link } from 'react-router-dom'; // Import Link
+import { Link, useNavigate } from 'react-router-dom'; // Import Link
 
 export default function ProductPage() {
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
@@ -51,9 +51,14 @@ export default function ProductPage() {
       return updatedProducts;
     });
   };
-
+  const nav = useNavigate();
   const handleAddToCart = (product) => {
-    addToCart(product); // Add product to cart
+    
+    const userId = sessionStorage.getItem("userId");
+    
+    userId == null ?
+    nav('/SWP391-MomAndBaby/login') : addToCart(product) ; // Add product to cart
+    console.log(userId)
   };
 
   return (
