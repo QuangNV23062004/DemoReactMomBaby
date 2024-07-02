@@ -13,24 +13,28 @@
     color: #c62c93;
     text-align: center;
 }
-#top-header a { 
+
+#top-header a {
     text-decoration: none;
     color: white;
 }
+
 #top-header a:hover {
     color: #c62c93;
 }
 
 .nav {
-    display: flex; 
+    display: flex;
     justify-content: center;
     align-items: center;
 }
+
 .nav span a {
     margin: 0px 10px;
     text-decoration: none;
     color: black;
 }
+
 .nav span a:hover {
     border-bottom: 3px solid black;
 }
@@ -38,10 +42,12 @@
 #home {
     border-bottom: 3px solid black;
 }
+
 .logoLi {
     display: inline;
     width: 10%;
 }
+
 .logoLi img {
     width: 100%;
 }
@@ -55,19 +61,56 @@
     display: flex;
     align-items: center;
 }
+
 .searchInput {
     padding: 5px 10px;
-    width: 300px;
+    width: 320px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
 .searchButton {
     background: none;
     border: none;
     position: absolute;
-    right: 10px;
+    right: 20px;
     cursor: pointer;
 }
+
 .glass {
     color: #ccc;
+}
+
+.user-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.user-icon .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    right: 0;
+    top: 100%;
+}
+
+.user-icon:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content {
+    padding: 10px 0;
+}
+
+.dropdown-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.dropdown-item:hover {
+    background-color: #ddd;
 }

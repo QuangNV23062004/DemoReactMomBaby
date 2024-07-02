@@ -5,11 +5,24 @@ import {
   faCartShopping,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as React from 'react';
+import { useState } from 'react';
 import Badge from '@mui/material/Badge';
 
 function Header() {
+  const [userHovered, setUserHovered] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('user'); 
+    navigate('/SWP391-MomAndBaby/login'); 
+  };
+
+  const toggleDropdown = () => {
+    setUserHovered(!userHovered);
+  };
+
   return (
     <div className="HeadContain">
       <div id="top-header">
@@ -18,16 +31,18 @@ function Header() {
       </div>
       <nav className="header">
         <li className="logoLi">
-          <Link to={'/SWP391-MomAndBaby'}><img className="logo" src="../assets/logo.jpg" alt=""></img></Link>
+          <Link to={'/SWP391-MomAndBaby'}>
+            <img className="logo" src="../assets/logo.jpg" alt="logo" />
+          </Link>
         </li>
         <li className="nav">
-          <span ><Link to={'/SWP391-MomAndBaby'} id="home">Home</Link></span>
+          <span><Link to={'/SWP391-MomAndBaby'} id="home">Home</Link></span>
           <span><Link to={'/SWP391-MomAndBaby/product'}>Shop</Link></span>
           <span><Link to={'/SWP391-MomAndBaby/contact'}>Contact</Link></span>
           <span><Link to={'/SWP391-MomAndBaby/blog'}>Blog</Link></span>
-          <span><Link to={'/SWP391-MomAndBaby/About'} >About</Link></span>
+          <span><Link to={'/SWP391-MomAndBaby/About'}>About</Link></span>
         </li>
-        <li>
+        <li className="icon">
           <div className="search">
             <input
               className="searchInput"
@@ -39,13 +54,24 @@ function Header() {
             </button>
           </div>
         </li>
-        <li>
+        <li className="icon">
           <Link to={'/SWP391-MomAndBaby/cart'}>
             <Badge badgeContent={4} color="error">
               <FontAwesomeIcon fontSize={20} icon={faCartShopping} style={{margin: "0px 10px"}}/>
             </Badge>
           </Link>
-          <FontAwesomeIcon fontSize={20} icon={faUser} style={{margin: "0px 10px"}}/>
+          <div
+            className="user-icon"
+            onMouseEnter={toggleDropdown}
+            onMouseLeave={toggleDropdown}
+          >
+            <FontAwesomeIcon fontSize={20} icon={faUser} style={{margin: "0px 10px"}}/>
+            {userHovered && (
+              <div className="dropdown-content">
+                <div className="dropdown-item" onClick={handleLogout}>Logout</div>
+              </div>
+            )}
+          </div>
         </li>
       </nav>
     </div>
