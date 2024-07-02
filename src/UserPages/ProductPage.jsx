@@ -5,15 +5,17 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Col, Row } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
 import FilterSidebar from './FilterSidebar';
-import { Link, useNavigate } from 'react-router-dom'; // Import Link
-import FilterSidebar from './FilterSidebar'
+import { Link, useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify'; // Import toast and ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
+
 export default function ProductPage() {
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
   const cartAPI = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart";
   const [data, setData] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const nav = useNavigate();
 
   const fetchApi = () => {
     fetch(baseURL)
@@ -50,23 +52,21 @@ export default function ProductPage() {
       return updatedProducts;
     });
   };
-  
-  const nav = useNavigate();
 
   const handleAddToCart = async (product) => {
     const userId = sessionStorage.getItem("userId");
-  
+
     if (!userId) {
       // Redirect to login if user is not logged in
       nav('/SWP391-MomAndBaby/login');
       return;
     }
-  
+
     try {
       // Fetch the user's cart
       const response = await fetch(`${cartAPI}?userID=${userId}`);
       const cartItems = await response.json();
-  
+
       if (cartItems.length === 0) {
         // User has no cart, create a new cart with the product
         const newCartItem = {
@@ -78,7 +78,7 @@ export default function ProductPage() {
           quantity: 1,
           totalPrice: product.price
         };
-  
+
         const createResponse = await fetch(cartAPI, {
           method: 'POST',
           headers: {
@@ -86,18 +86,18 @@ export default function ProductPage() {
           },
           body: JSON.stringify(newCartItem)
         });
-  
+
         if (!createResponse.ok) {
           throw new Error('Failed to create cart');
         }
-  
+
         const createdCartItem = await createResponse.json();
         console.log("Product added to new cart:", createdCartItem);
-        addToCart(product);
+        showSuccessToast(product.name);
       } else {
         // User has an existing cart, check if product is already in the cart
         const existingCartItem = cartItems.find(item => item.productID === product.id);
-  
+
         if (existingCartItem) {
           // Product is already in the cart, update the quantity
           const updatedQuantity = existingCartItem.quantity + 1;
@@ -107,7 +107,7 @@ export default function ProductPage() {
             quantity: updatedQuantity,
             totalPrice: updatedTotalPrice
           };
-  
+
           const updateResponse = await fetch(`${cartAPI}/${existingCartItem.id}`, {
             method: 'PUT',
             headers: {
@@ -115,14 +115,14 @@ export default function ProductPage() {
             },
             body: JSON.stringify(updatedCartItem)
           });
-  
+
           if (!updateResponse.ok) {
             throw new Error('Failed to update cart item');
           }
-  
+
           const updatedItem = await updateResponse.json();
           console.log("Product quantity updated in cart:", updatedItem);
-          addToCart(product);
+          showSuccessToast(product.name);
         } else {
           // Product is not in the cart, add it as a new item
           const newCartItem = {
@@ -134,7 +134,7 @@ export default function ProductPage() {
             quantity: 1,
             totalPrice: product.price
           };
-  
+
           const createResponse = await fetch(cartAPI, {
             method: 'POST',
             headers: {
@@ -142,25 +142,31 @@ export default function ProductPage() {
             },
             body: JSON.stringify(newCartItem)
           });
-  
+
           if (!createResponse.ok) {
             throw new Error('Failed to add product to cart');
           }
-  
+
           const createdCartItem = await createResponse.json();
           console.log("Product added to cart:", createdCartItem);
-          addToCart(product);
+          showSuccessToast(product.name);
         }
       }
-  
-      // Navigate to the cart page
-      nav('/SWP391-MomAndBaby/cart');
     } catch (error) {
       console.error("Error handling add to cart:", error);
-      // Optionally show error message to the user
     }
   };
-  
+  const showSuccessToast = (productName) => {
+    toast.success(`${productName} added to cart!`, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
 
   return (
     <Row style={{ display: 'flex', justifyContent: 'space-evenly', margin: 10, marginBottom: 50 }}>
@@ -221,6 +227,18 @@ export default function ProductPage() {
           </Col>
         ))}
       </Col>
+      {/* ToastContainer for displaying notifications */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </Row>
   );
 }

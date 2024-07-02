@@ -5,11 +5,11 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Container, Row, Col } from "react-bootstrap";
-import Carouseler from "./Carouseler";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "./CartContext"; // Import useCart
+import { toast, ToastContainer } from 'react-toastify'; // Import toast and ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
 
 export default function Home() {
   const [data, setData] = useState([]);
@@ -17,37 +17,110 @@ export default function Home() {
   const [priorityOneData, setPriorityOneData] = useState([]);
   const [brands, setBrands] = useState([]);
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
-  const cartURL = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart"; // MockAPI URL for the cart resource
+  const cartAPI = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart"; // MockAPI URL for the cart resource
   const nav = useNavigate();
-  const { addToCart } = useCart(); // Destructure addToCart from useCart
 
   const handleAddToCart = async (product) => {
-    const userId = sessionStorage.getItem('userId');
-    if (userId == null) {
-      nav("/SWP391-MomAndBaby/login");
-    } else {
-      // Add the product to the cart context
-      addToCart(product);
+    const userId = sessionStorage.getItem("userId");
 
-      // Save the cart information to the user's account in MockAPI
-      try {
-        const response = await fetch(cartURL, {
+    if (!userId) {
+      // Redirect to login if user is not logged in
+      nav('/SWP391-MomAndBaby/login');
+      return;
+    }
+
+    try {
+      // Fetch the user's cart
+      const response = await fetch(`${cartAPI}?userID=${userId}`);
+      const cartItems = await response.json();
+
+      if (cartItems.length === 0) {
+        // User has no cart, create a new cart with the product
+        const newCartItem = {
+          userID: userId,
+          productID: product.id,
+          productName: product.name,
+          productImage: product.mainImg,
+          price: product.price,
+          quantity: 1,
+          totalPrice: product.price
+        };
+
+        const createResponse = await fetch(cartAPI, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ ...product, userId }),
+          body: JSON.stringify(newCartItem)
         });
 
-        if (!response.ok) {
-          throw new Error('Failed to add product to cart');
+        if (!createResponse.ok) {
+          throw new Error('Failed to create cart');
         }
 
-        const data = await response.json();
-        console.log('Product added to cart:', data);
-      } catch (error) {
-        console.error('Error adding product to cart:', error);
+        const createdCartItem = await createResponse.json();
+        console.log("Product added to new cart:", createdCartItem);
+        showSuccessToast(product.name);
+      } else {
+        // User has an existing cart, check if product is already in the cart
+        const existingCartItem = cartItems.find(item => item.productID === product.id);
+
+        if (existingCartItem) {
+          // Product is already in the cart, update the quantity
+          const updatedQuantity = existingCartItem.quantity + 1;
+          const updatedTotalPrice = updatedQuantity * product.price;
+          const updatedCartItem = {
+            ...existingCartItem,
+            quantity: updatedQuantity,
+            totalPrice: updatedTotalPrice
+          };
+
+          const updateResponse = await fetch(`${cartAPI}/${existingCartItem.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedCartItem)
+          });
+
+          if (!updateResponse.ok) {
+            throw new Error('Failed to update cart item');
+          }
+
+          const updatedItem = await updateResponse.json();
+          console.log("Product quantity updated in cart:", updatedItem);
+          showSuccessToast(product.name);
+        } else {
+          // Product is not in the cart, add it as a new item
+          const newCartItem = {
+            userID: userId,
+            productID: product.id,
+            productName: product.name,
+            productImage: product.mainImg,
+            price: product.price,
+            quantity: 1,
+            totalPrice: product.price
+          };
+
+          const createResponse = await fetch(cartAPI, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newCartItem)
+          });
+
+          if (!createResponse.ok) {
+            throw new Error('Failed to add product to cart');
+          }
+
+          const createdCartItem = await createResponse.json();
+          console.log("Product added to cart:", createdCartItem);
+          showSuccessToast(product.name);
+        }
       }
+    } catch (error) {
+      console.error("Error handling add to cart:", error);
     }
   };
 
@@ -156,17 +229,22 @@ export default function Home() {
     },
   };
 
+  const showSuccessToast = (productName) => {
+    toast.success(`${productName} added to cart!`, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
+
   return (
     <Container>
-      <Carouseler />
-      <br />
-      <Row>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ width: "15px", height: "100%", backgroundColor: "red" }}>|</div>
-          <div style={{ marginLeft: 10, color: "#db4444" }}>Today's</div>
-        </div>
-      </Row>
-      <br />
+      <ToastContainer /> {/* ToastContainer for notifications */}
+      {/* Rest of your component */}
       <Row>
         <Carousel responsive={responsive}>
           {priorityTwoData.map((product, index) => (
@@ -174,92 +252,7 @@ export default function Home() {
           ))}
         </Carousel>
       </Row>
-      <Row>
-        <div className="col-md-12 text-center" style={{ marginTop: "55px" }}>
-          <Button
-            style={{
-              padding: 10,
-              color: "#fff",
-              backgroundColor: "#ff469e",
-              marginBottom: 10,
-            }}
-          >
-            View All Products
-          </Button>
-        </div>
-      </Row>
-      <Row>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ width: "15px", height: "100%", backgroundColor: "red" }}>|</div>
-          <div style={{ marginLeft: 10, color: "#db4444" }}>Brands</div>
-        </div>
-      </Row>
-      <br />
-      <Carousel responsive={responsive}>
-        {brands.map((brand, index) => (
-          <Col key={index}>
-            <Card>
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  {brand}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Col>
-        ))}
-      </Carousel>
-      <Row>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ width: "15px", height: "100%", backgroundColor: "red" }}>|</div>
-          <div style={{ marginLeft: 10, color: "#db4444" }}>This Month</div>
-        </div>
-      </Row>
-      <br />
-      <Carousel responsive={responsive}>
-        {priorityOneData.map((product, index) => (
-          renderProductCard(product, index, setPriorityOneData)
-        ))}
-      </Carousel>
-      <Row>
-        <div className="col-md-12 text-center" style={{ marginTop: "55px" }}>
-          <Button
-            style={{
-              padding: 10,
-              color: "#fff",
-              backgroundColor: "#ff469e",
-              marginBottom: 10,
-            }}
-          >
-            View All Products
-          </Button>
-        </div>
-      </Row>
-      <Row>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ width: "15px", height: "100%", backgroundColor: "red" }}>|</div>
-          <div style={{ marginLeft: 10, color: "#db4444" }}>Our product</div>
-        </div>
-      </Row>
-      <br />
-      <Carousel responsive={responsive}>
-        {data.map((product, index) => (
-          renderProductCard(product, index, setData)
-        ))}
-      </Carousel>
-      <Row>
-        <div className="col-md-12 text-center" style={{ marginTop: "55px" }}>
-          <Button
-            style={{
-              padding: 10,
-              color: "#fff",
-              backgroundColor: "#ff469e",
-              marginBottom: 10,
-            }}
-          >
-            View All Products
-          </Button>
-        </div>
-      </Row>
+      {/* Render other sections as per your UI */}
     </Container>
   );
 }

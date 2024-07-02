@@ -39,7 +39,7 @@ function App() {
   };
 
   return (
-    <CartProvider>
+
       <BrowserRouter>
         <Routes>
           <Route path='/SWP391-MomAndBaby/admin/login' element={<LoginAdmin onLogin={handleLogin} />} />
@@ -54,7 +54,6 @@ function App() {
           <Route path='/*' element={<><Header /><NotFound /><Footer /></>}></Route>
         </Routes>
       </BrowserRouter>
-    </CartProvider>
   );
 }
 export default App;
