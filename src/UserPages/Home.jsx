@@ -10,6 +10,7 @@ import 'react-multi-carousel/lib/styles.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Carouseler from "./Carouseler";
+
 export default function Home() {
   const [data, setData] = useState([]);
   const [priorityTwoData, setPriorityTwoData] = useState([]);
@@ -17,7 +18,64 @@ export default function Home() {
   const [brands, setBrands] = useState([]);
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
   const cartAPI = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart";
+  const PreOrderAPI = "https://6684c67c56e7503d1ae11cfd.mockapi.io/Preorder"
   const nav = useNavigate();
+
+  const handlePreorder = async (product) => {
+    const userId = sessionStorage.getItem("userId");
+
+    if (!userId) {
+      nav("/SWP391-MomAndBaby/login");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${PreOrderAPI}?userID=${userId}`);
+      const preorders = await response.json();
+
+      console.log("Preorders:", preorders); // Log the preorders response
+      console.log("Preorders type:", typeof preorders); // Log the type of preorders
+
+      if (!Array.isArray(preorders)) {
+        throw new Error("Preorders response is not an array");
+      }
+
+      const existingPreorder = preorders.find(
+        (item) => item.productID === product.id
+      );
+
+      if (existingPreorder) {
+        toast.error("You've already preordered this product.");
+      } else {
+        const newPreorder = {
+          userID: userId,
+          productID: product.id,
+          productName: product.name,
+          productImage: product.mainImg,
+          price: product.price,
+        };
+
+        const createResponse = await fetch(PreOrderAPI, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newPreorder),
+        });
+
+        if (!createResponse.ok) {
+          throw new Error("Failed to create preorder");
+        }
+
+        const createdPreorder = await createResponse.json();
+        console.log("Preorder created:", createdPreorder);
+        toast.success("Preorder placed successfully!");
+      }
+    } catch (error) {
+      console.error("Error handling preorder:", error);
+      toast.error("Failed to place preorder. Please try again later.");
+    }
+  };
 
   const fetchApi = () => {
     fetch(baseURL)
@@ -215,18 +273,33 @@ export default function Home() {
               opacity: 1,
               transition: 'opacity 0.3s ease'
             }}>
-              <button 
-                style={{
-                  backgroundColor: '#ff469e',
-                  color: '#fff',
-                  border: 'none',
-                  padding: '10px 20px',
-                  cursor: 'pointer'
-                }}
-                onClick={() => handleAddToCart(product)}
-              >
-                Add to Cart
-              </button>
+              {product.quantity > 0 ? (
+                <button 
+                  style={{
+                    backgroundColor: '#ff469e',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => handleAddToCart(product)}
+                >
+                  Add to Cart
+                </button>
+              ) : (
+                <button 
+                  style={{
+                    backgroundColor: '#ff469e',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => handlePreorder(product)}
+                >
+                  Preorder
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -288,16 +361,18 @@ export default function Home() {
       </Row>
       <Row>
         <div className="col-md-12 text-center" style={{ marginTop: "55px" }}>
-          <Link to={'/SWP391-MomAndBaby/product'}><Button
-            style={{
-              padding: 10,
-              color: "#fff",
-              backgroundColor: "#ff469e",
-              marginBottom: 10,
-            }}
-          >
-            View All Products
-          </Button></Link>
+          <Link to={'/SWP391-MomAndBaby/product'}>
+            <Button
+              style={{
+                padding: 10,
+                color: "#fff",
+                backgroundColor: "#ff469e",
+                marginBottom: 10,
+              }}
+            >
+              View All Products
+            </Button>
+          </Link>
         </div>
       </Row>
       <Row>
@@ -311,11 +386,13 @@ export default function Home() {
         {brands.map((brand, index) => (
           <Col key={index}>
             <Card>
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  {brand}
-                </Typography>
-              </CardContent>
+              <Link to={'/SWP391-MomAndBaby/product'}>
+                <CardContent>
+                  <Typography variant="h5" component="div">
+                    {brand}
+                  </Typography>
+                </CardContent>
+              </Link>
             </Card>
           </Col>
         ))}
@@ -334,22 +411,24 @@ export default function Home() {
       </Carousel>
       <Row>
         <div className="col-md-12 text-center" style={{ marginTop: "55px" }}>
-        <Link to={'/SWP391-MomAndBaby/product'}><Button
-            style={{
-              padding: 10,
-              color: "#fff",
-              backgroundColor: "#ff469e",
-              marginBottom: 10,
-            }}
-          >
-            View All Products
-          </Button></Link>
+          <Link to={'/SWP391-MomAndBaby/product'}>
+            <Button
+              style={{
+                padding: 10,
+                color: "#fff",
+                backgroundColor: "#ff469e",
+                marginBottom: 10,
+              }}
+            >
+              View All Products
+            </Button>
+          </Link>
         </div>
       </Row>
       <Row>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ width: "15px", height: "100%", backgroundColor: "red" }}>|</div>
-          <div style={{ marginLeft: 10, color: "#db4444" }}>Our product</div>
+          <div style={{ marginLeft: 10, color: "#db4444" }}>Our Product</div>
         </div>
       </Row>
       <br />
@@ -360,16 +439,18 @@ export default function Home() {
       </Carousel>
       <Row>
         <div className="col-md-12 text-center" style={{ marginTop: "55px" }}>
-        <Link to={'/SWP391-MomAndBaby/product'}><Button
-            style={{
-              padding: 10,
-              color: "#fff",
-              backgroundColor: "#ff469e",
-              marginBottom: 10,
-            }}
-          >
-            View All Products
-          </Button></Link>
+          <Link to={'/SWP391-MomAndBaby/product'}>
+            <Button
+              style={{
+                padding: 10,
+                color: "#fff",
+                backgroundColor: "#ff469e",
+                marginBottom: 10,
+              }}
+            >
+              View All Products
+            </Button>
+          </Link>
         </div>
       </Row>
     </Container>

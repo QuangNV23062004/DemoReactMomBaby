@@ -1,18 +1,33 @@
 import "./Header.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faCartShopping,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faCartShopping, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
-import * as React from 'react';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Badge from '@mui/material/Badge';
 
 function Header() {
   const [userHovered, setUserHovered] = useState(false);
+  const [cart, setCart] = useState([]);
   const navigate = useNavigate();
+  const cartAPI = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart";
+  const userId = sessionStorage.getItem('userId');
+
+  const fetchApi = async () => {
+    try {
+      const response = await fetch(cartAPI);
+      const data = await response.json();
+      const userCartItems = data.filter(item => item.userId === userId);
+      setCart(userCartItems);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchApi(); // Fetch initial data
+    const interval = setInterval(fetchApi, 5000); // Poll every 5 seconds
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [userId]);
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId'); 
@@ -22,14 +37,15 @@ function Header() {
   const toggleDropdown = () => {
     setUserHovered(!userHovered);
   };
+
   const handleLogin = () => {
-  navigate('/SWP391-MomAndBaby/login');
-  }
+    navigate('/SWP391-MomAndBaby/login');
+  };
+
   return (
     <div className="HeadContain">
       <div id="top-header">
-        Summer Sale For Product - Free Express Delivery - DISCOUNT UP TO 50% OFF
-        ! <Link to={"/SWP391-MomAndBaby/product"}>Shop now</Link>
+        Summer Sale For Product - Free Express Delivery - DISCOUNT UP TO 50% OFF! <Link to={"/SWP391-MomAndBaby/product"}>Shop now</Link>
       </div>
       <nav className="header">
         <li className="logoLi">
@@ -58,7 +74,7 @@ function Header() {
         </li>
         <li className="icon">
           <Link to={'/SWP391-MomAndBaby/cart'}>
-            <Badge badgeContent={4} color="error">
+            <Badge badgeContent={cart.length} color="error">
               <FontAwesomeIcon fontSize={20} icon={faCartShopping} style={{margin: "0px 10px"}}/>
             </Badge>
           </Link>
@@ -70,9 +86,9 @@ function Header() {
             <FontAwesomeIcon fontSize={20} icon={faUser} style={{margin: "0px 10px"}}/>
             {userHovered && (
               <div className="dropdown-content">
-                {sessionStorage.getItem('userId') == null 
-                ? <div className="dropdown-item" onClick={handleLogout}>Login</div> 
-                : <div className="dropdown-item" onClick={handleLogin}>Logout</div>}
+                {userId == null 
+                ? <div className="dropdown-item" onClick={handleLogin}>Login</div> 
+                : <div className="dropdown-item" onClick={handleLogout}>Logout</div>}
               </div>
             )}
           </div>

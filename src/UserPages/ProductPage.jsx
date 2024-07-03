@@ -13,9 +13,59 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function ProductPage() {
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
   const cartAPI = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart";
+  const PreOrderAPI = "https://6684c67c56e7503d1ae11cfd.mockapi.io/Preorder";
   const [data, setData] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const nav = useNavigate();
+
+  const handlePreorder = async (product) => {
+    const userId = sessionStorage.getItem("userId");
+
+    if (!userId) {
+      nav("/SWP391-MomAndBaby/login");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${PreOrderAPI}?userID=${userId}`);
+      const preorders = await response.json();
+
+      const existingPreorder = preorders.find(
+        (item) => item.productID === product.id
+      );
+
+      if (existingPreorder) {
+        toast.error("You've already preordered this product.");
+      } else {
+        const newPreorder = {
+          userID: userId,
+          productID: product.id,
+          productName: product.name,
+          productImage: product.mainImg,
+          price: product.price,
+        };
+
+        const createResponse = await fetch(PreOrderAPI, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newPreorder),
+        });
+
+        if (!createResponse.ok) {
+          throw new Error("Failed to create preorder");
+        }
+
+        const createdPreorder = await createResponse.json();
+        console.log("Preorder created:", createdPreorder);
+        toast.success("Preorder placed successfully!");
+      }
+    } catch (error) {
+      console.error("Error handling preorder:", error);
+      toast.error("Failed to place preorder. Please try again later.");
+    }
+  };
 
   const fetchApi = () => {
     fetch(baseURL)
@@ -225,16 +275,29 @@ export default function ProductPage() {
                     opacity: 1,
                     transition: 'opacity 0.3s ease'
                   }}>
-                    <button style={{
-                      backgroundColor: '#ff469e',
-                      color: '#fff',
-                      border: 'none',
-                      padding: '10px 20px',
-                      cursor: 'pointer'
-                    }} 
-                    onClick={() => handleAddToCart(product)}>
-                      Add to Cart
-                    </button>
+                    {product.quantity > 0 ? (
+                      <button style={{
+                        backgroundColor: '#ff469e',
+                        color: '#fff',
+                        border: 'none',
+                        padding: '10px 20px',
+                        cursor: 'pointer'
+                      }} 
+                      onClick={() => handleAddToCart(product)}>
+                        Add to Cart
+                      </button>
+                    ) : (
+                      <button style={{
+                        backgroundColor: '#ff469e',
+                        color: '#fff',
+                        border: 'none',
+                        padding: '10px 20px',
+                        cursor: 'pointer'
+                      }} 
+                      onClick={() => handlePreorder(product)}>
+                        Preorder
+                      </button>
+                    )}
                   </div>
                 )}
               </div>

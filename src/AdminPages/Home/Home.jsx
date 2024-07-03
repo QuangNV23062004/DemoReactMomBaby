@@ -13,19 +13,19 @@ export default function Home() {
         <div className='sidebarFooterContent'>
           <div className='content'>
             <div id='RedCate'  className='BoxForStuff'>
-            <i class="bx bx-category-alt"></i>
+            <i className="bx bx-category-alt"></i>
               <span>Category</span>
             </div>
             <div id='BlackProducer'  className='BoxForStuff'>
-            <i class="bx bx-buildings"></i>
+            <i className="bx bx-buildings"></i>
               <span>Producer</span>
             </div>
             <div id='GreenProd' className='BoxForStuff' >
-            <i class="bx bx-package"></i>
+            <i className="bx bx-package"></i>
               <span>Product</span>
             </div>
             <div id='BlueAcc' className='BoxForStuff'>
-            <i class="bx bx-user"></i>
+            <i className="bx bx-user"></i>
               <span>Account</span>
             </div>
           </div>

@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
 import { useLocation, useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function DetailProduct({ id }) {
   const location = useLocation();
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product/";
   const cartAPI = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart";
+  const PreOrderAPI = "https://6684c67c56e7503d1ae11cfd.mockapi.io/Preorder";
   const [data, setData] = useState({});
   const nav = useNavigate();
 
@@ -101,7 +102,9 @@ export default function DetailProduct({ id }) {
 
           const updatedItem = await updateResponse.json();
           console.log("Product quantity updated in cart:", updatedItem);
-          toast.success(`${product.name} quantity updated in cart successfully!`);
+          toast.success(
+            `${product.name} quantity updated in cart successfully!`
+          );
         } else {
           const newCartItem = {
             userID: userId,
@@ -157,6 +160,55 @@ export default function DetailProduct({ id }) {
     }
   };
 
+  const handlePreorder = async (product) => {
+    const userId = sessionStorage.getItem("userId");
+
+    if (!userId) {
+      nav("/SWP391-MomAndBaby/login");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${PreOrderAPI}?userID=${userId}`);
+      const preorders = await response.json();
+
+      const existingPreorder = preorders.find(
+        (item) => item.productID === product.id
+      );
+
+      if (existingPreorder) {
+        toast.error("You've already preordered this product.");
+      } else {
+        const newPreorder = {
+          userID: userId,
+          productID: product.id,
+          productName: product.name,
+          productImage: product.mainImg,
+          price: product.price,
+        };
+
+        const createResponse = await fetch(PreOrderAPI, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newPreorder),
+        });
+
+        if (!createResponse.ok) {
+          throw new Error("Failed to create preorder");
+        }
+
+        const createdPreorder = await createResponse.json();
+        console.log("Preorder created:", createdPreorder);
+        toast.success("Preorder placed successfully!");
+      }
+    } catch (error) {
+      console.error("Error handling preorder:", error);
+      toast.error("Failed to place preorder. Please try again later.");
+    }
+  };
+
   const productDetails = [
     { label: "Mẫu sản phẩm", value: data.model },
     { label: "Danh mục sản phẩm", value: data.category },
@@ -169,7 +221,7 @@ export default function DetailProduct({ id }) {
       <ToastContainer />
       <Row style={{ backgroundColor: "white" }}>
         <Col
-          md={7}
+          md={5}
           style={{
             display: "flex",
             justifyContent: "right",
@@ -178,7 +230,7 @@ export default function DetailProduct({ id }) {
         >
           <img style={{ height: 400 }} src={data.mainImg} alt={data.name} />
         </Col>
-        <Col md={5} style={{ display: "flex", alignItems: "center" }}>
+        <Col md={7} style={{ display: "flex", alignItems: "center" }}>
           <ListGroup>
             <ListGroup.Item>
               <h2 style={{ color: "red" }}>{data.name}</h2>
@@ -204,13 +256,23 @@ export default function DetailProduct({ id }) {
       <Row style={{ backgroundColor: "white", padding: "10px 20px" }}>
         <Col md={5}></Col>
         <Col>
-          <Button
-            variant="outline-success"
-            onClick={() => handleAddToCart(data)}
-            style={{ width: "40%" }}
-          >
-            Add to cart
-          </Button>
+          {data.quantity > 0 ? (
+            <Button
+              variant="outline-success"
+              onClick={() => handleAddToCart(data)}
+              style={{ width: "40%", marginBottom: 10 }}
+            >
+              Add to cart
+            </Button>
+          ) : (
+            <Button
+              variant="outline-primary"
+              onClick={() => handlePreorder(data)}
+              style={{ width: "40%" }}
+            >
+              Preorder
+            </Button>
+          )}
         </Col>
       </Row>
     </Container>
