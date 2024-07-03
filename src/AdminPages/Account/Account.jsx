@@ -169,6 +169,7 @@ export default function Account() {
                   padding: "3px 15px",
                   borderRadius: 5,
                   border: "1px solid #aaa",
+                  color:"black",
                 }}
                 type="text"
                 value={searchQuery}

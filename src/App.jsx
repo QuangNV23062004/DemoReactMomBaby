@@ -10,12 +10,13 @@ import AdminPages from './AdminPages/AdminPages.jsx';
 import UserPage from './UserPages/UserPage.jsx';
 import NotFound from './NotFound.jsx';
 import UpdateAccount from './AdminPages/Account/UpdateAccount.jsx';
+import UpdateProduct from './AdminPages/Product/UpdateProduct.jsx'; 
 import Header from './UserPages/Header/Header.jsx';
 import Footer from './UserPages/Footer/Footer.jsx';
 import Cart from './UserPages/Cart.jsx'
 import AboutPage from './UserPages/AboutPage.jsx';
 import DetailProduct from './UserPages/DetailProduct.jsx';
-import Home from './AdminPages/Home/Home'; // Import the Home component for admin
+import Home from './AdminPages/Home/Home'; 
 
 function App() {
   const [user, setUser] = useState(null);
@@ -39,22 +40,24 @@ function App() {
   };
 
   return (
-
-      <BrowserRouter>
-        <Routes>
-          <Route path='/SWP391-MomAndBaby/admin/login' element={<LoginAdmin onLogin={handleLogin} />} />
-          <Route path='/SWP391-MomAndBaby/login' element={<LoginForm onLogin={handleLogin} />} />
-          <Route path='/SWP391-MomAndBaby/admin/forgot' element={<Forgot />} />
-          <Route path='/SWP391-MomAndBaby/register' element={<Register />} />
-          <Route path='/SWP391-MomAndBaby/admin/*' element={user ? <AdminPages onLogout={handleLogout} /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} />
-          <Route path='/SWP391-MomAndBaby/admin' element={user ? <Home /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> {/* Admin Home */}
-          <Route path='/SWP391-MomAndBaby/cart/*' element={<Cart />} />
-          <Route path='/SWP391-MomAndBaby/*' element={<UserPage />}></Route>
-          <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />
-          <Route path='/demo' element={<DetailProduct/>}></Route>
-          <Route path='/*' element={<><Header /><NotFound /><Footer /></>}></Route>
-        </Routes>
-      </BrowserRouter>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/SWP391-MomAndBaby/admin/login' element={<LoginAdmin onLogin={handleLogin} />} />
+        <Route path='/SWP391-MomAndBaby/login' element={<LoginForm onLogin={handleLogin} />} />
+        <Route path='/SWP391-MomAndBaby/admin/forgot' element={<Forgot />} />
+        <Route path='/SWP391-MomAndBaby/register' element={<Register />} />
+        <Route path='/SWP391-MomAndBaby/admin/*' element={user ? <AdminPages onLogout={handleLogout} /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} />
+        <Route path='/SWP391-MomAndBaby/admin' element={user ? <Home /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> 
+        <Route path='/SWP391-MomAndBaby/admin/account/update/:id' element={user ? <UpdateAccount /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> 
+        <Route path='/SWP391-MomAndBaby/admin/product/update/:id' element={user ? <UpdateProduct /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> 
+        <Route path='/SWP391-MomAndBaby/cart/*' element={<Cart />} />
+        <Route path='/SWP391-MomAndBaby/*' element={<UserPage />}></Route>
+        <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />
+        <Route path='/demo' element={<DetailProduct/>}></Route>
+        <Route path='/*' element={<><Header /><NotFound /><Footer /></>}></Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
+
 export default App;
