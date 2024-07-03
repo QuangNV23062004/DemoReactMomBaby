@@ -19,7 +19,7 @@ import DetailProduct from './UserPages/DetailProduct.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
-
+  
   useEffect(() => {
     const loggedInUser = sessionStorage.getItem('adminUser');
     if (loggedInUser) {
@@ -34,7 +34,7 @@ function App() {
 
   const handleLogout = () => {
     setUser(null);
-    sessionStorage.removeItem('adminUser');
+    sessionStorage.clear();
     navigate('/SWP391-MomAndBaby/admin/login'); // Redirect to login page
   };
 
@@ -50,7 +50,6 @@ function App() {
           <Route path='/SWP391-MomAndBaby/cart/*' element={<Cart />} />
           <Route path='/SWP391-MomAndBaby/*' element={<UserPage />}></Route>
           <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />
-          <Route path='/demo' element={<DetailProduct/>}></Route>
           <Route path='/*' element={<><Header /><NotFound /><Footer /></>}></Route>
         </Routes>
       </BrowserRouter>

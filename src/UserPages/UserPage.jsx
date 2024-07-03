@@ -7,11 +7,17 @@ import Home from './Home';
 import { useLocation } from 'react-router-dom';
 import ProductPage from './ProductPage';
 import NotFound from '../NotFound';
+import DetailProduct from './DetailProduct';
 
 export default function UserPage() {
   const location = useLocation();
   const currentUrl = location.pathname;
+  const extractIdFromUrl = (url, regex) => {
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  };
 
+  const productID = extractIdFromUrl(currentUrl, /\/SWP391-MomAndBaby\/product\/detail\/(\d+)/);
   let content;
   switch (currentUrl) {
     case "/SWP391-MomAndBaby":
@@ -25,7 +31,11 @@ export default function UserPage() {
       content = <AboutPage />;
       break;
     default:
-      content = <NotFound />;
+      if(currentUrl.startsWith("/SWP391-MomAndBaby/product/detail/")){
+        content = <DetailProduct id = {productID}/>
+      }
+        else{content = <NotFound />;
+      }
   }
 
   return (

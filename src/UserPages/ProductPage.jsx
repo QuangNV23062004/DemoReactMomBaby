@@ -176,40 +176,44 @@ export default function ProductPage() {
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={() => handleMouseLeave(index)}
             >
-              <CardMedia
-                sx={{ height: 300, position: "relative" }}
-                image={product.mainImg}
-                title={product.name}
-              />
-              {product.hovered && (
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  opacity: 1,
-                  transition: 'opacity 0.3s ease'
-                }}>
-                  <button style={{
-                    backgroundColor: '#ff469e',
-                    color: '#fff',
-                    border: 'none',
-                    padding: '10px 20px',
-                    cursor: 'pointer'
-                  }} 
-                  onClick={() => handleAddToCart(product)}>
-                    Add to Cart
-                  </button>
-                </div>
-              )}
+              <div style={{ position: 'relative' }}>
+                <CardMedia
+                  sx={{ height: 300, position: "relative" }}
+                  image={product.mainImg}
+                  title={product.name}
+                />
+                {product.hovered && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    opacity: 1,
+                    transition: 'opacity 0.3s ease'
+                  }}>
+                    <button style={{
+                      backgroundColor: '#ff469e',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '10px 20px',
+                      cursor: 'pointer'
+                    }} 
+                    onClick={() => handleAddToCart(product)}>
+                      Add to Cart
+                    </button>
+                  </div>
+                )}
+              </div>
               <CardContent>
                 <Typography gutterBottom variant="h6" component="div" style={{ height: 120, marginTop: 30 }}>
-                  {product.name}
+                  <Link to={`/SWP391-MomAndBaby/product/detail/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    {product.name}
+                  </Link>
                 </Typography>
                 <Typography gutterBottom variant='h6' component="div" style={{ textAlign: 'left', marginLeft: 10, color: "#d10024" }}>
                   <b>{product.price} VNĐ</b>
