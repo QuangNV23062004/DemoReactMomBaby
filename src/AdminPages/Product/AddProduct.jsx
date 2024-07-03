@@ -123,7 +123,7 @@ export default function AddProduct() {
               <Form.Label>Model</Form.Label>
             </Col>
             <Col md={9}>
-            <Form.Control
+              <Form.Control
                 type="text"
                 value={productData.model}
                 onChange={e => setProductData({ ...productData, model: e.target.value })}
@@ -199,7 +199,7 @@ export default function AddProduct() {
             </Col>
           </Row>
           <Row style={{ margin: 20 }}>
-            <Link to={'/products'}>
+            <Link to={'/SWP391-MomAndBaby/admin/product'}>
               <Button style={{ width: '15%', color: 'white' }} variant="info">
                 &lt;&lt; Back to Products
               </Button>

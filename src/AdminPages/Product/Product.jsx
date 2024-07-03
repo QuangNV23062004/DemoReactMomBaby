@@ -92,7 +92,7 @@ export default function Product() {
 
   return (
     <div className="category-table-wrapper">
-      <div style={{ background: "white" }}>
+      <div style={{ background: "white"}}>
         <Row
           style={{
             padding: "5px 10px",
@@ -149,6 +149,7 @@ export default function Product() {
                   padding: "3px 15px",
                   borderRadius: 5,
                   border: "1px solid #aaa",
+                  color: "black",
                 }}
                 type="text"
                 value={searchQuery}
