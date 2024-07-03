@@ -17,6 +17,7 @@ import Cart from './UserPages/Cart.jsx'
 import AboutPage from './UserPages/AboutPage.jsx';
 import DetailProduct from './UserPages/DetailProduct.jsx';
 import Home from './AdminPages/Home/Home'; 
+import ContactForm from './UserPages/ContactPage.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -53,6 +54,7 @@ function App() {
         <Route path='/SWP391-MomAndBaby/cart/*' element={<Cart />} />
         <Route path='/SWP391-MomAndBaby/*' element={<UserPage />}></Route>
         <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />
+        <Route path='/SWP391-MomAndBaby/contact' element={<ContactForm />} />
         <Route path='/demo' element={<DetailProduct/>}></Route>
         <Route path='/*' element={<><Header /><NotFound /><Footer /></>}></Route>
       </Routes>

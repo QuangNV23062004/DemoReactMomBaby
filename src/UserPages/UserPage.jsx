@@ -30,11 +30,15 @@ export default function UserPage() {
     case "/SWP391-MomAndBaby/about":
       content = <AboutPage />;
       break;
+    case "/SWP391-MomAndBaby/contact":
+      content = <ContactPage />;
+      break;
     default:
-      if(currentUrl.startsWith("/SWP391-MomAndBaby/product/detail/")){
-        content = <DetailProduct id = {productID}/>
+      if (currentUrl.startsWith("/SWP391-MomAndBaby/product/detail/")) {
+        content = <DetailProduct id={productID} />
       }
-        else{content = <NotFound />;
+      else {
+        content = <NotFound />;
       }
   }
 

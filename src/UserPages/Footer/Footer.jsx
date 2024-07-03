@@ -63,7 +63,7 @@ export default function Footer() {
           </h2>
           <span><Link to={'/SWP391-MomAndBaby/about'}>About</Link></span>
           <br />
-          <span><Link to={'/SWP391-MomAndBaby/'}>Contact</Link></span> <br />
+          <span><Link to={'/SWP391-MomAndBaby/contact'}>Contact</Link></span> <br />
           <span><Link to={'/SWP391-MomAndBaby/'}>Blog</Link></span>
           <br />
         </div>
