@@ -2,31 +2,45 @@ import React, { useState, useEffect } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function DetailProduct({ id }) {
   const location = useLocation();
-  const currentUrl = location.pathname;
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product/";
-  const cartAPI = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart"; // Added cartAPI URL
-  const [data, setData] = useState([]);
-  const nav = useNavigate(); // Added navigate hook
+  const cartAPI = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart";
+  const [data, setData] = useState({});
+  const nav = useNavigate();
+
+  useEffect(() => {
+    const fetchApi = () => {
+      fetch(baseURL + id)
+        .then((response) => response.json())
+        .then((data) => setData(data))
+        .catch((error) => console.log(error));
+    };
+
+    fetchApi();
+  }, [id]);
 
   const handleAddToCart = async (product) => {
     const userId = sessionStorage.getItem("userId");
 
     if (!userId) {
-      // Redirect to login if user is not logged in
       nav("/SWP391-MomAndBaby/login");
       return;
     }
 
+    if (product.quantity <= 0) {
+      toast.error("Sorry, this product is out of stock.");
+      return;
+    }
+
     try {
-      // Fetch the user's cart
       const response = await fetch(`${cartAPI}?userID=${userId}`);
 
       if (!response.ok) {
         if (response.status === 404) {
-          // User has no cart, create a new cart with the product
           const newCartItem = {
             userID: userId,
             productID: product.id,
@@ -51,19 +65,17 @@ export default function DetailProduct({ id }) {
 
           const createdCartItem = await createResponse.json();
           console.log("Product added to new cart:", createdCartItem);
-          // showSuccessToast(product.name);
+          toast.success(`${product.name} added to cart successfully!`);
         } else {
           throw new Error("Failed to fetch user cart");
         }
       } else {
-        // User has an existing cart, check if product is already in the cart
         const cartItems = await response.json();
         const existingCartItem = cartItems.find(
           (item) => item.productID === product.id
         );
 
         if (existingCartItem) {
-          // Product is already in the cart, update the quantity
           const updatedQuantity = existingCartItem.quantity + 1;
           const updatedTotalPrice = updatedQuantity * product.price;
           const updatedCartItem = {
@@ -89,9 +101,8 @@ export default function DetailProduct({ id }) {
 
           const updatedItem = await updateResponse.json();
           console.log("Product quantity updated in cart:", updatedItem);
-          // showSuccessToast(product.name);
+          toast.success(`${product.name} quantity updated in cart successfully!`);
         } else {
-          // Product is not in the cart, add it as a new item
           const newCartItem = {
             userID: userId,
             productID: product.id,
@@ -116,28 +127,35 @@ export default function DetailProduct({ id }) {
 
           const createdCartItem = await createResponse.json();
           console.log("Product added to cart:", createdCartItem);
-          // showSuccessToast(product.name);
+          toast.success(`${product.name} added to cart successfully!`);
         }
       }
+
+      const updatedProductQuantity = product.quantity - 1;
+      const updatedProduct = {
+        ...product,
+        quantity: updatedProductQuantity,
+      };
+
+      const productUpdateResponse = await fetch(`${baseURL}/${product.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedProduct),
+      });
+
+      if (!productUpdateResponse.ok) {
+        throw new Error("Failed to update product quantity");
+      }
+
+      setData(updatedProduct);
+      console.log("Product quantity updated:", updatedProduct);
     } catch (error) {
       console.error("Error handling add to cart:", error);
-      // Handle error scenarios, e.g., show error message to user
-      // Example: showErrorToast("Failed to add product to cart. Please try again later.");
+      toast.error("Failed to add product to cart. Please try again later.");
     }
   };
-
-  const fetchApi = () => {
-    fetch(baseURL + id)
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-      })
-      .catch((error) => console.log(error));
-  };
-
-  useEffect(() => {
-    fetchApi();
-  }, []);
 
   const productDetails = [
     { label: "Mẫu sản phẩm", value: data.model },
@@ -148,56 +166,38 @@ export default function DetailProduct({ id }) {
 
   return (
     <Container style={{ backgroundColor: "whitesmoke", padding: 50 }}>
+      <ToastContainer />
       <Row style={{ backgroundColor: "white" }}>
         <Col
-          md={5}
+          md={7}
           style={{
             display: "flex",
             justifyContent: "right",
             paddingRight: "50px",
           }}
         >
-          <img style={{ height: 400 }} src={data.mainImg} alt="alt" />
+          <img style={{ height: 400 }} src={data.mainImg} alt={data.name} />
         </Col>
-        <Col md={7} style={{ display: "flex", alignItems: "center" }}>
+        <Col md={5} style={{ display: "flex", alignItems: "center" }}>
           <ListGroup>
             <ListGroup.Item>
-              {" "}
               <h2 style={{ color: "red" }}>{data.name}</h2>
               <p style={{ fontSize: 17, fontStyle: "italic" }}>
                 (In stock: {data.quantity} | Sold: {data.sold})
               </p>
             </ListGroup.Item>
             <ListGroup.Item>
-              {" "}
               <h3>
-                Price: <span style={{}}>{data.price}</span> VNĐ
+                Price: <span>{data.price}</span> VNĐ
               </h3>
             </ListGroup.Item>
-            <ListGroup.Item>
-              {" "}
-              <p>
-                <b>Model:</b> {data.model}
-              </p>{" "}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              {" "}
-              <p>
-                <b>Category:</b> {data.category}
-              </p>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              {" "}
-              <p>
-                <b>Brand:</b> {data.brand}
-              </p>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              {" "}
-              <p>
-                <b>Producer:</b> {data.producer}
-              </p>
-            </ListGroup.Item>
+            {productDetails.map((detail, index) => (
+              <ListGroup.Item key={index}>
+                <p>
+                  <b>{detail.label}:</b> {detail.value}
+                </p>
+              </ListGroup.Item>
+            ))}
           </ListGroup>
         </Col>
       </Row>
@@ -206,33 +206,12 @@ export default function DetailProduct({ id }) {
         <Col>
           <Button
             variant="outline-success"
-            onClick={() => handleAddToCart(data)} // Pass data to handleAddToCart
+            onClick={() => handleAddToCart(data)}
             style={{ width: "40%" }}
           >
             Add to cart
-          </Button>{" "}
+          </Button>
         </Col>
-      </Row>
-      <Row style={{ backgroundColor: "white", marginTop: 50, paddingLeft: 10 }}>
-        {["md"].map((breakpoint) =>
-          productDetails.map((detail) => (
-            <ListGroup
-              key={`${breakpoint}-${detail.label}`}
-              horizontal={breakpoint}
-              className="my-2"
-            >
-              <Col md={6}>
-                <ListGroup.Item>
-                  {" "}
-                  <b>{detail.label}: </b>
-                </ListGroup.Item>
-              </Col>
-              <Col md={6}>
-                <ListGroup.Item>{detail.value}</ListGroup.Item>
-              </Col>
-            </ListGroup>
-          ))
-        )}
       </Row>
     </Container>
   );

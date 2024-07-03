@@ -7,8 +7,8 @@ import Typography from '@mui/material/Typography';
 import { Col, Row } from 'react-bootstrap';
 import FilterSidebar from './FilterSidebar';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify'; // Import toast and ToastContainer
-import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ProductPage() {
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
@@ -22,7 +22,7 @@ export default function ProductPage() {
       .then(response => response.json())
       .then(data => {
         setData(data);
-        setFilteredProducts(data.map(product => ({ ...product, hovered: false }))); // Initialize filtered products with added hovered state
+        setFilteredProducts(data.map(product => ({ ...product, hovered: false })));
       })
       .catch(error => console.log(error));
   };
@@ -31,12 +31,10 @@ export default function ProductPage() {
     fetchApi();
   }, []);
 
-  // Handle filtering and sorting of products
   const handleFilteredProducts = (filteredData) => {
     setFilteredProducts(filteredData.map(product => ({ ...product, hovered: false })));
   };
 
-  // Handle hover state for Add to Cart button
   const handleMouseEnter = (index) => {
     setFilteredProducts(prevProducts => {
       const updatedProducts = [...prevProducts];
@@ -53,22 +51,32 @@ export default function ProductPage() {
     });
   };
 
+  const showSuccessToast = (productName) => {
+    toast.success(`${productName} added to cart successfully!`);
+  };
+
+  const showErrorToast = (message) => {
+    toast.error(message);
+  };
+
   const handleAddToCart = async (product) => {
     const userId = sessionStorage.getItem("userId");
-  
+
     if (!userId) {
-      // Redirect to login if user is not logged in
       nav('/SWP391-MomAndBaby/login');
       return;
     }
-  
+
+    if (product.quantity <= 0) {
+      toast.error("Sorry, this product is out of stock.");
+      return;
+    }
+
     try {
-      // Fetch the user's cart
       const response = await fetch(`${cartAPI}?userID=${userId}`);
-  
+
       if (!response.ok) {
         if (response.status === 404) {
-          // User has no cart, create a new cart with the product
           const newCartItem = {
             userID: userId,
             productID: product.id,
@@ -78,7 +86,7 @@ export default function ProductPage() {
             quantity: 1,
             totalPrice: product.price
           };
-  
+
           const createResponse = await fetch(cartAPI, {
             method: 'POST',
             headers: {
@@ -86,11 +94,11 @@ export default function ProductPage() {
             },
             body: JSON.stringify(newCartItem)
           });
-  
+
           if (!createResponse.ok) {
             throw new Error('Failed to create cart');
           }
-  
+
           const createdCartItem = await createResponse.json();
           console.log("Product added to new cart:", createdCartItem);
           showSuccessToast(product.name);
@@ -98,12 +106,10 @@ export default function ProductPage() {
           throw new Error('Failed to fetch user cart');
         }
       } else {
-        // User has an existing cart, check if product is already in the cart
         const cartItems = await response.json();
         const existingCartItem = cartItems.find(item => item.productID === product.id);
-  
+
         if (existingCartItem) {
-          // Product is already in the cart, update the quantity
           const updatedQuantity = existingCartItem.quantity + 1;
           const updatedTotalPrice = updatedQuantity * product.price;
           const updatedCartItem = {
@@ -111,7 +117,7 @@ export default function ProductPage() {
             quantity: updatedQuantity,
             totalPrice: updatedTotalPrice
           };
-  
+
           const updateResponse = await fetch(`${cartAPI}/${existingCartItem.id}`, {
             method: 'PUT',
             headers: {
@@ -119,16 +125,15 @@ export default function ProductPage() {
             },
             body: JSON.stringify(updatedCartItem)
           });
-  
+
           if (!updateResponse.ok) {
             throw new Error('Failed to update cart item');
           }
-  
+
           const updatedItem = await updateResponse.json();
           console.log("Product quantity updated in cart:", updatedItem);
           showSuccessToast(product.name);
         } else {
-          // Product is not in the cart, add it as a new item
           const newCartItem = {
             userID: userId,
             productID: product.id,
@@ -138,7 +143,7 @@ export default function ProductPage() {
             quantity: 1,
             totalPrice: product.price
           };
-  
+
           const createResponse = await fetch(cartAPI, {
             method: 'POST',
             headers: {
@@ -146,20 +151,44 @@ export default function ProductPage() {
             },
             body: JSON.stringify(newCartItem)
           });
-  
+
           if (!createResponse.ok) {
             throw new Error('Failed to add product to cart');
           }
-  
+
           const createdCartItem = await createResponse.json();
           console.log("Product added to cart:", createdCartItem);
           showSuccessToast(product.name);
         }
       }
+
+      // Decrement product quantity in the product API
+      const updatedProductQuantity = product.quantity - 1;
+      const updatedProduct = {
+        ...product,
+        quantity: updatedProductQuantity
+      };
+
+      const productUpdateResponse = await fetch(`${baseURL}/${product.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedProduct)
+      });
+
+      if (!productUpdateResponse.ok) {
+        throw new Error('Failed to update product quantity');
+      }
+
+      setFilteredProducts(prevProducts => 
+        prevProducts.map(p => p.id === product.id ? updatedProduct : p)
+      );
+
+      console.log("Product quantity updated:", updatedProduct);
     } catch (error) {
       console.error("Error handling add to cart:", error);
-      // Handle error scenarios, e.g., show error message to user
-      // Example: showErrorToast("Failed to add product to cart. Please try again later.");
+      toast.error("Failed to add product to cart. Please try again later.");
     }
   };
 
@@ -226,7 +255,6 @@ export default function ProductPage() {
           </Col>
         ))}
       </Col>
-      {/* ToastContainer for displaying notifications */}
       <ToastContainer
         position="top-right"
         autoClose={3000}

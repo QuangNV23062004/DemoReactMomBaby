@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import { Container, Row, Col } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import { Link, useNavigate } from 'react-router-dom';
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Carouseler from "./Carouseler";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
-
 export default function Home() {
   const [data, setData] = useState([]);
   const [priorityTwoData, setPriorityTwoData] = useState([]);
   const [priorityOneData, setPriorityOneData] = useState([]);
   const [brands, setBrands] = useState([]);
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
+  const cartAPI = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart";
+  const nav = useNavigate();
 
   const fetchApi = () => {
     fetch(baseURL)
@@ -36,6 +38,142 @@ export default function Home() {
   useEffect(() => {
     fetchApi();
   }, []);
+
+  const handleAddToCart = async (product) => {
+    const userId = sessionStorage.getItem("userId");
+
+    if (!userId) {
+      nav("/SWP391-MomAndBaby/login");
+      return;
+    }
+
+    if (product.quantity <= 0) {
+      toast.error("Sorry, this product is out of stock.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${cartAPI}?userID=${userId}`);
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          const newCartItem = {
+            userID: userId,
+            productID: product.id,
+            productName: product.name,
+            productImage: product.mainImg,
+            price: product.price,
+            quantity: 1,
+            totalPrice: product.price,
+          };
+
+          const createResponse = await fetch(cartAPI, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newCartItem),
+          });
+
+          if (!createResponse.ok) {
+            throw new Error("Failed to create cart");
+          }
+
+          const createdCartItem = await createResponse.json();
+          console.log("Product added to new cart:", createdCartItem);
+          toast.success(`${product.name} added to cart successfully!`);
+        } else {
+          throw new Error("Failed to fetch user cart");
+        }
+      } else {
+        const cartItems = await response.json();
+        const existingCartItem = cartItems.find(
+          (item) => item.productID === product.id
+        );
+
+        if (existingCartItem) {
+          const updatedQuantity = existingCartItem.quantity + 1;
+          const updatedTotalPrice = updatedQuantity * product.price;
+          const updatedCartItem = {
+            ...existingCartItem,
+            quantity: updatedQuantity,
+            totalPrice: updatedTotalPrice,
+          };
+
+          const updateResponse = await fetch(
+            `${cartAPI}/${existingCartItem.id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(updatedCartItem),
+            }
+          );
+
+          if (!updateResponse.ok) {
+            throw new Error("Failed to update cart item");
+          }
+
+          const updatedItem = await updateResponse.json();
+          console.log("Product quantity updated in cart:", updatedItem);
+          toast.success(`${product.name} quantity updated in cart successfully!`);
+        } else {
+          const newCartItem = {
+            userID: userId,
+            productID: product.id,
+            productName: product.name,
+            productImage: product.mainImg,
+            price: product.price,
+            quantity: 1,
+            totalPrice: product.price,
+          };
+
+          const createResponse = await fetch(cartAPI, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newCartItem),
+          });
+
+          if (!createResponse.ok) {
+            throw new Error("Failed to add product to cart");
+          }
+
+          const createdCartItem = await createResponse.json();
+          console.log("Product added to cart:", createdCartItem);
+          toast.success(`${product.name} added to cart successfully!`);
+        }
+      }
+
+      const updatedProductQuantity = product.quantity - 1;
+      const updatedProduct = {
+        ...product,
+        quantity: updatedProductQuantity,
+      };
+
+      const productUpdateResponse = await fetch(`${baseURL}/${product.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedProduct),
+      });
+
+      if (!productUpdateResponse.ok) {
+        throw new Error("Failed to update product quantity");
+      }
+
+      setData(data.map(p => (p.id === product.id ? updatedProduct : p)));
+      setPriorityOneData(priorityOneData.map(p => (p.id === product.id ? updatedProduct : p)));
+      setPriorityTwoData(priorityTwoData.map(p => (p.id === product.id ? updatedProduct : p)));
+      console.log("Product quantity updated:", updatedProduct);
+    } catch (error) {
+      console.error("Error handling add to cart:", error);
+      toast.error("Failed to add product to cart. Please try again later.");
+    }
+  };
 
   const handleMouseEnter = (index, setState) => {
     setState(prevProducts => {
@@ -77,13 +215,16 @@ export default function Home() {
               opacity: 1,
               transition: 'opacity 0.3s ease'
             }}>
-              <button style={{
-                backgroundColor: '#ff469e',
-                color: '#fff',
-                border: 'none',
-                padding: '10px 20px',
-                cursor: 'pointer'
-              }}>
+              <button 
+                style={{
+                  backgroundColor: '#ff469e',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '10px 20px',
+                  cursor: 'pointer'
+                }}
+                onClick={() => handleAddToCart(product)}
+              >
                 Add to Cart
               </button>
             </div>
@@ -128,6 +269,7 @@ export default function Home() {
 
   return (
     <Container>
+      <ToastContainer />
       <Carouseler />
       <br />
       <Row>
