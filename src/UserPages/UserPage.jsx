@@ -8,6 +8,7 @@ import { useLocation } from 'react-router-dom';
 import ProductPage from './ProductPage';
 import NotFound from '../NotFound';
 import DetailProduct from './DetailProduct';
+import CheckOut from './CheckOut';
 
 export default function UserPage() {
   const location = useLocation();
@@ -32,6 +33,9 @@ export default function UserPage() {
       break;
     case "/SWP391-MomAndBaby/contact":
       content = <ContactPage />;
+      break;
+      case "/SWP391-MomAndBaby/checkout": 
+      content = <CheckOut/>; 
       break;
     default:
       if (currentUrl.startsWith("/SWP391-MomAndBaby/product/detail/")) {

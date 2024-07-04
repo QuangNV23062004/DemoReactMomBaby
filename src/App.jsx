@@ -55,7 +55,6 @@ function App() {
         <Route path='/SWP391-MomAndBaby/*' element={<UserPage />}></Route>
         <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />
         <Route path='/SWP391-MomAndBaby/contact' element={<ContactForm />} />
-        <Route path='/demo' element={<DetailProduct/>}></Route>
         <Route path='/*' element={<><Header /><NotFound /><Footer /></>}></Route>
       </Routes>
     </BrowserRouter>

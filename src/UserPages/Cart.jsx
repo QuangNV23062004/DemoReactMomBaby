@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from './Header/Header';
 import Footer from './Footer/Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,7 +16,10 @@ export default function Cart() {
   const [dataCart, setDataCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dataPreorder, setDataPreorder] = useState([]);
-
+  const nav = useNavigate();
+  const handleCheckout = (cart) => {
+    nav('/SWP391-MomAndBaby/checkout');
+  }
   const fetchCartData = () => {
     fetch(baseURLCart)
       .then((response) => response.json())
@@ -231,7 +234,11 @@ export default function Cart() {
             )}
           </Col>
         </Row>
-        <Button as={Link} to="/SWP391-MomAndBaby/product" variant="primary">Continue Shopping</Button>
+        <Row>
+        <Col md={3}><Button as={Link} to="/SWP391-MomAndBaby/product" variant="primary">Continue Shopping</Button></Col>
+        <Col md={6}></Col>
+        <Col md={3}><Button variant='danger' onClick={() => handleCheckout(dataCart)}>Checkout</Button></Col>
+        </Row>
       </Container>
       <Footer />
     </>
