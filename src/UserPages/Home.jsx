@@ -12,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Carouseler from "./Carouseler";
 
 export default function Home() {
+
   const [data, setData] = useState([]);
   const [priorityTwoData, setPriorityTwoData] = useState([]);
   const [priorityOneData, setPriorityOneData] = useState([]);
@@ -95,6 +96,32 @@ export default function Home() {
 
   useEffect(() => {
     fetchApi();
+  }, []);
+
+  useEffect(() => {
+    // Drift snippet integration
+    !function() {
+      var t = window.driftt = window.drift = window.driftt || [];
+      if (!t.init) {
+        if (t.invoked) return void (window.console && console.error && console.error("Drift snippet included twice."));
+        t.invoked = !0, t.methods = [ "identify", "config", "track", "reset", "debug", "show", "ping", "page", "hide", "off", "on" ], 
+        t.factory = function(e) {
+          return function() {
+            var n = Array.prototype.slice.call(arguments);
+            return n.unshift(e), t.push(n), t;
+          };
+        }, t.methods.forEach(function(e) {
+          t[e] = t.factory(e);
+        }), t.load = function(t) {
+          var e = 3e5, n = Math.ceil(new Date() / e) * e, o = document.createElement("script");
+          o.type = "text/javascript", o.async = !0, o.crossorigin = "anonymous", o.src = "https://js.driftt.com/include/" + n + "/" + t + ".js";
+          var i = document.getElementsByTagName("script")[0];
+          i.parentNode.insertBefore(o, i);
+        };
+      }
+    }();
+    drift.SNIPPET_VERSION = '0.3.1';
+    drift.load('if3cxw4emka3');
   }, []);
 
   const handleAddToCart = async (product) => {
@@ -453,6 +480,25 @@ export default function Home() {
           </Link>
         </div>
       </Row>
+
+      {/* Chat Button */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          backgroundColor: '#ff469e',
+          color: '#fff',
+          padding: '10px 20px',
+          borderRadius: '5px',
+          zIndex: '1000',
+          cursor: 'pointer',
+        }}
+      >
+        <a href="https://m.me/343721882163379" target="_blank" rel="noopener noreferrer" style={{ color: '#fff', textDecoration: 'none' }}>
+          Chat
+        </a>
+      </div>
     </Container>
   );
 }
