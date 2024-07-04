@@ -10,8 +10,10 @@ import 'react-multi-carousel/lib/styles.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Carouseler from "./Carouseler";
+import MessengerChat from './MesengerChat';
 
 export default function Home() {
+
   const [data, setData] = useState([]);
   const [priorityTwoData, setPriorityTwoData] = useState([]);
   const [priorityOneData, setPriorityOneData] = useState([]);
@@ -95,6 +97,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchApi();
+    
   }, []);
 
   const handleAddToCart = async (product) => {
@@ -452,7 +455,9 @@ export default function Home() {
             </Button>
           </Link>
         </div>
+
       </Row>
+     
     </Container>
   );
 }

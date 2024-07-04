@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom';
 import ProductPage from './ProductPage';
 import NotFound from '../NotFound';
 import DetailProduct from './DetailProduct';
-
+import MessengerChat from './MesengerChat'
 export default function UserPage() {
   const location = useLocation();
   const currentUrl = location.pathname;
@@ -50,6 +50,7 @@ export default function UserPage() {
         {content}
       </Container>
       <br />
+      <MessengerChat />
       <Footer />
     </React.Fragment>
   );
