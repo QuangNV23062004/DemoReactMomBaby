@@ -90,6 +90,18 @@ function SideBar() {
           Account
         </Link>
       </div>
+      <div
+        style={{
+          ...styles.sideButton,
+          ...(hovered === 4 ? styles.sideButtonHover : {}),
+        }}
+        onMouseEnter={() => handleHover(4)}
+        onMouseLeave={handleHoverExit}
+      >
+        <Link to='/SWP391-MomAndBaby/admin/voucher' style={{ ...styles.link, color: 'white' }}>
+          Voucher
+        </Link>
+      </div>
     </Col>
   );
 }

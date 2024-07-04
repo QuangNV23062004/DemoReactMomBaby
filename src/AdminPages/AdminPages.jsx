@@ -12,6 +12,8 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import AddProduct from './Product/AddProduct';
 import UpdateProduct from './Product/UpdateProduct';
 import NotFound from '../NotFound';
+import Voucher from './Voucher/Voucher';
+import AddVoucher from './Voucher/AddVoucher';
 
 export default function AdminPages() {
   const location = useLocation();
@@ -29,6 +31,9 @@ export default function AdminPages() {
   const handleAddAccount = () => {
     nav('/SWP391-MomAndBaby/admin/account/add');
   };
+  const handleAddVoucher = () => {
+    nav('/SWP391-MomAndBaby/admin/voucher/add');
+  }
 
   const handleAddProduct = () => {
     nav('/SWP391-MomAndBaby/admin/product/add');
@@ -39,7 +44,7 @@ export default function AdminPages() {
     case currentUrl === "/SWP391-MomAndBaby/admin/product":
       content = (
         <React.Fragment>
-          <Row className="contentCa mb-3">
+          <Row className="contentCa mb-0">
             <Col className="d-flex justify-content-center" md={12}>
               <Button className="AddButton" onClick={handleAddProduct}>Add new</Button>
             </Col>
@@ -59,8 +64,8 @@ export default function AdminPages() {
           <Row>
           <Col md={2}></Col>
           <Col md={10} style={{width: 1400}}>
-          <Row className="contentCa mb-3">
-            <Col className="d-flex justify-content-center">
+          <Row className="contentCa mb-0">
+            <Col className="d-flex justify-content-center">   
               <Button className="AddButton" onClick={handleAddAccount}>Add new</Button>
             </Col>
           </Row>
@@ -122,7 +127,38 @@ export default function AdminPages() {
         </React.Fragment>
       );
       break;
-
+      case currentUrl === "/SWP391-MomAndBaby/admin/voucher" : 
+      content = (
+        <React.Fragment>
+          <Row>
+          <Col md={2}></Col>
+          <Col md={10} style={{width: 1400}}>
+          <Row className="contentCa mb-0">
+            <Col className="d-flex justify-content-center">   
+              <Button className="AddButton" onClick={handleAddVoucher}>Add new</Button>
+            </Col>
+          </Row>
+          
+          <Row className="SomethingCa content-wrapper">
+          <Col className="PaddingWhite">
+              <Voucher />
+            </Col>
+          </Row></Col>
+          </Row>
+        </React.Fragment>
+      );
+      break;
+      case currentUrl === "/SWP391-MomAndBaby/admin/voucher/add": 
+      content = (
+        <React.Fragment>
+          <Row className="SomethingCa content-wrapper">
+            <Col className="PaddingWhite">
+              <AddVoucher/>
+            </Col>
+          </Row>
+        </React.Fragment>
+      );
+      break;
     default:
       content = <NotFound />;
   }
@@ -131,7 +167,7 @@ export default function AdminPages() {
     <div className="full-page-wrappers">
       <Header className="header" />
       <Container fluid className="main-content">
-        <Row>
+        <Row style={{width: "100%"}}>
           <Col xs={2} className="p-0">
             <SideBar className="Side" style={{ width: "100%", display: "block" }} />
           </Col>

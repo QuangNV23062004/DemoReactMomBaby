@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from "react";
-import Table from "react-bootstrap/Table";
-import Form from "react-bootstrap/Form";
-import { Button, Row, Modal } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-export default function Product() {
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Row, Modal, Form, Pagination } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+export default function Voucher() {
+  const baseURLVoucher = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher";
   const [data, setData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const [dataToDelete, setDataToDelete] = useState([]); // Store the IDs of items to delete
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [dataToDelete, setDataToDelete] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [entriesToShow, setEntriesToShow] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product/";
-
-  const fetchApi = () => {
-    fetch(baseURL)
+  const fetchVoucherApi = () => {
+    fetch(baseURLVoucher)
       .then((response) => response.json())
       .then((data) => {
-        // Add a 'selected' property to each item for checkbox control
         const updatedData = data.map((item) => ({ ...item, selected: false }));
         setData(updatedData);
       })
@@ -28,7 +27,7 @@ export default function Product() {
   };
 
   useEffect(() => {
-    fetchApi();
+    fetchVoucherApi();
   }, []);
 
   const handleSelectAll = () => {
@@ -46,7 +45,7 @@ export default function Product() {
     setData(updatedData);
   };
 
-  const handleDeleteAcc = (id) => {
+  const handleDeleteVoucher = (id) => {
     setShowDeleteConfirmation(true);
     setDataToDelete([id]);
   };
@@ -55,44 +54,60 @@ export default function Product() {
     const selectedIds = data.filter((item) => item.selected).map((item) => item.id);
 
     if (selectedIds.length === 0) {
-      toast.error("Please select at least one account to delete");
+      toast.error("Please select at least one voucher to delete");
       return;
     }
 
-    setDataToDelete(selectedIds); // Store the selected IDs for deletion
-    setShowDeleteConfirmation(true); // Show confirmation modal
+    setDataToDelete(selectedIds);
+    setShowDeleteConfirmation(true);
   };
 
   const handleConfirmedDelete = () => {
     Promise.all(
       dataToDelete.map((id) =>
-        fetch(`${baseURL}/${id}`, {
+        fetch(`${baseURLVoucher}/${id}`, {
           method: "DELETE",
         })
       )
     )
       .then(() => {
-        fetchApi(); // Refresh data after deletion
-        setShowDeleteConfirmation(false); // Hide confirmation modal
-        toast.success("Accounts deleted successfully");
+        fetchVoucherApi();
+        setShowDeleteConfirmation(false);
+        toast.success("Vouchers deleted successfully");
       })
       .catch((error) => {
         console.log(error);
-        toast.error("Failed to delete products");
+        toast.error("Failed to delete vouchers");
       });
   };
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
+    setCurrentPage(1);
   };
 
-  const filteredData = data.filter((pro) =>
-    pro.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const handleEntriesChange = (event) => {
+    setEntriesToShow(parseInt(event.target.value));
+    setCurrentPage(1);
+  };
+
+  const filteredData = data.filter((voucher) =>
+    voucher.code.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const startIndex = (currentPage - 1) * entriesToShow;
+  const endIndex = startIndex + entriesToShow;
+  const displayedData = filteredData.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(filteredData.length / entriesToShow);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
-    <div className="category-table-wrapper">
-      <div style={{ background: "white"}}>
+    <div className="voucher-table-wrapper">
+      <div style={{ background: "white", borderRadius: "5px" }}>
         <Row
           style={{
             padding: "5px 10px",
@@ -101,7 +116,7 @@ export default function Product() {
             margin: "0px 20px",
           }}
         >
-          <h1 className="Header">Product</h1>
+          <h1 className="Header">Voucher</h1>
         </Row>
         <Row style={{ marginTop: 10 }}>
           <Button
@@ -132,11 +147,13 @@ export default function Product() {
               <Form.Select
                 style={{ display: "inline", width: 70, height: 40, margin: 2 }}
                 aria-label=""
+                value={entriesToShow}
+                onChange={handleEntriesChange}
               >
                 <option value="5">5</option>
                 <option value="10">10</option>
-                <option value="15">15</option>
                 <option value="20">20</option>
+                <option value="40">40</option>
               </Form.Select>{" "}
               entries{" "}
             </b>
@@ -149,7 +166,6 @@ export default function Product() {
                   padding: "3px 15px",
                   borderRadius: 5,
                   border: "1px solid #aaa",
-                  color: "black",
                 }}
                 type="text"
                 value={searchQuery}
@@ -169,37 +185,30 @@ export default function Product() {
                   onChange={handleSelectAll}
                 />
               </th>
-              <th>Product name</th>
-              <th>Price</th>
-              <th>Image</th>
+              <th>#</th>
+              <th>Code</th>
+              <th>Discount</th>
               <th>Quantity</th>
-              <th>Sold</th>
-              <th>Category</th>
-              <th>Producer</th>
-              <th>Brand</th>
+              <th>Expiration</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((pro, index) => (
-              <tr key={pro.id}>
+            {displayedData.map((voucher, index) => (
+              <tr key={voucher.id}>
                 <td style={{ alignItems: "center" }}>
                   <Form.Check
                     type="checkbox"
-                    checked={pro.selected}
+                    checked={voucher.selected}
                     onChange={() => handleCheckboxChange(index)}
                   />
                 </td>
-
-                <td>{pro.name}</td>
-                <td>{pro.price}</td>
-                <td><span style={{width:50}}>{pro.mainImg}</span></td>
-                <td>{pro.quantity}</td>
-                <td>{pro.sold}</td>
-                <td>{pro.category}</td>
-                <td>{pro.producer}</td>
-                <td>{pro.brand}</td>
-     
+                <td>{voucher.id}</td>
+                <td>{voucher.code}</td>
+                <td>{voucher.discount}</td>
+                <td>{voucher.quantity}</td>
+                <td>{voucher.used.join(', ')}</td>
+                <td>{voucher.expiration}</td>
                 <td>
                   <div
                     style={{
@@ -214,7 +223,7 @@ export default function Product() {
                     {" "}
                     <Link
                       style={{ color: "white" }}
-                      to={`/SWP391-MomAndBaby/admin/product/update/${pro.id}`}
+                      to={`/SWP391-MomAndBaby/admin/voucher/update/${voucher.id}`}
                     >
                       <FontAwesomeIcon icon={faPenToSquare} />
                     </Link>{" "}
@@ -230,9 +239,12 @@ export default function Product() {
                     }}
                   >
                     {" "}
-                    <Link style={{ color: "white" }} onClick={() => handleDeleteAcc(pro.id)}>
+                    <Link
+                      style={{ color: "white" }}
+                      onClick={() => handleDeleteVoucher(voucher.id)}
+                    >
                       <FontAwesomeIcon icon={faTrash} />
-                    </Link>
+                    </Link>{" "}
                   </div>
                 </td>
               </tr>
@@ -240,7 +252,18 @@ export default function Product() {
           </tbody>
         </Table>
 
-        {/* Confirmation Modal for Delete */}
+        <Pagination className="justify-content-center">
+          {[...Array(totalPages)].map((_, idx) => (
+            <Pagination.Item
+              key={idx + 1}
+              active={idx + 1 === currentPage}
+              onClick={() => handlePageChange(idx + 1)}
+            >
+              {idx + 1}
+            </Pagination.Item>
+          ))}
+        </Pagination>
+
         <Modal
           show={showDeleteConfirmation}
           onHide={() => setShowDeleteConfirmation(false)}
@@ -248,7 +271,7 @@ export default function Product() {
           <Modal.Header closeButton>
             <Modal.Title>Confirm Delete</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Are you sure you want to delete the selected products?</Modal.Body>
+          <Modal.Body>Are you sure you want to delete the selected vouchers?</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowDeleteConfirmation(false)}>
               Cancel
@@ -259,7 +282,6 @@ export default function Product() {
           </Modal.Footer>
         </Modal>
 
-        {/* Toast Container for notifications */}
         <ToastContainer />
       </div>
     </div>
