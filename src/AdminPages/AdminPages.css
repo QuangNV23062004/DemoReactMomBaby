@@ -1,10 +1,7 @@
-/* AdminPages.css */
-
 .full-page-wrappers {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    /* Ensure the page covers the full viewport height */
     background-image: url("../../assets/background.webp");
     background-repeat: no-repeat;
     background-size: cover;
@@ -13,17 +10,24 @@
 
 .sidebarFooterContent {
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    
 }
+.maxcontent{
+    width: 100%;
 
+}
 .contentCa,
 .SomethingCa {
     background-color: white;
     border-radius: 5px;
     padding: 20px;
-    /* Add padding for content */
     margin-bottom: 20px;
-    /* Add space between sections */
-    width: 1585.83px;
+    width: 100%;
+    max-width: 100%;
 }
 
 .AddButton {
@@ -42,20 +46,33 @@
     border-radius: 5px;
     margin-top: 20px;
     padding: 20px;
-}
-
-.FootContainer.row {
-    width: 1585.83px;
+    display: flex;
+    justify-content: center;
 }
 
 .PaddingWhite {
     background-color: white;
     border-radius: 5px;
     padding: 20px;
-    /* Adjust padding as needed */
 }
 
 .maxHeight {
     max-height: 50vh;
-    /* Limit the height of certain elements */
+}
+
+.content-wrapper {
+    max-width: 100%;
+    max-height: 70vh;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-row {
+    margin-top: 9px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
 }

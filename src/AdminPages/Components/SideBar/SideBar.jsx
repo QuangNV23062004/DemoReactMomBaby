@@ -10,7 +10,7 @@ const styles = {
     backgroundColor: 'rgba(118, 155, 186, 0.78)',
     color: 'white',
     height: '100%',
-    width: "305px",
+    width: "234px",
   },
   sideButton: {
     padding: '18px 0 18px 25px',

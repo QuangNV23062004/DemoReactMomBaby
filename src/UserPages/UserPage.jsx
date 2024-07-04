@@ -9,6 +9,7 @@ import ProductPage from './ProductPage';
 import NotFound from '../NotFound';
 import DetailProduct from './DetailProduct';
 import CheckOut from './CheckOut';
+import History from './History';
 
 export default function UserPage() {
   const location = useLocation();
@@ -37,6 +38,9 @@ export default function UserPage() {
       case "/SWP391-MomAndBaby/checkout": 
       content = <CheckOut/>; 
       break;
+      case "/SWP391-MomAndBaby/history":
+        content = <History/>
+        break;
     default:
       if (currentUrl.startsWith("/SWP391-MomAndBaby/product/detail/")) {
         content = <DetailProduct id={productID} />

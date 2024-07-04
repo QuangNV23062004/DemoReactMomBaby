@@ -91,6 +91,7 @@ export default function CheckOut() {
             total: total,
             detail: cart,
             phone: phone,
+            userID: userId,
             status: "pending"
         };
 

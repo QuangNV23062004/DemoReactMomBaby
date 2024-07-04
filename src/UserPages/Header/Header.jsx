@@ -22,6 +22,9 @@ function Header() {
       console.log(error);
     }
   };
+  const handleOrderHistory = () =>{
+    navigate('/SWP391-MomAndBaby/history');
+  }
 
   useEffect(() => {
     fetchApi(); // Fetch initial data
@@ -88,7 +91,9 @@ function Header() {
               <div className="dropdown-content">
                 {userId == null 
                 ? <div className="dropdown-item" onClick={handleLogin}>Login</div> 
-                : <div className="dropdown-item" onClick={handleLogout}>Logout</div>}
+                : <>
+                <div className="dropdown-item" onClick={handleOrderHistory}>Order history</div>
+                <div className="dropdown-item" onClick={handleLogout}>Logout</div></>}
               </div>
             )}
           </div>

@@ -44,7 +44,7 @@ export default function AdminPages() {
               <Button className="AddButton" onClick={handleAddProduct}>Add new</Button>
             </Col>
           </Row>
-          <Row className="SomethingCa">
+          <Row className="SomethingCa content-wrapper">
             <Col className="PaddingWhite">
               <Product />
             </Col>
@@ -56,15 +56,20 @@ export default function AdminPages() {
     case currentUrl === "/SWP391-MomAndBaby/admin/account":
       content = (
         <React.Fragment>
+          <Row>
+          <Col md={2}></Col>
+          <Col md={10} style={{width: 1400}}>
           <Row className="contentCa mb-3">
             <Col className="d-flex justify-content-center">
               <Button className="AddButton" onClick={handleAddAccount}>Add new</Button>
             </Col>
           </Row>
-          <Row className="SomethingCa">
-            <Col className="PaddingWhite">
+          
+          <Row className="SomethingCa content-wrapper">
+          <Col className="PaddingWhite">
               <Account />
             </Col>
+          </Row></Col>
           </Row>
         </React.Fragment>
       );
@@ -73,7 +78,7 @@ export default function AdminPages() {
     case currentUrl.startsWith("/SWP391-MomAndBaby/admin/account/update") && accountId:
       content = (
         <React.Fragment>
-          <Row className="SomethingCa">
+          <Row className="SomethingCa content-wrapper">
             <Col className="PaddingWhite">
               <UpdateAccount id={accountId} />
             </Col>
@@ -85,7 +90,7 @@ export default function AdminPages() {
     case currentUrl === "/SWP391-MomAndBaby/admin/account/add":
       content = (
         <React.Fragment>
-          <Row className="SomethingCa">
+          <Row className="SomethingCa content-wrapper">
             <Col className="PaddingWhite">
               <AddAccount />
             </Col>
@@ -97,7 +102,7 @@ export default function AdminPages() {
     case currentUrl === "/SWP391-MomAndBaby/admin/product/add":
       content = (
         <React.Fragment>
-          <Row className="SomethingCa">
+          <Row className="SomethingCa content-wrapper">
             <Col className="PaddingWhite">
               <AddProduct />
             </Col>
@@ -109,7 +114,7 @@ export default function AdminPages() {
     case currentUrl.startsWith("/SWP391-MomAndBaby/admin/product/update") && productId:
       content = (
         <React.Fragment>
-          <Row className="SomethingCa">
+          <Row className="SomethingCa content-wrapper">
             <Col className="PaddingWhite">
               <UpdateProduct id={productId} />
             </Col>
@@ -123,23 +128,23 @@ export default function AdminPages() {
   }
 
   return (
-      <div className="full-page-wrappers">
-        <Header className="header" />
-        <Container fluid className="main-content">
-          <Row>
-            <Col xs={2} className="p-0">
-              <SideBar className="Side" style={{ width: "100%", display:"block"}} />
-            </Col>
-            <Col xs={10} className="sidebarFooterContent">
-              {content}
-              <Row style={{ marginTop: 9 }} className="FootContainer">
-                <Col>
-                  <Footer className="Foot" />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+    <div className="full-page-wrappers">
+      <Header className="header" />
+      <Container fluid className="main-content">
+        <Row>
+          <Col xs={2} className="p-0">
+            <SideBar className="Side" style={{ width: "100%", display: "block" }} />
+          </Col>
+          <Col xs={10} className="sidebarFooterContent">
+            <div className='maxcontent'><Row>{content}</Row>
+            <Row className="footer-row">
+              <Col>
+                <Footer className="Foot" />
+              </Col>
+            </Row></div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 }
