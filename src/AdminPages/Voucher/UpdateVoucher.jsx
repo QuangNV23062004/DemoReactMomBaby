@@ -1,28 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import DatePicker from "react-multi-date-picker";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function AddVoucher() {
+export default function UpdateVoucher() {
   const validationSchema = Yup.object({
-    code: Yup.string()
-      .min(5, 'Code must be at least 5 characters')
-      .required('Required')
-      .test('checkUnique', 'Code already exists', async function(value) {
-        // Example: Fetch existing voucher codes and check uniqueness
-        try {
-          const response = await fetch(`https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher?code=${value}`);
-          const data = await response.json();
-          return data.length === 0; // Return true if code is unique
-        } catch (error) {
-          console.error('Error checking voucher code:', error);
-          return false; // Handle error scenario
-        }
-      }),
     discount: Yup.number()
       .positive('Discount must be a positive number')
       .required('Required'),
@@ -34,19 +20,40 @@ export default function AddVoucher() {
       .required('Required')
   });
 
+  const { id } = useParams();
   const nav = useNavigate();
+  const [voucherData, setVoucherData] = useState(null);
+
+  useEffect(() => {
+    fetchVoucher();
+  }, []);
+
+  const fetchVoucher = async () => {
+    try {
+      const response = await fetch(`https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher/${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setVoucherData(data);
+      } else {
+        throw new Error('Failed to fetch voucher');
+      }
+    } catch (error) {
+      console.error('Error fetching voucher:', error);
+      toast.error(`Failed to fetch voucher: ${error.message}`);
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
-      code: "",
-      discount: "",
-      quantity: "",
-      expiration: new Date()
+      discount: voucherData ? voucherData.discount : "",
+      quantity: voucherData ? voucherData.quantity : "",
+      expiration: voucherData ? new Date(voucherData.expiration) : new Date()
     },
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await fetch("https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher", {
-          method: "POST",
+        const response = await fetch(`https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher/${id}`, {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
@@ -54,49 +61,25 @@ export default function AddVoucher() {
         });
         if (response.ok) {
           const data = await response.json();
-          console.log("Voucher added successfully:", data);
-          formik.resetForm();
-          toast.success('Voucher added successfully', {
+          console.log("Voucher updated successfully:", data);
+          toast.success('Voucher updated successfully', {
             onClose: () => nav('/SWP391-MomAndBaby/admin/voucher')
           });
         } else {
-          throw new Error('Failed to add voucher');
+          throw new Error('Failed to update voucher');
         }
       } catch (error) {
-        console.error("Error adding voucher:", error);
-        toast.error(`Failed to add voucher: ${error.message}`);
+        console.error("Error updating voucher:", error);
+        toast.error(`Failed to update voucher: ${error.message}`);
       }
     }
   });
 
   return (
     <div>
-      <h2>Add New Voucher</h2>
+      <h2>Update Voucher</h2>
       <ToastContainer />
       <Form onSubmit={formik.handleSubmit}>
-        <Form.Group className="mb-3" controlId="code">
-          <Row>
-            <Col md={3}>
-              <Form.Label>Voucher Code</Form.Label>
-            </Col>
-            <Col md={9}>
-              <Form.Control
-                type="text"
-                placeholder="Enter voucher code"
-                name="code"
-                value={formik.values.code}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={!!formik.errors.code && formik.touched.code}
-                style={{ width: "60%" }}
-              />
-              <Form.Control.Feedback type="invalid">
-                {formik.errors.code}
-              </Form.Control.Feedback>
-            </Col>
-          </Row>
-        </Form.Group>
-
         <Form.Group className="mb-3" controlId="discount">
           <Row>
             <Col md={3}>
@@ -166,7 +149,7 @@ export default function AddVoucher() {
         </Form.Group>
 
         <Button variant="primary" type="submit">
-          Add Voucher
+          Update Voucher
         </Button>
       </Form>
     </div>

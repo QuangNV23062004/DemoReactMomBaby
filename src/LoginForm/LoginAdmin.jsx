@@ -50,9 +50,9 @@ export default function LoginAdmin({ onLogin }) {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     /><br />
-                    <div className='Forgot'>
+                    {/* <div className='Forgot'>
                         <a href="forgot" className='forgot'>Forgot Password?</a><br />
-                    </div>
+                    </div> */}
                     <div className='LoginDiv'>
                         <button className='login' onClick={handleLogin}>SIGN IN</button>
                     </div>

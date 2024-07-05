@@ -16,6 +16,10 @@ export default function Voucher() {
   const [entriesToShow, setEntriesToShow] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
 
+  useEffect(() => {
+    fetchVoucherApi();
+  }, []);
+
   const fetchVoucherApi = () => {
     fetch(baseURLVoucher)
       .then((response) => response.json())
@@ -25,10 +29,6 @@ export default function Voucher() {
       })
       .catch((error) => console.log(error));
   };
-
-  useEffect(() => {
-    fetchVoucherApi();
-  }, []);
 
   const handleSelectAll = () => {
     const updatedData = data.map((item) => ({
@@ -95,11 +95,13 @@ export default function Voucher() {
     voucher.code.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filteredData.length / entriesToShow);
   const startIndex = (currentPage - 1) * entriesToShow;
   const endIndex = startIndex + entriesToShow;
-  const displayedData = filteredData.slice(startIndex, endIndex);
-
-  const totalPages = Math.ceil(filteredData.length / entriesToShow);
+  const displayedData = filteredData.slice(startIndex, endIndex).map((voucher) => ({
+    ...voucher,
+    formattedExpiration: new Date(voucher.expiration).toLocaleDateString()
+  }));
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -207,8 +209,7 @@ export default function Voucher() {
                 <td>{voucher.code}</td>
                 <td>{voucher.discount}</td>
                 <td>{voucher.quantity}</td>
-                <td>{voucher.used.join(', ')}</td>
-                <td>{voucher.expiration}</td>
+                <td>{voucher.formattedExpiration}</td> {/* Display formatted expiration */}
                 <td>
                   <div
                     style={{

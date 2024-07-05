@@ -1,49 +1,107 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Row, Form, Button } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
-export default function UpdateProduct({id}) {
+export default function UpdateProduct() {
+  const { id } = useParams();
   const baseURL = 'https://66801b4556c2c76b495b2d81.mockapi.io/product/';
-  
-  const [data, setData] = useState({});
+  const [data, setData] = useState(null);
   const nav = useNavigate();
 
-  // Fetch initial data based on id
   useEffect(() => {
     if (id) {
       fetch(baseURL + id)
-        .then(response => response.json())
-        .then(data => {
-          setData(data);
-          console.log(id);
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Failed to fetch product ${id}: ${response.status}`);
+          }
+          return response.json();
         })
-        .catch(error => console.log(error));
+        .then((productData) => {
+          setData(productData);
+        })
+        .catch((error) => console.error(`Error fetching product ${id}:`, error));
     }
   }, [id]);
 
-  // Function to handle form submission and update API
-  const handleSave = () => {
-    fetch(baseURL + id, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then(response => response.json())
-      .then(() => {
-        toast.success(`Update ${id} successful`, {
-          onClose: () => {
-            nav('/SWP391-MomAndBaby/admin/product');
-          },
-        });
+  const validationSchema = Yup.object({
+    name: Yup.string()
+      .min(5, 'Name must be at least 5 characters')
+      .required('Name is required'),
+    price: Yup.number()
+      .min(0, 'Price must be greater than or equal to 0')
+      .required('Price is required'),
+    quantity: Yup.number()
+      .min(0, 'Quantity must be greater than or equal to 0')
+      .required('Quantity is required'),
+    description: Yup.string().required('Description is required'),
+    mainImg: Yup.string().required('Main Image URL is required'),
+    model: Yup.string().required('Model is required'),
+    priority: Yup.string().required('Priority is required'),
+    category: Yup.string().required('Category is required'),
+    producer: Yup.string().required('Producer is required'),
+    brand: Yup.string().required('Brand is required'),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      price: '',
+      quantity: '',
+      description: '',
+      mainImg: '',
+      model: '',
+      priority: '',
+      category: '',
+      producer: '',
+      brand: '',
+    },
+    validationSchema: validationSchema,
+    enableReinitialize: true, // This allows formik to reinitialize the form values when data changes
+    onSubmit: (values) => {
+      fetch(baseURL + id, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
       })
-      .catch(error => {
-        toast.error(`Update ${id} failed: ${error.message}`);
+        .then((response) => response.json())
+        .then(() => {
+          toast.success(`Update ${id} successful`, {
+            onClose: () => {
+              nav('/SWP391-MomAndBaby/admin/product');
+            },
+          });
+        })
+        .catch((error) => {
+          toast.error(`Update ${id} failed: ${error.message}`);
+        });
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      formik.setValues({
+        name: data.name || '',
+        price: data.price || '',
+        quantity: data.quantity || '',
+        description: data.description || '',
+        mainImg: data.mainImg || '',
+        model: data.model || '',
+        priority: data.priority || '',
+        category: data.category || '',
+        producer: data.producer || '',
+        brand: data.brand || '',
       });
-  };
+    }
+  }, [data]);
+
+  if (!data) return <div>Loading...</div>;
 
   return (
     <>
@@ -58,13 +116,14 @@ export default function UpdateProduct({id}) {
         >
           <span style={{ fontSize: 35 }}>UPDATE PRODUCT</span>
         </div>
-        <div>
+        <Form onSubmit={formik.handleSubmit}>
+          {/* Form fields */}
           <Row style={{ margin: '10px 20px' }}>
             <Col md={3}>
               <Form.Label>ID</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control
+              <Form.Control style={{width: "60%"}}
                 type="text"
                 value={data.id || ''}
                 readOnly
@@ -77,11 +136,16 @@ export default function UpdateProduct({id}) {
               <Form.Label>Name</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control
+              <Form.Control style={{width: "60%"}}
                 type="text"
-                value={data.name || ''}
-                onChange={e => setData({ ...data, name: e.target.value })}
+                name="name"
+                value={formik.values.name}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.name && formik.errors.name ? (
+                <div className="error">{formik.errors.name}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
@@ -89,24 +153,34 @@ export default function UpdateProduct({id}) {
               <Form.Label>Price</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control
+              <Form.Control style={{width: "60%"}}
                 type="number"
-                value={data.price || ''}
-                onChange={e => setData({ ...data, price: e.target.value })}
+                name="price"
+                value={formik.values.price}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.price && formik.errors.price ? (
+                <div className="error">{formik.errors.price}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
             <Col md={3}>
               <Form.Label>Description</Form.Label>
             </Col>
-            <Col md={9}>
-              <Form.Control
+            <Col md={9} style={{paddingLeft: 75}}> 
+              <Form.Control style={{width: "64%"}}
                 as="textarea"
                 rows={3}
-                value={data.description || ''}
-                onChange={e => setData({ ...data, description: e.target.value })}
+                name="description"
+                value={formik.values.description}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.description && formik.errors.description ? (
+                <div className="error">{formik.errors.description}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
@@ -114,11 +188,16 @@ export default function UpdateProduct({id}) {
               <Form.Label>Main Image</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control
+              <Form.Control style={{width: "60%"}}
                 type="text"
-                value={data.mainImg || ''}
-                onChange={e => setData({ ...data, mainImg: e.target.value })}
+                name="mainImg"
+                value={formik.values.mainImg}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.mainImg && formik.errors.mainImg ? (
+                <div className="error">{formik.errors.mainImg}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
@@ -126,11 +205,16 @@ export default function UpdateProduct({id}) {
               <Form.Label>Quantity</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control
+              <Form.Control style={{width: "60%"}}
                 type="number"
-                value={data.quantity || ''}
-                onChange={e => setData({ ...data, quantity: e.target.value })}
+                name="quantity"
+                value={formik.values.quantity}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.quantity && formik.errors.quantity ? (
+                <div className="error">{formik.errors.quantity}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
@@ -138,26 +222,37 @@ export default function UpdateProduct({id}) {
               <Form.Label>Model</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control
+              <Form.Control style={{width: "60%"}}
                 type="text"
-                value={data.model || ''}
-                onChange={e => setData({ ...data, model: e.target.value })}
+                name="model"
+                value={formik.values.model}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.model && formik.errors.model ? (
+                <div className="error">{formik.errors.model}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
             <Col md={3}>
               <Form.Label>Priority</Form.Label>
             </Col>
-            <Col md={9}>
-              <Form.Select
+            <Col md={9} style={{paddingLeft: 75}}>
+              <Form.Select style={{width: "64%"}}
                 aria-label="Default select example"
-                value={data.priority || ''}
-                onChange={e => setData({ ...data, priority: e.target.value })}
+                name="priority"
+                value={formik.values.priority}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               >
+                <option value="">Select Priority</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
               </Form.Select>
+              {formik.touched.priority && formik.errors.priority ? (
+                <div className="error">{formik.errors.priority}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
@@ -165,11 +260,16 @@ export default function UpdateProduct({id}) {
               <Form.Label>Category</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control
+              <Form.Control style={{width: "60%"}}
                 type="text"
-                value={data.category || ''}
-                onChange={e => setData({ ...data, category: e.target.value })}
+                name="category"
+                value={formik.values.category}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.category && formik.errors.category ? (
+                <div className="error">{formik.errors.category}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
@@ -177,12 +277,16 @@ export default function UpdateProduct({id}) {
               <Form.Label>Producer</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control
+              <Form.Control style={{width: "60%"}}
                 type="text"
-                value={data.producer || ''}
-                onChange={e => setData({ ...data, producer: e.target.value })}
-                
+                name="producer"
+                value={formik.values.producer}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.producer && formik.errors.producer ? (
+                <div className="error">{formik.errors.producer}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
@@ -190,16 +294,21 @@ export default function UpdateProduct({id}) {
               <Form.Label>Brand</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control
+              <Form.Control style={{width: "60%"}}
                 type="text"
-                value={data.brand || ''}
-                onChange={e => setData({ ...data, brand: e.target.value })}
+                name="brand"
+                value={formik.values.brand}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.brand && formik.errors.brand ? (
+                <div className="error">{formik.errors.brand}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
             <Col md={3}></Col>
-            <Col md={9}>
+            <Col md={9} style={{paddingLeft: 75}}>
               <Button
                 style={{
                   marginLeft: 15,
@@ -207,7 +316,7 @@ export default function UpdateProduct({id}) {
                   backgroundColor: '#337ab7',
                   color: 'white',
                 }}
-                onClick={handleSave}
+                type="submit"
               >
                 Save
               </Button>
@@ -220,7 +329,7 @@ export default function UpdateProduct({id}) {
               </Button>
             </Link>
           </Row>
-        </div>
+        </Form>
       </div>
     </>
   );

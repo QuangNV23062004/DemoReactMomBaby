@@ -1,42 +1,66 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Col, Row, Form, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 export default function AddAccount() {
   const baseURL = 'https://66801b4556c2c76b495b2d81.mockapi.io/Account/';
-  const [data, setData] = useState({
-    fullname: '',
-    email: '',
-    phone: '',
-    username: '',
-    password: '',
-    role: '', // Initialize with an empty role for user selection
-    avatar: '',
-  });
+  const navigate = useNavigate();
 
-  const nav = useNavigate();
-
-  const handleSave = () => {
-    fetch(baseURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then(response => response.json())
-      .then(() => {
-        toast.success('Account created successfully', {
-          onClose: () => {
-            nav('/SWP391-MomAndBaby/admin/account');
-          },
-        });
+  const formik = useFormik({
+    initialValues: {
+      fullname: '',
+      email: '',
+      phone: '',
+      username: '',
+      password: '',
+      role: '', // Initialize with an empty role for user selection
+      avatar: '',
+    },
+    validationSchema: Yup.object({
+      fullname: Yup.string()
+        .min(5, 'Fullname must be at least 5 characters')
+        .required('Fullname is required'),
+      email: Yup.string()
+        .email('Invalid email format')
+        .required('Email is required'),
+      phone: Yup.string()
+        .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits')
+        .required('Phone is required'),
+      username: Yup.string()
+        .min(5, 'Username must be at least 5 characters')
+        .required('Username is required'),
+      password: Yup.string()
+        .min(8, 'Password must be at least 8 characters')
+        .required('Password is required'),
+      role: Yup.string()
+        .required('Role is required'),
+      avatar: Yup.string()
+        .required('Avatar URL is required'),
+    }),
+    onSubmit: (values) => {
+      fetch(baseURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
       })
-      .catch(error => {
-        toast.error(`Failed to create account: ${error.message}`);
-      });
-  };
+        .then(response => response.json())
+        .then(() => {
+          toast.success('Account created successfully', {
+            onClose: () => {
+              navigate('/SWP391-MomAndBaby/admin/account');
+            },
+          });
+        })
+        .catch(error => {
+          toast.error(`Failed to create account: ${error.message}`);
+        });
+    },
+  });
 
   return (
     <>
@@ -51,7 +75,7 @@ export default function AddAccount() {
         >
           <span style={{ fontSize: 35 }}>ADD ACCOUNT</span>
         </div>
-        <div>
+        <Form onSubmit={formik.handleSubmit}>
           <Row style={{ margin: '10px 20px' }}>
             <Col md={3}>
               <Form.Label>Full name</Form.Label>
@@ -59,9 +83,14 @@ export default function AddAccount() {
             <Col md={9}>
               <Form.Control
                 type="text"
-                value={data.fullname}
-                onChange={e => setData({ ...data, fullname: e.target.value })}
+                name="fullname"
+                value={formik.values.fullname}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.fullname && formik.errors.fullname ? (
+                <div className="error">{formik.errors.fullname}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
@@ -71,9 +100,14 @@ export default function AddAccount() {
             <Col md={9}>
               <Form.Control
                 type="email"
-                value={data.email}
-                onChange={e => setData({ ...data, email: e.target.value })}
+                name="email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.email && formik.errors.email ? (
+                <div className="error">{formik.errors.email}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
@@ -83,9 +117,14 @@ export default function AddAccount() {
             <Col md={9}>
               <Form.Control
                 type="text"
-                value={data.phone}
-                onChange={e => setData({ ...data, phone: e.target.value })}
+                name="phone"
+                value={formik.values.phone}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.phone && formik.errors.phone ? (
+                <div className="error">{formik.errors.phone}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
@@ -95,9 +134,14 @@ export default function AddAccount() {
             <Col md={9}>
               <Form.Control
                 type="text"
-                value={data.username}
-                onChange={e => setData({ ...data, username: e.target.value })}
+                name="username"
+                value={formik.values.username}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.username && formik.errors.username ? (
+                <div className="error">{formik.errors.username}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
@@ -107,9 +151,14 @@ export default function AddAccount() {
             <Col md={9}>
               <Form.Control
                 type="password"
-                value={data.password}
-                onChange={e => setData({ ...data, password: e.target.value })}
+                name="password"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.password && formik.errors.password ? (
+                <div className="error">{formik.errors.password}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
@@ -118,14 +167,18 @@ export default function AddAccount() {
             </Col>
             <Col md={9}>
               <Form.Select
-                aria-label="Default select example"
-                value={data.role}
-                onChange={e => setData({ ...data, role: e.target.value })}
+                name="role"
+                value={formik.values.role}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               >
                 <option value="">Select Role</option>
                 <option value="admin">Admin</option>
                 <option value="user">User</option>
               </Form.Select>
+              {formik.touched.role && formik.errors.role ? (
+                <div className="error">{formik.errors.role}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ margin: '10px 20px' }}>
@@ -135,22 +188,27 @@ export default function AddAccount() {
             <Col md={9}>
               <Form.Control
                 type="text"
-                value={data.avatar}
-                onChange={e => setData({ ...data, avatar: e.target.value })}
+                name="avatar"
+                value={formik.values.avatar}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+              {formik.touched.avatar && formik.errors.avatar ? (
+                <div className="error">{formik.errors.avatar}</div>
+              ) : null}
             </Col>
           </Row>
           <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
             <Col md={3}></Col>
             <Col md={9}>
               <Button
+                type="submit"
                 style={{
                   marginLeft: 15,
                   width: '60%',
                   backgroundColor: '#337ab7',
                   color: 'white',
                 }}
-                onClick={handleSave}
               >
                 Save
               </Button>
@@ -163,7 +221,7 @@ export default function AddAccount() {
               </Button>
             </Link>
           </Row>
-        </div>
+        </Form>
       </div>
     </>
   );

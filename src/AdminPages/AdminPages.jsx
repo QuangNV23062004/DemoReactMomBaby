@@ -14,6 +14,7 @@ import UpdateProduct from './Product/UpdateProduct';
 import NotFound from '../NotFound';
 import Voucher from './Voucher/Voucher';
 import AddVoucher from './Voucher/AddVoucher';
+import UpdateVoucher from './Voucher/UpdateVoucher';
 
 export default function AdminPages() {
   const location = useLocation();
@@ -25,159 +26,166 @@ export default function AdminPages() {
     return match ? match[1] : null;
   };
 
-  const accountId = extractIdFromUrl(currentUrl, /\/SWP391-MomAndBaby\/admin\/account\/update\/(\d+)/);
-  const productId = extractIdFromUrl(currentUrl, /\/SWP391-MomAndBaby\/admin\/product\/update\/(\d+)/);
+  const accountId = extractIdFromUrl(currentUrl, /\/admin\/account\/update\/(\d+)/);
+  const productId = extractIdFromUrl(currentUrl, /\/admin\/product\/update\/(\d+)/);
+  const voucherId = extractIdFromUrl(currentUrl, /\/admin\/voucher\/update\/(\d+)/);
+
+  console.log('Current URL:', currentUrl);
+  console.log('Extracted Account ID:', accountId);
+  console.log('Extracted Product ID:', productId);
+  console.log('Extracted Voucher ID:', voucherId);
 
   const handleAddAccount = () => {
     nav('/SWP391-MomAndBaby/admin/account/add');
   };
+
   const handleAddVoucher = () => {
     nav('/SWP391-MomAndBaby/admin/voucher/add');
-  }
+  };
 
   const handleAddProduct = () => {
     nav('/SWP391-MomAndBaby/admin/product/add');
   };
 
   let content;
-  switch (true) {
-    case currentUrl === "/SWP391-MomAndBaby/admin/product":
-      content = (
-        <React.Fragment>
-          <Row className="contentCa mb-0">
-            <Col className="d-flex justify-content-center" md={12}>
-              <Button className="AddButton" onClick={handleAddProduct}>Add new</Button>
-            </Col>
-          </Row>
-          <Row className="SomethingCa content-wrapper">
-            <Col className="PaddingWhite">
-              <Product />
-            </Col>
-          </Row>
-        </React.Fragment>
-      );
-      break;
-
-    case currentUrl === "/SWP391-MomAndBaby/admin/account":
-      content = (
-        <React.Fragment>
-          <Row>
-          <Col md={2}></Col>
-          <Col md={10} style={{width: 1400}}>
-          <Row className="contentCa mb-0">
-            <Col className="d-flex justify-content-center">   
-              <Button className="AddButton" onClick={handleAddAccount}>Add new</Button>
-            </Col>
-          </Row>
-          
-          <Row className="SomethingCa content-wrapper">
+  if (currentUrl === "/SWP391-MomAndBaby/admin/product") {
+    content = (
+      <>
+        <Row className="contentCa mb-0">
+          <Col className="d-flex justify-content-center" md={12}>
+            <Button className="AddButton" onClick={handleAddProduct}>Add new</Button>
+          </Col>
+        </Row>
+        <Row className="SomethingCa content-wrapper">
           <Col className="PaddingWhite">
-              <Account />
-            </Col>
-          </Row></Col>
-          </Row>
-        </React.Fragment>
-      );
-      break;
-
-    case currentUrl.startsWith("/SWP391-MomAndBaby/admin/account/update") && accountId:
-      content = (
-        <React.Fragment>
-          <Row className="SomethingCa content-wrapper">
-            <Col className="PaddingWhite">
-              <UpdateAccount id={accountId} />
-            </Col>
-          </Row>
-        </React.Fragment>
-      );
-      break;
-
-    case currentUrl === "/SWP391-MomAndBaby/admin/account/add":
-      content = (
-        <React.Fragment>
-          <Row className="SomethingCa content-wrapper">
-            <Col className="PaddingWhite">
-              <AddAccount />
-            </Col>
-          </Row>
-        </React.Fragment>
-      );
-      break;
-
-    case currentUrl === "/SWP391-MomAndBaby/admin/product/add":
-      content = (
-        <React.Fragment>
-          <Row className="SomethingCa content-wrapper">
-            <Col className="PaddingWhite">
-              <AddProduct />
-            </Col>
-          </Row>
-        </React.Fragment>
-      );
-      break;
-
-    case currentUrl.startsWith("/SWP391-MomAndBaby/admin/product/update") && productId:
-      content = (
-        <React.Fragment>
-          <Row className="SomethingCa content-wrapper">
-            <Col className="PaddingWhite">
-              <UpdateProduct id={productId} />
-            </Col>
-          </Row>
-        </React.Fragment>
-      );
-      break;
-      case currentUrl === "/SWP391-MomAndBaby/admin/voucher" : 
-      content = (
-        <React.Fragment>
-          <Row>
+            <Product />
+          </Col>
+        </Row>
+      </>
+    );
+  } else if (currentUrl === "/SWP391-MomAndBaby/admin/account") {
+    content = (
+      <>
+        <Row>
           <Col md={2}></Col>
-          <Col md={10} style={{width: 1400}}>
-          <Row className="contentCa mb-0">
-            <Col className="d-flex justify-content-center">   
-              <Button className="AddButton" onClick={handleAddVoucher}>Add new</Button>
-            </Col>
-          </Row>
-          
-          <Row className="SomethingCa content-wrapper">
+          <Col md={10} style={{ width: 1400 }}>
+            <Row className="contentCa mb-0">
+              <Col className="d-flex justify-content-center">
+                <Button className="AddButton" onClick={handleAddAccount}>Add new</Button>
+              </Col>
+            </Row>
+
+            <Row className="SomethingCa content-wrapper">
+              <Col className="PaddingWhite">
+                <Account />
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </>
+    );
+  } else if (currentUrl === "/SWP391-MomAndBaby/admin/voucher") {
+    content = (
+      <>
+        <Row>
+          <Col md={2}></Col>
+          <Col md={10} style={{ width: 1400 }}>
+            <Row className="contentCa mb-0">
+              <Col className="d-flex justify-content-center">
+                <Button className="AddButton" onClick={handleAddVoucher}>Add new</Button>
+              </Col>
+            </Row>
+
+            <Row className="SomethingCa content-wrapper">
+              <Col className="PaddingWhite">
+                <Voucher />
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </>
+    );
+  } else if (currentUrl.startsWith("/SWP391-MomAndBaby/admin/account/update") && accountId) {
+    content = (
+      <>
+        <Row className="SomethingCa content-wrapper">
           <Col className="PaddingWhite">
-              <Voucher />
-            </Col>
-          </Row></Col>
-          </Row>
-        </React.Fragment>
-      );
-      break;
-      case currentUrl === "/SWP391-MomAndBaby/admin/voucher/add": 
-      content = (
-        <React.Fragment>
-          <Row className="SomethingCa content-wrapper">
-            <Col className="PaddingWhite">
-              <AddVoucher/>
-            </Col>
-          </Row>
-        </React.Fragment>
-      );
-      break;
-    default:
-      content = <NotFound />;
+            <UpdateAccount id={accountId} />
+          </Col>
+        </Row>
+      </>
+    );
+  } else if (currentUrl === "/SWP391-MomAndBaby/admin/account/add") {
+    content = (
+      <>
+        <Row className="SomethingCa content-wrapper">
+          <Col className="PaddingWhite">
+            <AddAccount />
+          </Col>
+        </Row>
+      </>
+    );
+  } else if (currentUrl === "/SWP391-MomAndBaby/admin/product/add") {
+    content = (
+      <>
+        <Row className="SomethingCa content-wrapper">
+          <Col className="PaddingWhite">
+            <AddProduct />
+          </Col>
+        </Row>
+      </>
+    );
+  } else if (currentUrl.startsWith("/SWP391-MomAndBaby/admin/product/update") && productId) {
+    content = (
+      <>
+        <Row className="SomethingCa content-wrapper">
+          <Col className="PaddingWhite">
+            <UpdateProduct id={productId} />
+          </Col>
+        </Row>
+      </>
+    );
+  } else if (currentUrl === "/SWP391-MomAndBaby/admin/voucher/add") {
+    content = (
+      <>
+        <Row className="SomethingCa content-wrapper">
+          <Col className="PaddingWhite">
+            <AddVoucher />
+          </Col>
+        </Row>
+      </>
+    );
+  } else if (currentUrl.startsWith("/SWP391-MomAndBaby/admin/voucher/update") && voucherId) {
+    content = (
+      <>
+        <Row className="SomethingCa content-wrapper">
+          <Col className="PaddingWhite">
+            <UpdateVoucher id={voucherId} />
+          </Col>
+        </Row>
+      </>
+    );
+  } else {
+    content = <NotFound />;
   }
 
   return (
     <div className="full-page-wrappers">
       <Header className="header" />
       <Container fluid className="main-content">
-        <Row style={{width: "100%"}}>
+        <Row style={{ width: "100%" }}>
           <Col xs={2} className="p-0">
             <SideBar className="Side" style={{ width: "100%", display: "block" }} />
           </Col>
           <Col xs={10} className="sidebarFooterContent">
-            <div className='maxcontent'><Row>{content}</Row>
-            <Row className="footer-row">
-              <Col>
-                <Footer className="Foot" />
-              </Col>
-            </Row></div>
+            <div className="maxcontent">
+              <Row>{content}</Row>
+              <Row className="footer-row">
+                <Col>
+                  <Footer className="Foot" />
+                </Col>
+              </Row>
+            </div>
           </Col>
         </Row>
       </Container>

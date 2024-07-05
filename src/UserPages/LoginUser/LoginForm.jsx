@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Header from '../Header/Header.jsx';
 import Footer from '../Footer/Footer.jsx';
 import './LoginForm.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function LoginForm() {
   const [username, setUsername] = useState('');
@@ -73,11 +73,11 @@ export default function LoginForm() {
               /><br/>
               <div className='Login'>
                 <button className='LoginButton' onClick={handleLogin}>Login</button> 
-                <a href="#" className='BellowLink'><b>Forget Password?</b></a><br />
+                
               </div>
               {loginError && <p className='error'>{loginError}</p>}
               <div className='Register'>
-                <span>Create new account <a href="register" className='BellowLink'><b>Register</b></a></span>
+                <span>Create new account <Link to="/SWP391-MomAndBaby/register" className='BellowLink'><b>Register</b></Link></span>
               </div>
             </div>
           </div>

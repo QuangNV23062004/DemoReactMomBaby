@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import { Col, Row } from 'react-bootstrap';
-import FilterSidebar from './FilterSidebar';
-import { Link, useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from "react";
+import { useSearchParams, Link, useNavigate } from "react-router-dom";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
+import { Col, Row } from "react-bootstrap";
+import FilterSidebar from "./FilterSidebar";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ProductPage() {
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
@@ -16,7 +16,26 @@ export default function ProductPage() {
   const PreOrderAPI = "https://6684c67c56e7503d1ae11cfd.mockapi.io/Preorder";
   const [data, setData] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("search") || "";
   const nav = useNavigate();
+
+  const fetchApi = () => {
+    fetch(baseURL)
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);
+        const filteredData = data.filter((product) =>
+          product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredProducts(filteredData.map((product) => ({ ...product, hovered: false })));
+      })
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    fetchApi();
+  }, [searchQuery]);
 
   const handlePreorder = async (product) => {
     const userId = sessionStorage.getItem("userId");
@@ -67,26 +86,12 @@ export default function ProductPage() {
     }
   };
 
-  const fetchApi = () => {
-    fetch(baseURL)
-      .then(response => response.json())
-      .then(data => {
-        setData(data);
-        setFilteredProducts(data.map(product => ({ ...product, hovered: false })));
-      })
-      .catch(error => console.log(error));
-  };
-
-  useEffect(() => {
-    fetchApi();
-  }, []);
-
   const handleFilteredProducts = (filteredData) => {
-    setFilteredProducts(filteredData.map(product => ({ ...product, hovered: false })));
+    setFilteredProducts(filteredData.map((product) => ({ ...product, hovered: false })));
   };
 
   const handleMouseEnter = (index) => {
-    setFilteredProducts(prevProducts => {
+    setFilteredProducts((prevProducts) => {
       const updatedProducts = [...prevProducts];
       updatedProducts[index].hovered = true;
       return updatedProducts;
@@ -94,7 +99,7 @@ export default function ProductPage() {
   };
 
   const handleMouseLeave = (index) => {
-    setFilteredProducts(prevProducts => {
+    setFilteredProducts((prevProducts) => {
       const updatedProducts = [...prevProducts];
       updatedProducts[index].hovered = false;
       return updatedProducts;
@@ -113,7 +118,7 @@ export default function ProductPage() {
     const userId = sessionStorage.getItem("userId");
 
     if (!userId) {
-      nav('/SWP391-MomAndBaby/login');
+      nav("/SWP391-MomAndBaby/login");
       return;
     }
 
@@ -134,30 +139,32 @@ export default function ProductPage() {
             productImage: product.mainImg,
             price: product.price,
             quantity: 1,
-            totalPrice: product.price
+            totalPrice: product.price,
           };
 
           const createResponse = await fetch(cartAPI, {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json'
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify(newCartItem)
+            body: JSON.stringify(newCartItem),
           });
 
           if (!createResponse.ok) {
-            throw new Error('Failed to create cart');
+            throw new Error("Failed to create cart");
           }
 
           const createdCartItem = await createResponse.json();
           console.log("Product added to new cart:", createdCartItem);
           showSuccessToast(product.name);
         } else {
-          throw new Error('Failed to fetch user cart');
+          throw new Error("Failed to fetch user cart");
         }
       } else {
         const cartItems = await response.json();
-        const existingCartItem = cartItems.find(item => item.productID === product.id);
+        const existingCartItem = cartItems.find(
+          (item) => item.productID === product.id
+        );
 
         if (existingCartItem) {
           const updatedQuantity = existingCartItem.quantity + 1;
@@ -165,19 +172,19 @@ export default function ProductPage() {
           const updatedCartItem = {
             ...existingCartItem,
             quantity: updatedQuantity,
-            totalPrice: updatedTotalPrice
+            totalPrice: updatedTotalPrice,
           };
 
           const updateResponse = await fetch(`${cartAPI}/${existingCartItem.id}`, {
-            method: 'PUT',
+            method: "PUT",
             headers: {
-              'Content-Type': 'application/json'
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify(updatedCartItem)
+            body: JSON.stringify(updatedCartItem),
           });
 
           if (!updateResponse.ok) {
-            throw new Error('Failed to update cart item');
+            throw new Error("Failed to update cart item");
           }
 
           const updatedItem = await updateResponse.json();
@@ -191,19 +198,19 @@ export default function ProductPage() {
             productImage: product.mainImg,
             price: product.price,
             quantity: 1,
-            totalPrice: product.price
+            totalPrice: product.price,
           };
 
           const createResponse = await fetch(cartAPI, {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json'
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify(newCartItem)
+            body: JSON.stringify(newCartItem),
           });
 
           if (!createResponse.ok) {
-            throw new Error('Failed to add product to cart');
+            throw new Error("Failed to add product to cart");
           }
 
           const createdCartItem = await createResponse.json();
@@ -216,23 +223,23 @@ export default function ProductPage() {
       const updatedProductQuantity = product.quantity - 1;
       const updatedProduct = {
         ...product,
-        quantity: updatedProductQuantity
+        quantity: updatedProductQuantity,
       };
 
       const productUpdateResponse = await fetch(`${baseURL}/${product.id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(updatedProduct)
+        body: JSON.stringify(updatedProduct),
       });
 
       if (!productUpdateResponse.ok) {
-        throw new Error('Failed to update product quantity');
+        throw new Error("Failed to update product quantity");
       }
 
-      setFilteredProducts(prevProducts => 
-        prevProducts.map(p => p.id === product.id ? updatedProduct : p)
+      setFilteredProducts((prevProducts) =>
+        prevProducts.map((p) => (p.id === product.id ? updatedProduct : p))
       );
 
       console.log("Product quantity updated:", updatedProduct);
@@ -243,58 +250,71 @@ export default function ProductPage() {
   };
 
   return (
-    <Row style={{ display: 'flex', justifyContent: 'space-evenly', margin: 10, marginBottom: 50 }}>
+    <Row
+      style={{
+        display: "flex",
+        justifyContent: "space-evenly",
+        margin: 10,
+        marginBottom: 50,
+      }}
+    >
       <Col md={3} style={{ height: "100%" }}>
         <FilterSidebar products={data} setFilteredProducts={handleFilteredProducts} />
       </Col>
-      <Col md={9} style={{ display: 'inline' }}>
+      <Col md={9} style={{ display: "inline" }}>
         {filteredProducts.map((product, index) => (
-          <Col key={index} md={4} style={{ display: 'inline-flex', marginBottom: 20 }}>
+          <Col key={index} md={4} style={{ display: "inline-flex", marginBottom: 20 }}>
             <Card
               sx={{ width: "100%", position: "relative" }}
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={() => handleMouseLeave(index)}
             >
-              <div style={{ position: 'relative' }}>
+              <div style={{ position: "relative" }}>
                 <CardMedia
                   sx={{ height: 300, position: "relative" }}
                   image={product.mainImg}
                   title={product.name}
                 />
                 {product.hovered && (
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    opacity: 1,
-                    transition: 'opacity 0.3s ease'
-                  }}>
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      opacity: 1,
+                      transition: "opacity 0.3s ease",
+                    }}
+                  >
                     {product.quantity > 0 ? (
-                      <button style={{
-                        backgroundColor: '#ff469e',
-                        color: '#fff',
-                        border: 'none',
-                        padding: '10px 20px',
-                        cursor: 'pointer'
-                      }} 
-                      onClick={() => handleAddToCart(product)}>
+                      <button
+                        style={{
+                          backgroundColor: "#ff469e",
+                          color: "#fff",
+                          border: "none",
+                          padding: "10px 20px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleAddToCart(product)}
+                      >
                         Add to Cart
                       </button>
                     ) : (
-                      <button style={{
-                        backgroundColor: '#ff469e',
-                        color: '#fff',
-                        border: 'none',
-                        padding: '10px 20px',
-                        cursor: 'pointer'
-                      }} 
-                      onClick={() => handlePreorder(product)}>
+                      <button
+                        style={{
+                          backgroundColor: "#ff469e",
+                          color: "#fff",
+                          border: "none",
+                          padding: "10px 20px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handlePreorder(product)}
+                      >
                         Preorder
                       </button>
                     )}
@@ -302,18 +322,29 @@ export default function ProductPage() {
                 )}
               </div>
               <CardContent>
-                <Typography gutterBottom variant="h6" component="div" style={{ height: 120, marginTop: 30 }}>
-                  <Link to={`/SWP391-MomAndBaby/product/detail/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  component="div"
+                  style={{ height: 120, marginTop: 30 }}
+                >
+                  <Link
+                    to={`/SWP391-MomAndBaby/product/detail/${product.id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
                     {product.name}
                   </Link>
                 </Typography>
-                <Typography gutterBottom variant='h6' component="div" style={{ textAlign: 'left', marginLeft: 10, color: "#d10024" }}>
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  component="div"
+                  style={{ textAlign: "left", marginLeft: 10, color: "#d10024" }}
+                >
                   <b>{product.price} VNĐ</b>
                 </Typography>
               </CardContent>
-              <CardActions>
-                {/* Add actions as needed */}
-              </CardActions>
+              <CardActions>{/* Add actions as needed */}</CardActions>
             </Card>
           </Col>
         ))}
