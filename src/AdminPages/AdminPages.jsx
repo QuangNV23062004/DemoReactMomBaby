@@ -15,6 +15,7 @@ import NotFound from '../NotFound';
 import Voucher from './Voucher/Voucher';
 import AddVoucher from './Voucher/AddVoucher';
 import UpdateVoucher from './Voucher/UpdateVoucher';
+import Bill from './Bill/Bill';
 
 export default function AdminPages() {
   const location = useLocation();
@@ -165,7 +166,16 @@ export default function AdminPages() {
         </Row>
       </>
     );
-  } else {
+    
+  } else if(currentUrl === "/SWP391-MomAndBaby/admin/bill"){
+    content = (<>
+      <Row className="SomethingCa content-wrapper">
+        <Col className="PaddingWhite">
+          <Bill/>
+        </Col>
+      </Row>
+    </>)
+  }else {
     content = <NotFound />;
   }
 
@@ -177,9 +187,9 @@ export default function AdminPages() {
           <Col xs={2} className="p-0">
             <SideBar className="Side" style={{ width: "100%", display: "block" }} />
           </Col>
-          <Col xs={10} className="sidebarFooterContent">
+          <Col xs={10} className="sidebarFooterContent" >
             <div className="maxcontent">
-              <Row>{content}</Row>
+              <Row style={{paddingLeft: "2%"}}>{content}</Row>
               <Row className="footer-row">
                 <Col>
                   <Footer className="Foot" />

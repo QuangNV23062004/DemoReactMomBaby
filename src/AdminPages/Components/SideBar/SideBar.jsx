@@ -49,8 +49,8 @@ function SideBar() {
         onMouseEnter={() => handleHover(0)}
         onMouseLeave={handleHoverExit}
       >
-        <Link to='/SWP391-MomAndBaby/admin' style={{ ...styles.link, color: 'white' }}>
-          Home
+        <Link to='/SWP391-MomAndBaby/admin/account' style={{ ...styles.link, color: 'white' }}>
+          Account
         </Link>
       </div>
       <div
@@ -61,9 +61,8 @@ function SideBar() {
         onMouseEnter={() => handleHover(1)}
         onMouseLeave={handleHoverExit}
       >
-        <Link to='/SWP391-MomAndBaby/admin/chat' style={{ ...styles.link, color: 'white' }}>
-          <FontAwesomeIcon style={styles.messageIcon} icon={faMessage} />
-          Go to chat
+        <Link to='/SWP391-MomAndBaby/admin/bill' style={{ ...styles.link, color: 'white' }}>
+          Bill
         </Link>
       </div>
       <div
@@ -74,8 +73,8 @@ function SideBar() {
         onMouseEnter={() => handleHover(2)}
         onMouseLeave={handleHoverExit}
       >
-        <Link to='/SWP391-MomAndBaby/admin/product' style={{ ...styles.link, color: 'white' }}>
-          Product
+        <Link to='/SWP391-MomAndBaby/admin/blog' style={{ ...styles.link, color: 'white' }}>
+          Blog
         </Link>
       </div>
       <div
@@ -86,9 +85,10 @@ function SideBar() {
         onMouseEnter={() => handleHover(3)}
         onMouseLeave={handleHoverExit}
       >
-        <Link to='/SWP391-MomAndBaby/admin/account' style={{ ...styles.link, color: 'white' }}>
-          Account
-        </Link>
+        <div onClick={()=>window.open("https://www.messenger.com/?locale=vi_VN", '_blank', 'noopener,noreferrer')} style={{ ...styles.link, color: 'white' }}>
+          <FontAwesomeIcon style={styles.messageIcon} icon={faMessage} />
+          Go to chat
+        </div>
       </div>
       <div
         style={{
@@ -96,6 +96,30 @@ function SideBar() {
           ...(hovered === 4 ? styles.sideButtonHover : {}),
         }}
         onMouseEnter={() => handleHover(4)}
+        onMouseLeave={handleHoverExit}
+      >
+        <Link to='/SWP391-MomAndBaby/admin' style={{ ...styles.link, color: 'white' }}>
+          Home
+        </Link>
+      </div>
+      <div
+        style={{
+          ...styles.sideButton,
+          ...(hovered === 5 ? styles.sideButtonHover : {}),
+        }}
+        onMouseEnter={() => handleHover(5)}
+        onMouseLeave={handleHoverExit}
+      >
+        <Link to='/SWP391-MomAndBaby/admin/product' style={{ ...styles.link, color: 'white' }}>
+          Product
+        </Link>
+      </div>
+      <div
+        style={{
+          ...styles.sideButton,
+          ...(hovered === 6 ? styles.sideButtonHover : {}),
+        }}
+        onMouseEnter={() => handleHover(6)}
         onMouseLeave={handleHoverExit}
       >
         <Link to='/SWP391-MomAndBaby/admin/voucher' style={{ ...styles.link, color: 'white' }}>

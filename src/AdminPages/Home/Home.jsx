@@ -14,11 +14,11 @@ export default function Home() {
           <div className='content'>
             <div id='RedCate'  className='BoxForStuff'>
             <i className="bx bx-category-alt"></i>
-              <span>Category</span>
+              <span>Voucher</span>
             </div>
             <div id='BlackProducer'  className='BoxForStuff'>
             <i className="bx bx-buildings"></i>
-              <span>Producer</span>
+              <span>Bill</span>
             </div>
             <div id='GreenProd' className='BoxForStuff' >
             <i className="bx bx-package"></i>
