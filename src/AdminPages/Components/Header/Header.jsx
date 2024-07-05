@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 const styles = {
     barWithProfile: {
@@ -79,6 +78,10 @@ export default function Header() {
         navigate('/SWP391-MomAndBaby/admin/login'); // Redirect to login page
     };
 
+    const handlePersonal = () => {
+        navigate('/SWP391-MomAndBaby/admin/personal'); // Redirect to personal account page
+    };
+
     const toggleDropdown = () => {
         setUserHovered(!userHovered);
     };
@@ -102,6 +105,9 @@ export default function Header() {
                         <span style={{ marginLeft: '10px', cursor: 'pointer' }}>{fullName.split(' ').pop()} &#9662;</span>
                         {userHovered && (
                             <div style={{ ...styles.dropdown, display: 'block' }}>
+                                <div style={styles.dropdownContent} onClick={handlePersonal}>
+                                    Personal
+                                </div>
                                 <div style={styles.dropdownContent} onClick={handleLogout}>
                                     Logout
                                 </div>
