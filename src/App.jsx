@@ -18,6 +18,7 @@ import AboutPage from './UserPages/AboutPage.jsx';
 import DetailProduct from './UserPages/DetailProduct.jsx';
 import Home from './AdminPages/Home/Home'; 
 import ContactForm from './UserPages/ContactPage.jsx';
+import Blog from './UserPages/Blog.jsx'
 
 function App() {
   const [user, setUser] = useState(null);
@@ -55,6 +56,7 @@ function App() {
         <Route path='/SWP391-MomAndBaby/*' element={<UserPage />}></Route>
         <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />
         <Route path='/SWP391-MomAndBaby/contact' element={<ContactForm />} />
+        <Route path='/SWP391-MomAndBaby/blog' element={<Blog/>}/>
         <Route path='/*' element={<><Header /><NotFound /><Footer /></>}></Route>
       </Routes>
     </BrowserRouter>
