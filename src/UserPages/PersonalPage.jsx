@@ -45,9 +45,9 @@ const PersonalPage = () => {
     useEffect(() => {
         const fetchAccountDetails = async () => {
             try {
-                const loggedInUser = JSON.parse(sessionStorage.getItem('adminUser'));
-                if (loggedInUser && loggedInUser.id) {
-                    const response = await axios.get(`https://66801b4556c2c76b495b2d81.mockapi.io/Account/${loggedInUser.id}`);
+                const loggedInUserId = sessionStorage.getItem('userId');
+                if (loggedInUserId) {
+                    const response = await axios.get(`https://66801b4556c2c76b495b2d81.mockapi.io/Account/${loggedInUserId}`);
                     setAccount(response.data);
                 } else {
                     console.error('No logged-in user found in sessionStorage');
@@ -124,7 +124,7 @@ const PersonalPage = () => {
                                 type="text"
                                 name="username"
                                 value={account.username}
-                                 onChange={handleChange}
+                                readOnly
                                 style={styles.formControl}
                             />
                         </Form.Group>

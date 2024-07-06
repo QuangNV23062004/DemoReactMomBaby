@@ -19,6 +19,7 @@ import DetailProduct from './UserPages/DetailProduct.jsx';
 import Home from './AdminPages/Home/Home'; 
 import ContactForm from './UserPages/ContactPage.jsx';
 import Blog from './UserPages/Blog.jsx'
+import DetailBlog from './UserPages/DetailBlog.jsx'
 import PersonalPage from './AdminPages/Account/AccountPersonal.jsx';
 import BankPayment from './UserPages/BankPayment.jsx';
 
@@ -59,6 +60,7 @@ function App() {
         <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />
         <Route path='/SWP391-MomAndBaby/contact' element={<ContactForm />} />
         <Route path='/SWP391-MomAndBaby/blog' element={<Blog/>}/>
+        <Route path='/SWP391-MomAndBaby/detailBlog/:id' element={<DetailBlog/>}/>
         <Route path="/SWP391-MomAndBaby/admin/personal" element={<PersonalPage />} />
         <Route path='/bank-payment' element={<BankPayment/>}></Route>
         <Route path='/*' element={<><Header /><NotFound /><Footer /></>}></Route>
