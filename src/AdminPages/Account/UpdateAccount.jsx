@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row, Form } from "react-bootstrap";
-import Button from 'react-bootstrap/Button';
+import Button from "react-bootstrap/Button";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 export default function UpdateAccount() {
   const { id } = useParams(); // Get the ID from the URL
@@ -19,19 +19,14 @@ export default function UpdateAccount() {
     role: '',
     avatar: '',
   });
+  const [originalPassword, setOriginalPassword] = useState('');
   const nav = useNavigate();
 
-  
   useEffect(() => {
     if (id) {
-      
       fetch(baseURL + id)
-        .then((response) => {
-          
-          return response.json();
-        })
+        .then((response) => response.json())
         .then((data) => {
-          
           setInitialValues({
             fullname: data.fullname || '',
             email: data.email || '',
@@ -41,6 +36,7 @@ export default function UpdateAccount() {
             role: data.role || '',
             avatar: data.avatar || '',
           });
+          setOriginalPassword(data.password || '');
         })
         .catch((error) => {
           console.log("Fetch error:", error);
@@ -69,12 +65,18 @@ export default function UpdateAccount() {
         .required('Avatar URL is required'),
     }),
     onSubmit: (values) => {
+      const updatedValues = { ...values };
+
+      if (!values.password) {
+        updatedValues.password = originalPassword;
+      }
+
       fetch(baseURL + id, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(updatedValues),
       })
         .then(response => response.json())
         .then(() => {

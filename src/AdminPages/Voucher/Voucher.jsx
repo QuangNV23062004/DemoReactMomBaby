@@ -5,13 +5,26 @@ import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Formik, Field } from 'formik';
+import * as Yup from 'yup';
+
+const validationSchema = Yup.object().shape({
+  discount: Yup.number()
+    .required('Discount is required')
+    .min(10000, 'Discount must be greater than 10000'),
+  quantity: Yup.number()
+    .required('Quantity is required')
+    .min(1, 'Quantity must be greater than 0')
+});
 
 export default function Voucher() {
   const baseURLVoucher = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher";
   const [data, setData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [dataToDelete, setDataToDelete] = useState([]);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [entriesToShow, setEntriesToShow] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
@@ -105,6 +118,35 @@ export default function Voucher() {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handleUpdateVoucher = (voucher) => {
+    setSelectedVoucher(voucher);
+    setShowUpdateModal(true);
+  };
+
+  const handleSubmitUpdate = (values) => {
+    fetch(`${baseURLVoucher}/${selectedVoucher.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...selectedVoucher,
+        discount: values.discount,
+        quantity: values.quantity,
+      }),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        fetchVoucherApi();
+        setShowUpdateModal(false);
+        toast.success('Voucher updated successfully');
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error('Failed to update voucher');
+      });
   };
 
   return (
@@ -224,7 +266,7 @@ export default function Voucher() {
                     {" "}
                     <Link
                       style={{ color: "white" }}
-                      to={`/SWP391-MomAndBaby/admin/voucher/update/${voucher.id}`}
+                      onClick={() => handleUpdateVoucher(voucher)}
                     >
                       <FontAwesomeIcon icon={faPenToSquare} />
                     </Link>{" "}
@@ -281,6 +323,65 @@ export default function Voucher() {
               Delete
             </Button>
           </Modal.Footer>
+        </Modal>
+
+        <Modal
+          show={showUpdateModal}
+          onHide={() => setShowUpdateModal(false)}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Update Voucher</Modal.Title>
+          </Modal.Header>
+          <Formik
+            initialValues={{
+              discount: selectedVoucher ? selectedVoucher.discount : '',
+              quantity: selectedVoucher ? selectedVoucher.quantity : ''
+            }}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmitUpdate}
+            enableReinitialize
+          >
+            {({ handleSubmit, handleChange, values, errors }) => (
+              <Form onSubmit={handleSubmit}>
+                <Modal.Body>
+                  <Form.Group>
+                    <Form.Label>Discount</Form.Label>
+                    <Form.Control
+                      type="number"
+                      name="discount"
+                      value={values.discount}
+                      onChange={handleChange}
+                      isInvalid={!!errors.discount}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.discount}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Quantity</Form.Label>
+                    <Form.Control
+                      type="number"
+                      name="quantity"
+                      value={values.quantity}
+                      onChange={handleChange}
+                      isInvalid={!!errors.quantity}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.quantity}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={() => setShowUpdateModal(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" variant="primary">
+                    Update
+                  </Button>
+                </Modal.Footer>
+              </Form>
+            )}
+          </Formik>
         </Modal>
 
         <ToastContainer />

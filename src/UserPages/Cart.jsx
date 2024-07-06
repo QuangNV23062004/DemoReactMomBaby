@@ -18,7 +18,7 @@ export default function Cart() {
   const [dataPreorder, setDataPreorder] = useState([]);
   const nav = useNavigate();
   const handleCheckout = (cart) => {
-    nav('/SWP391-MomAndBaby/checkout');
+    userId === null? nav('/SWP391-MomAndBaby/login') : nav('/SWP391-MomAndBaby/checkout');
   }
   const fetchCartData = () => {
     fetch(baseURLCart)
