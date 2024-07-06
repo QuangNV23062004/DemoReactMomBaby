@@ -9,6 +9,8 @@ import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebookMessenger } from '@fortawesome/free-brands-svg-icons';
 import Carouseler from "./Carouseler";
 
 export default function Home() {
@@ -483,22 +485,28 @@ export default function Home() {
 
       {/* Chat Button */}
       <div
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          backgroundColor: '#ff469e',
-          color: '#fff',
-          padding: '10px 20px',
-          borderRadius: '5px',
-          zIndex: '1000',
-          cursor: 'pointer',
-        }}
-      >
-        <a href="https://m.me/343721882163379" target="_blank" rel="noopener noreferrer" style={{ color: '#fff', textDecoration: 'none' }}>
-          Chat
-        </a>
-      </div>
+                style={{
+                    position: 'fixed',
+                    bottom: '20px',
+                    right: '20px',
+                    backgroundColor: '#ff469e',
+                    color: '#fff',
+                    padding: '20px 40px',
+                    borderRadius: '30px',
+                    zIndex: '1000',
+                    cursor: 'pointer',
+                }}
+            >
+                <a
+                    href="https://m.me/343721882163379"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: '#fff', textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+                >
+                    <FontAwesomeIcon icon={faFacebookMessenger} style={{ marginRight: '10px' }} />
+                    Chat
+                </a>
+            </div>
     </Container>
   );
 }

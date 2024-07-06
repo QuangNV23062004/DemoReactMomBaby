@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookMessenger } from '@fortawesome/free-brands-svg-icons';
-import Footer from './Footer/Footer'
+import Footer from './Footer/Footer';
+
 export default function Blog() {
     const [blogPosts, setBlogPosts] = useState([]);
 
@@ -24,6 +26,21 @@ export default function Blog() {
 
     return (
         <div>
+            <nav className="navbar navbar-expand-lg navbar-dark ftco_navbar bg-white ftco-navbar-light" id="ftco-navbar">
+                <div className="container">
+                    <a style={{ color: '#ff469e', fontSize:'28px' }} className="navbar-brand" href="/SWP391-MomAndBaby">Mom And Baby</a>
+                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="oi oi-menu"></span> Menu
+                    </button>
+                    <div className="collapse navbar-collapse" id="ftco-nav">
+                        <ul className="navbar-nav ml-auto">
+                            <li className="nav-item"><a href="/SWP391-MomAndBaby" className="nav-link">Home</a></li>
+                            <li className="nav-item"><a href="/SWP391-MomAndBaby/blog" className="nav-link">Blog</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
             <div
                 className="hero-wrap hero-bread"
                 style={{
@@ -31,7 +48,6 @@ export default function Blog() {
                     backgroundSize: 'cover',
                     backgroundPosition: 'center center',
                     height: '190px'
-                   
                 }}
             >
                 <div className="container">
@@ -39,25 +55,18 @@ export default function Blog() {
                         <div className="col-md-9 ftco-animate text-center" style={{ color: '#333' }}>
                             <p className="breadcrumbs">
                                 <span className="mr-2">
-                                    <a href="/SWP391-MomAndBaby" style={{fontSize:'30px',
-                                        marginRight:'20px'
-                                        
-                                        
-                                    }}>Home</a>
+                                    <a href="/SWP391-MomAndBaby" style={{ fontSize: '30px', marginRight: '20px', color: '#ff469e' }}>Home</a>
                                 </span>
-                                <span style={{fontSize:'30px'}} >Blog</span>
+                                <span style={{ color: '#ff469e', fontSize: '30px' }}>Blog</span>
                             </p>
-                            <h1 style={{fontSize:'60px'}} className="mb-0 bread">Blog</h1>
+                            <h1 style={{ fontSize: '60px' }} className="mb-0 bread">Blog</h1>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div className="container mt-4">
-                <div
-
-           
-                 className="row">
+                <div className="row">
                     {blogPosts.map(post => (
                         <div className="col-md-12 mb-4" key={post.id}>
                             <div className="row no-gutters">
@@ -67,58 +76,58 @@ export default function Blog() {
                                 </div>
 
                                 {/* Description column */}
-                                <div  className="col-md-8"
-                                style={{  
-                                   marginLeft:'-10px',
-                                   fontSize:'20px'
-                                    }} >
-
+                                <div className="col-md-8" style={{ marginLeft: '-10px', fontSize: '20px' }}>
                                     <div className="blog-post">
                                         <h2 className="mb-2">{post.title}</h2>
                                         <p>{post.shortDesc}</p>
                                         <p>
-                                            <a style={{  
-                                                backgroundColor: '#ff469e', 
-                                                borderRadius: '30px',
-                                                borderColor:'#ff469e',
-                                                padding:'18px 35px'
-                                                }}    href="#" className="btn btn-primary">
+                                            <Link 
+                                                style={{  
+                                                    backgroundColor: '#ff469e', 
+                                                    borderRadius: '30px',
+                                                    borderColor: '#ff469e',
+                                                    padding: '18px 35px',
+                                                    color: '#fff',
+                                                    textDecoration: 'none'
+                                                }} 
+                                                to={`/SWP391-MomAndBaby/detailBlog/${post.id}`}
+                                                className="btn btn-primary"
+                                            >
                                                 Read more
-                                            </a>
+                                            </Link>
                                         </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     ))}
-
-
                 </div>
             </div>
+
             <div
-      style={{
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        backgroundColor: '#ff469e',
-        color: '#fff',
-        padding: '20px 40px',
-        borderRadius: '30px',
-        zIndex: '1000',
-        cursor: 'pointer',
-      }}
-    >
-      <a
-        href="https://m.me/343721882163379"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ color: '#fff', textDecoration: 'none', display: 'flex', alignItems: 'center' }}
-      >
-        <FontAwesomeIcon icon={faFacebookMessenger} style={{ marginRight: '10px' }} />
-        Chat
-      </a>
-    </div>
-    <Footer/>
+                style={{
+                    position: 'fixed',
+                    bottom: '20px',
+                    right: '20px',
+                    backgroundColor: '#ff469e',
+                    color: '#fff',
+                    padding: '20px 40px',
+                    borderRadius: '30px',
+                    zIndex: '1000',
+                    cursor: 'pointer',
+                }}
+            >
+                <a
+                    href="https://m.me/343721882163379"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: '#fff', textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+                >
+                    <FontAwesomeIcon icon={faFacebookMessenger} style={{ marginRight: '10px' }} />
+                    Chat
+                </a>
+            </div>
+            <Footer/>
         </div>
     );
 }
