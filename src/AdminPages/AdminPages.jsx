@@ -14,7 +14,6 @@ import UpdateProduct from './Product/UpdateProduct';
 import NotFound from '../NotFound';
 import Voucher from './Voucher/Voucher';
 import AddVoucher from './Voucher/AddVoucher';
-import UpdateVoucher from './Voucher/UpdateVoucher';
 import Bill from './Bill/Bill';
 
 export default function AdminPages() {
@@ -156,18 +155,7 @@ export default function AdminPages() {
         </Row>
       </>
     );
-  } else if (currentUrl.startsWith("/SWP391-MomAndBaby/admin/voucher/update") && voucherId) {
-    content = (
-      <>
-        <Row className="SomethingCa content-wrapper">
-          <Col className="PaddingWhite">
-            <UpdateVoucher id={voucherId} />
-          </Col>
-        </Row>
-      </>
-    );
-    
-  } else if(currentUrl === "/SWP391-MomAndBaby/admin/bill"){
+  }  else if(currentUrl === "/SWP391-MomAndBaby/admin/bill"){
     content = (<>
       <Row className="SomethingCa content-wrapper">
         <Col className="PaddingWhite">

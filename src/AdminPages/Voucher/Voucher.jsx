@@ -346,7 +346,7 @@ export default function Voucher() {
                 <Modal.Body>
                   <Form.Group>
                     <Form.Label>Discount</Form.Label>
-                    <Form.Control
+                    <Form.Control style={{width: "90%"}}
                       type="number"
                       name="discount"
                       value={values.discount}
@@ -359,7 +359,7 @@ export default function Voucher() {
                   </Form.Group>
                   <Form.Group>
                     <Form.Label>Quantity</Form.Label>
-                    <Form.Control
+                    <Form.Control style={{width: "90%"}}
                       type="number"
                       name="quantity"
                       value={values.quantity}
