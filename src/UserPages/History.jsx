@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Button, Table } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Table, Overlay } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import Overlay from 'react-bootstrap/Overlay';
+import Rating from "./Rating";
 
 export default function History() {
   const baseURLBill = "https://6684c67c56e7503d1ae11cfd.mockapi.io/Bill";
   const [Bill, setBill] = useState([]);
   const userId = sessionStorage.getItem("userId");
-  const [show, setShow] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const [target, setTarget] = useState(null);
   const [detail, setDetail] = useState([]);
 
@@ -22,8 +22,6 @@ export default function History() {
       .catch((error) => console.log(error));
   };
 
-  const nav = useNavigate();
-
   useEffect(() => {
     FetchBill();
   }, [userId]);
@@ -31,7 +29,7 @@ export default function History() {
   const handleShowDetails = (details, event) => {
     setDetail(details);
     setTarget(event.target);
-    setShow(!show);
+    setShowDetails(!showDetails);
   };
 
   return (
@@ -61,6 +59,7 @@ export default function History() {
                 <Button
                   variant="outline-secondary"
                   onClick={(event) => handleShowDetails(bill.detail, event)}
+                  style={{ width: 100 }}
                 >
                   Detail
                 </Button>
@@ -70,7 +69,7 @@ export default function History() {
         </tbody>
       </Table>
 
-      <Overlay target={target} show={show} placement="left">
+      <Overlay target={target} show={showDetails} placement="left">
         {({
           placement,
           arrowProps,
@@ -95,6 +94,7 @@ export default function History() {
                   <th>Price</th>
                   <th>Quantity</th>
                   <th>Product Image</th>
+                  <th>Rating</th>
                 </tr>
               </thead>
               <tbody>
@@ -104,6 +104,9 @@ export default function History() {
                     <td>{item.price}</td>
                     <td>{item.quantity}</td>
                     <td><img src={item.productImage} alt="Product" width="50" /></td>
+                    <td>
+                      <Rating productId={item.productID} />
+                    </td>
                   </tr>
                 ))}
               </tbody>

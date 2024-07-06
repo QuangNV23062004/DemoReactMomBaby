@@ -45,7 +45,7 @@ export default function BankPayment() {
   const [showOTP, setShowOTP] = useState(false);
   const [cardNote, setCardNote] = useState("");
 
-  const handleConfirm = (values) => {
+  const handleConfirm = async (values) => {
     const card = bankCards.find(
       (card) =>
         card.bank === values.bank &&
@@ -74,57 +74,73 @@ export default function BankPayment() {
       return;
     }
 
-    fetch("https://6684c67c56e7503d1ae11cfd.mockapi.io/Bill", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...orderDetails, paymentDetails: values }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    const totalBeforeDiscount = cart.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+
+    let points = 0;
+    if (totalBeforeDiscount > 500000) {
+      points = 5000;
+    } else if (totalBeforeDiscount > 300000) {
+      points = 3000;
+    } else if (totalBeforeDiscount > 100000) {
+      points = 1000;
+    }
+
+    try {
+      const response = await fetch("https://6684c67c56e7503d1ae11cfd.mockapi.io/Bill", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...orderDetails, paymentDetails: values }),
+      });
+
+      if (response.ok) {
         alert("Order placed successfully!");
         nav("/SWP391-MomAndBaby");
-        cart.forEach((item) => {
-          fetch(
-            "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart/" + item.id,
-            { method: "DELETE" }
-          )
-            .then((response) => {
-              if (response.ok)
-                console.log(`Cart item ${item.id} removed successfully`);
-              else
+
+        await Promise.all(
+          cart.map((item) =>
+            fetch("https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart/" + item.id, {
+              method: "DELETE",
+            }).then((response) => {
+              if (!response.ok) {
                 console.error(`Failed to remove cart item ${item.id}`);
+              }
             })
-            .catch((error) =>
-              console.error(`Error removing cart item ${item.id}:`, error)
-            );
-        });
+          )
+        );
 
         if (voucher.appliedVoucher) {
           const updatedUsedArray = [...voucher.appliedVoucher.used, userId];
           const updatedQuantity = voucher.appliedVoucher.quantity - 1;
 
-          fetch(
-            "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher" +
-              `/${voucher.appliedVoucher.id}`,
-            {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                used: updatedUsedArray,
-                quantity: updatedQuantity,
-              }),
-            }
-          )
-            .then((response) => response.json())
-            .then((updatedVoucher) => {
-              console.log("Voucher updated:", updatedVoucher);
-            })
-            .catch((error) =>
-              console.error("Error updating voucher:", error)
-            );
+          await fetch("https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher/" + voucher.appliedVoucher.id, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              used: updatedUsedArray,
+              quantity: updatedQuantity,
+            }),
+          });
         }
-      })
-      .catch((error) => console.error("Error placing order:", error));
+
+        const accountResponse = await fetch(`https://66801b4556c2c76b495b2d81.mockapi.io/Account/${userId}`);
+        const accountData = await accountResponse.json();
+        const updatedAccount = { ...accountData, point: accountData.point + points };
+
+        await fetch(`https://66801b4556c2c76b495b2d81.mockapi.io/Account/${userId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedAccount),
+        });
+        console.log("User points updated successfully");
+      } else {
+        console.error("Error placing order:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error processing payment and placing order:", error);
+    }
   };
 
   const validationSchema = Yup.object().shape({

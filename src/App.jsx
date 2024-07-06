@@ -22,6 +22,7 @@ import Blog from './UserPages/Blog.jsx'
 import DetailBlog from './UserPages/DetailBlog.jsx'
 import PersonalPage from './AdminPages/Account/AccountPersonal.jsx';
 import BankPayment from './UserPages/BankPayment.jsx';
+import Rating from './UserPages/Rating.jsx';
 
 function App() {
   const [user, setUser] = useState(null);

@@ -14,7 +14,6 @@ export default function CheckOut() {
   const baseURLBill = "https://6684c67c56e7503d1ae11cfd.mockapi.io/Bill";
   const baseURLVoucher = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher";
   const userId = sessionStorage.getItem("userId");
-
   const [account, setAccount] = useState({});
   const [cart, setCart] = useState([]);
   const [contactInfo, setContactInfo] = useState({
@@ -162,10 +161,39 @@ export default function CheckOut() {
   const handlePlaceOrder = (values) => {
     console.log("Form values on submit:", values); // Debugging line
 
-    const total = cart.reduce(
-      (sum, item) => sum + item.price * item.quantity - voucher.discount,
+    const totalBeforeDiscount = cart.reduce(
+      (sum, item) => sum + item.price * item.quantity,
       0
     );
+
+    let points = 0;
+    if (totalBeforeDiscount > 500000) {
+      points = 5000;
+    } else if (totalBeforeDiscount > 300000) {
+      points = 3000;
+    } else if (totalBeforeDiscount > 100000) {
+      points = 1000;
+    }
+
+    const updateUserPoints = async () => {
+      try {
+        const updatedAccount = { ...account, point: account.point + points };
+        await fetch(baseURLAccount + `${userId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedAccount),
+        });
+        console.log("User points updated successfully");
+      } catch (error) {
+        console.error("Error updating user points:", error);
+      }
+    };
+
+    updateUserPoints();
+
+    const total = totalBeforeDiscount - voucher.discount;
     const fullAddress = `${location.selectedProvince}, ${location.selectedDistrict}, ${location.selectedWard}, ${values.address}`;
 
     const orderDetails = {
@@ -181,6 +209,80 @@ export default function CheckOut() {
 
     if (values.paymentMethod === "Bank") {
       nav("/bank-payment", { state: { orderDetails, cart, userId, voucher } });
+    } else if (values.paymentMethod === "Points") {
+      if (account.point < total) {
+        alert(`Insufficient points. You have ${account.point} points.`);
+        return;
+      }
+      const updatedAccount = { ...account, point: account.point - total };
+      fetch(baseURLAccount + `${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedAccount),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Points deducted successfully:", data);
+          orderDetails.paymentDetails = { method: "points" };
+          fetch(baseURLBill, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(orderDetails),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Order placed successfully:", data);
+              nav("/SWP391-MomAndBaby");
+              cart.forEach((item) => {
+                fetch(baseURLCart + item.id, {
+                  method: "DELETE",
+                })
+                  .then((response) => {
+                    if (response.ok) {
+                      console.log(`Cart item ${item.id} removed successfully`);
+                    } else {
+                      console.error(`Failed to remove cart item ${item.id}`);
+                    }
+                  })
+                  .catch((error) =>
+                    console.error(`Error removing cart item ${item.id}:`, error)
+                  );
+              });
+
+              if (voucher.appliedVoucher) {
+                const updatedUsedArray = [...voucher.appliedVoucher.used, userId];
+                const updatedQuantity = voucher.appliedVoucher.quantity - 1;
+
+                fetch(baseURLVoucher + `/${voucher.appliedVoucher.id}`, {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    used: updatedUsedArray,
+                    quantity: updatedQuantity,
+                  }),
+                })
+                  .then((response) => response.json())
+                  .then((updatedVoucher) => {
+                    console.log("Voucher updated:", updatedVoucher);
+                    setVoucher((prev) => ({
+                      ...prev,
+                      appliedVoucher: null,
+                    }));
+                  })
+                  .catch((error) => console.error("Error updating voucher:", error));
+              }
+            })
+            .catch((error) => {
+              console.error("Error placing order:", error);
+            });
+        })
+        .catch((error) => console.error("Error updating user points:", error));
     } else {
       orderDetails.paymentDetails = { method: "cash" };
       fetch(baseURLBill, {
@@ -438,6 +540,7 @@ export default function CheckOut() {
                   >
                     <option value="Cash">Cash on delivery</option>
                     <option value="Bank">Banking</option>
+                    <option value="Points">Use Points</option>
                   </Field>
                   <ErrorMessage name="paymentMethod" component="div" />
                 </Form.Group>
