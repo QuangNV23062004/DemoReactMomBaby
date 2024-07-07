@@ -43,7 +43,6 @@ export default function BankPayment() {
   const { orderDetails, cart, userId, voucher } = location.state;
 
   const [showOTP, setShowOTP] = useState(false);
-  const [cardNote, setCardNote] = useState("");
 
   const handleConfirm = async (values) => {
     const card = bankCards.find(
@@ -74,6 +73,10 @@ export default function BankPayment() {
       return;
     }
 
+    await processOrder(values);
+  };
+
+  const processOrder = async (values) => {
     const totalBeforeDiscount = cart.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
@@ -81,11 +84,11 @@ export default function BankPayment() {
 
     let points = 0;
     if (totalBeforeDiscount > 500000) {
-      points = 5000;
+      points = 2500;
     } else if (totalBeforeDiscount > 300000) {
-      points = 3000;
+      points = 1500;
     } else if (totalBeforeDiscount > 100000) {
-      points = 1000;
+      points = 500;
     }
 
     try {
@@ -127,6 +130,11 @@ export default function BankPayment() {
 
         const accountResponse = await fetch(`https://66801b4556c2c76b495b2d81.mockapi.io/Account/${userId}`);
         const accountData = await accountResponse.json();
+
+        if (!accountData.point) {
+          accountData.point = 0;
+        }
+
         const updatedAccount = { ...accountData, point: accountData.point + points };
 
         await fetch(`https://66801b4556c2c76b495b2d81.mockapi.io/Account/${userId}`, {
@@ -148,7 +156,7 @@ export default function BankPayment() {
     cardNumber: Yup.string().required("Card Number is required"),
     cardHolder: Yup.string().required("Card Holder is required"),
     issuedDate: Yup.string().required("Issued Date is required"),
-    otp: Yup.string().when("showOTP", {
+    otp: Yup.string().when("otpRequired", {
       is: true,
       then: Yup.string().required("OTP is required"),
     }),
@@ -170,6 +178,7 @@ export default function BankPayment() {
             cardHolder: "",
             issuedDate: "",
             otp: "",
+            otpRequired: showOTP,
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => handleConfirm(values)}
