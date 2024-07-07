@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Button, Col, Container, Row } from "react-bootstrap";
-import ListGroup from "react-bootstrap/ListGroup";
+import { Button, Col, Container, Row, ListGroup } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FaStar } from "react-icons/fa";
+import Comment from "./Comment";
 
 export default function DetailProduct({ id }) {
   const location = useLocation();
@@ -209,12 +210,22 @@ export default function DetailProduct({ id }) {
     }
   };
 
+  const calculateAverageRating = (ratings) => {
+    const totalRatings = ratings.length;
+    const sumRatings = ratings.reduce((sum, rating) => sum + rating.rate, 0);
+    return totalRatings > 0 ? Math.round(sumRatings / totalRatings) : 0;
+  };
+
   const productDetails = [
     { label: "Mẫu sản phẩm", value: data.model },
     { label: "Danh mục sản phẩm", value: data.category },
     { label: "Thương hiệu sản phẩm", value: data.brand },
     { label: "Nhà sản xuất", value: data.producer },
   ];
+
+  if (!data) return <p>Loading...</p>;
+
+  const averageRating = data.rating ? calculateAverageRating(data.rating) : 0;
 
   return (
     <Container style={{ backgroundColor: "whitesmoke", padding: 50 }}>
@@ -234,8 +245,19 @@ export default function DetailProduct({ id }) {
           <ListGroup>
             <ListGroup.Item>
               <h2 style={{ color: "red" }}>{data.name}</h2>
+              <div>
+                <span>Rating: </span>
+                {[...Array(5)].map((star, index) => (
+                  <FaStar
+                    key={index}
+                    size={20}
+                    color={index < averageRating ? "#ffc107" : "#e4e5e9"}
+                  />
+                ))}
+                <span style={{fontStyle: "italic"}}>  ({data.rating.length} rated)</span>
+              </div> 
               <p style={{ fontSize: 17, fontStyle: "italic" }}>
-                (In stock: {data.quantity} | Sold: {data.sold})
+                (In stock: {data.quantity})
               </p>
             </ListGroup.Item>
             <ListGroup.Item>
@@ -266,14 +288,18 @@ export default function DetailProduct({ id }) {
             </Button>
           ) : (
             <Button
-              variant="outline-primary"
+              variant="outline-success"
               onClick={() => handlePreorder(data)}
-              style={{ width: "40%" }}
+              style={{ width: "40%", marginBottom: 10 }}
             >
-              Preorder
+              Pre-order
             </Button>
           )}
         </Col>
+      </Row>
+      <Row style={{ marginTop: 20, backgroundColor: "white", padding: 20 }}>
+        <h2 style={{color: "orange"}}>Comments section: </h2>
+        <Comment ratings={data.rating} />
       </Row>
     </Container>
   );

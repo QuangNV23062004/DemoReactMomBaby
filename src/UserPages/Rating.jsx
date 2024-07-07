@@ -6,8 +6,10 @@ export default function Rating({ productId }) {
   const [rating, setRating] = useState(null);
   const [hover, setHover] = useState(null);
   const [feedback, setFeedback] = useState("");
+  const [fullName, setFullName] = useState("");
   const userId = sessionStorage.getItem('userId');
   const baseURLProduct = `https://66801b4556c2c76b495b2d81.mockapi.io/product/${productId}`;
+  const baseURLAccount = `https://66801b4556c2c76b495b2d81.mockapi.io/Account/${userId}`;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -31,8 +33,22 @@ export default function Rating({ productId }) {
       }
     };
 
+    const fetchAccount = async () => {
+      try {
+        const response = await fetch(baseURLAccount);
+        if (!response.ok) {
+          throw new Error('Account not found');
+        }
+        const account = await response.json();
+        setFullName(account.fullname);
+      } catch (error) {
+        console.error("Error fetching account data:", error);
+      }
+    };
+
     fetchProduct();
-  }, [baseURLProduct, userId]);
+    fetchAccount();
+  }, [baseURLProduct, baseURLAccount, userId]);
 
   const handleClick = (index) => {
     setRating(index + 1); // +1 because index is zero-based
@@ -69,11 +85,11 @@ export default function Rating({ productId }) {
       if (existingFeedbackIndex !== -1) {
         // Update existing feedback
         updatedFeedbacks = product.feedback.map((f, index) =>
-          index === existingFeedbackIndex ? { ...f, text: feedback } : f
+          index === existingFeedbackIndex ? { ...f, text: feedback, fullName } : f
         );
       } else {
         // Add new feedback
-        updatedFeedbacks = [...product.feedback, { userID: userId, text: feedback }];
+        updatedFeedbacks = [...product.feedback, { userID: userId, text: feedback, fullName }];
       }
 
       await fetch(baseURLProduct, {
