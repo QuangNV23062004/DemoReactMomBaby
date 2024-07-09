@@ -15,6 +15,7 @@ import NotFound from '../NotFound';
 import Voucher from './Voucher/Voucher';
 import AddVoucher from './Voucher/AddVoucher';
 import Bill from './Bill/Bill';
+import AdminBlog from './Blog/AdminBlog'; // Import AdminBlog component
 
 export default function AdminPages() {
   const location = useLocation();
@@ -155,15 +156,38 @@ export default function AdminPages() {
         </Row>
       </>
     );
-  }  else if(currentUrl === "/SWP391-MomAndBaby/admin/bill"){
-    content = (<>
-      <Row className="SomethingCa content-wrapper">
-        <Col className="PaddingWhite">
-          <Bill/>
-        </Col>
-      </Row>
-    </>)
-  }else {
+  } else if (currentUrl === "/SWP391-MomAndBaby/admin/bill") {
+    content = (
+      <>
+        <Row className="SomethingCa content-wrapper">
+          <Col className="PaddingWhite">
+            <Bill />
+          </Col>
+        </Row>
+      </>
+    );
+  } else if (currentUrl === "/SWP391-MomAndBaby/admin/blog") { // Include AdminBlog here
+    content = (
+      <>
+        <Row>
+          <Col md={2}></Col>
+          <Col md={10} style={{ width: 1400 }}>
+            <Row className="contentCa mb-0">
+              <Col className="d-flex justify-content-center">
+                <Button className="AddButton" onClick={handleAddBlog}>Add new</Button>
+              </Col>
+            </Row>
+
+            <Row className="SomethingCa content-wrapper">
+              <Col className="PaddingWhite">
+                <AdminBlog />
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </>
+    );
+  } else {
     content = <NotFound />;
   }
 
@@ -175,9 +199,9 @@ export default function AdminPages() {
           <Col xs={2} className="p-0">
             <SideBar className="Side" style={{ width: "100%", display: "block" }} />
           </Col>
-          <Col xs={10} className="sidebarFooterContent" >
+          <Col xs={10} className="sidebarFooterContent">
             <div className="maxcontent">
-              <Row style={{paddingLeft: "2%"}}>{content}</Row>
+              <Row style={{ paddingLeft: "2%" }}>{content}</Row>
               <Row className="footer-row">
                 <Col>
                   <Footer className="Foot" />

@@ -13,20 +13,21 @@ import UpdateAccount from './AdminPages/Account/UpdateAccount.jsx';
 import UpdateProduct from './AdminPages/Product/UpdateProduct.jsx'; 
 import Header from './UserPages/Header/Header.jsx';
 import Footer from './UserPages/Footer/Footer.jsx';
-import Cart from './UserPages/Cart.jsx'
+import Cart from './UserPages/Cart.jsx';
 import AboutPage from './UserPages/AboutPage.jsx';
 import DetailProduct from './UserPages/DetailProduct.jsx';
 import Home from './AdminPages/Home/Home'; 
 import ContactForm from './UserPages/ContactPage.jsx';
-import Blog from './UserPages/Blog.jsx'
-import DetailBlog from './UserPages/DetailBlog.jsx'
+import Blog from './UserPages/Blog.jsx';
+import DetailBlog from './UserPages/DetailBlog.jsx';
 import PersonalPage from './AdminPages/Account/AccountPersonal.jsx';
 import BankPayment from './UserPages/BankPayment.jsx';
 import Rating from './UserPages/Rating.jsx';
+import AdminBlog from './AdminPages/Blog/AdminBlog'; // Import the AdminBlog component
 
 function App() {
   const [user, setUser] = useState(null);
-  
+
   useEffect(() => {
     const loggedInUser = sessionStorage.getItem('adminUser');
     if (loggedInUser) {
@@ -56,6 +57,7 @@ function App() {
         <Route path='/SWP391-MomAndBaby/admin' element={user ? <Home /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> 
         <Route path='/SWP391-MomAndBaby/admin/account/update/:id' element={user ? <UpdateAccount /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> 
         <Route path='/SWP391-MomAndBaby/admin/product/update/:id' element={user ? <UpdateProduct /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> 
+        <Route path='/SWP391-MomAndBaby/admin/blog' element={user ? <AdminBlog /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> {/* Add this line */}
         <Route path='/SWP391-MomAndBaby/cart/*' element={<Cart />} />
         <Route path='/SWP391-MomAndBaby/*' element={<UserPage />}></Route>
         <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />
