@@ -13,12 +13,12 @@ export default function DetailProduct({ id }) {
   const PreOrderAPI = "https://6684c67c56e7503d1ae11cfd.mockapi.io/Preorder";
   const [data, setData] = useState({});
   const nav = useNavigate();
-
+  const [review,setReview] = useState([]);
   useEffect(() => {
     const fetchApi = () => {
       fetch(baseURL + id)
         .then((response) => response.json())
-        .then((data) => setData(data))
+        .then((data) => {setData(data),setReview(data.rating)})
         .catch((error) => console.log(error));
     };
 
@@ -254,7 +254,7 @@ export default function DetailProduct({ id }) {
                     color={index < averageRating ? "#ffc107" : "#e4e5e9"}
                   />
                 ))}
-                <span style={{fontStyle: "italic"}}>  ({data.rating.length} rated)</span>
+                <span style={{fontStyle: "italic"}}>  ({review.length} rated)</span>
               </div> 
               <p style={{ fontSize: 17, fontStyle: "italic" }}>
                 (In stock: {data.quantity})
