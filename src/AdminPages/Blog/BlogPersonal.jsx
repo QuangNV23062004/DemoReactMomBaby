@@ -11,8 +11,23 @@ const BlogPersonal = ({ show, handleClose, blog }) => {
             </Modal.Header>
             <Modal.Body>
                 <Form.Group controlId="shortDesc">
-                    <Form.Label>Short Description</Form.Label>
-                    <Form.Control plaintext readOnly defaultValue={blog.shortDesc} />
+                    <Form.Label>Short Description:</Form.Label>
+                    <Form.Control
+                        as="textarea"
+                        rows={4}
+                        style={{
+                            border: '1px solid #ced4da',
+                            padding: '10px',
+                            maxHeight: '200px',
+                            overflowY: 'auto',
+                            whiteSpace: 'pre-wrap',
+                            wordWrap: 'break-word',
+                            resize: 'none'
+                        }}
+                        readOnly
+                        plaintext
+                        defaultValue={blog.shortDesc}
+                    />
                 </Form.Group>
                 <Form.Group controlId="image">
                     <Form.Label>Image</Form.Label>

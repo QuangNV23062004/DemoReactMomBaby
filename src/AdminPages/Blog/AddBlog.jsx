@@ -31,12 +31,11 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
                 formData.append(key, values[key]);
             });
             try {
-                // Replace with your actual API endpoint
                 await axios.post('https://667f687ff2cb59c38dc8cee6.mockapi.io/api/v1/Blog', formData);
-                handleAddBlog(); // Notify parent component of successful blog addition
-                resetForm(); // Clear form fields after successful submission
+                handleAddBlog();
+                resetForm();
                 setLoading(false);
-                handleClose(); // Close modal after successful submission
+                handleClose();
             } catch (err) {
                 setError(err.message);
                 setLoading(false);
@@ -51,11 +50,11 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
             </Modal.Header>
             <Modal.Body>
                 {error && <Alert variant="danger">{error}</Alert>}
-                <Form onSubmit={formik.handleSubmit}>
-                    <Form.Group controlId="title">
+                <Form onSubmit={formik.handleSubmit} style={{ padding: '0 15px' }}>
+                    <Form.Group controlId="title" style={{ marginBottom: '20px' }}>
                         <Form.Label>Title</Form.Label>
                         <Form.Control
-                            type="text"
+                            as='textarea'
                             name="title"
                             onChange={formik.handleChange}
                             value={formik.values.title}
@@ -65,7 +64,7 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
                             {formik.errors.title}
                         </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="shortDesc">
+                    <Form.Group controlId="shortDesc" style={{ marginBottom: '20px' }}>
                         <Form.Label>Short Description</Form.Label>
                         <Form.Control
                             as="textarea"
@@ -79,7 +78,7 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
                             {formik.errors.shortDesc}
                         </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="image">
+                    <Form.Group controlId="image" style={{ marginBottom: '20px' }}>
                         <Form.Label>Image</Form.Label>
                         <Form.Control
                             type="file"
@@ -93,11 +92,12 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
                             {formik.errors.image}
                         </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="desc">
+                    <Form.Group controlId="desc" style={{ marginBottom: '50px' }}>
                         <Form.Label>Description</Form.Label>
                         <ReactQuill
                             value={formik.values.desc}
                             onChange={(value) => formik.setFieldValue('desc', value)}
+                            style={{ height: '150px', marginBottom: '10px' }}
                         />
                         {formik.errors.desc ? (
                             <div className="invalid-feedback d-block">
@@ -105,7 +105,7 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
                             </div>
                         ) : null}
                     </Form.Group>
-                    <Form.Group controlId="status">
+                    <Form.Group controlId="status" style={{ marginBottom: '20px' }}>
                         <Form.Label>Status</Form.Label>
                         <Form.Control
                             as="select"
@@ -117,16 +117,18 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
                             <option value="0">Hidden</option>
                         </Form.Control>
                     </Form.Group>
-                    <Button variant="secondary" onClick={handleClose} disabled={loading}>
-                        Close
-                    </Button>
-                    <Button variant="primary" type="submit" disabled={loading}>
-                        {loading ? (
-                            <Spinner animation="border" size="sm" />
-                        ) : (
-                            'Add'
-                        )}
-                    </Button>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Button variant="secondary" onClick={handleClose} disabled={loading}>
+                            Close
+                        </Button>
+                        <Button variant="primary" type="submit" disabled={loading}>
+                            {loading ? (
+                                <Spinner animation="border" size="sm" />
+                            ) : (
+                                'Add'
+                            )}
+                        </Button>
+                    </div>
                 </Form>
             </Modal.Body>
         </Modal>

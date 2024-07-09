@@ -177,7 +177,7 @@ export default function DetailBlog() {
                     </div>
                 </div>
             </nav>
-            
+
             <div
 
                 className="hero-wrap hero-bread"
@@ -197,8 +197,6 @@ export default function DetailBlog() {
                                 </span>
                                 <span style={{ color: '#', fontSize: '30px' }}>Blog</span>
                             </p>
-                            <h1 style={{ fontSize: '60px', marginTop: '250px' }} className="mb-0 bread">{blogPost.title}</h1>
-                            <h3>{blogPost.shortDesc}</h3>
                         </div>
                     </div>
                 </div>
@@ -243,15 +241,18 @@ export default function DetailBlog() {
             <div className="container mt-4">
                 <div className="row">
                     <div className="col-md-12">
-                        <div className="blog-post">
-                            <h2 className="mb-2">{blogPost.title}</h2>
-                            <p style={{ fontSize: '30px' }}>{blogPost.shortDesc}</p>
-                            <p style={{ fontSize: '30px' }}>{blogPost.detailBlog}</p>
+                        <div className="blog-post card shadow-sm" style={{ borderRadius: '15px', overflow: 'hidden', marginBottom: '20px', border: '1px solid #ddd' }}>
+                            <div className="card-body" style={{ padding: '30px', background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)' }}>
+                                <h2 className="card-title mb-3" style={{ fontSize: '28px', fontWeight: 'bold', color: '#343a40', textTransform: 'uppercase', letterSpacing: '1px' }}>{blogPost.title}</h2>
+                                <h4 className="card-subtitle mb-3 text-muted" style={{ fontSize: '20px', marginBottom: '20px', fontStyle: 'italic', color: '#6c757d' }}>{blogPost.shortDesc}</h4>
+                                <div className="card-text" style={{ fontSize: '18px', lineHeight: '1.8', color: '#495057' }} dangerouslySetInnerHTML={{ __html: blogPost.detailBlog }} />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-           
+
+
             <div
                 style={{
                     position: 'fixed',

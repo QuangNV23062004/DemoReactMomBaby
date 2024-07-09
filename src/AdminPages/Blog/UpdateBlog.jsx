@@ -29,17 +29,19 @@ const UpdateBlog = ({ show, handleClose, blog, handleUpdate }) => {
                 <Form.Group controlId="title">
                     <Form.Label>Title</Form.Label>
                     <Form.Control
-                        type="text"
+                        as="textarea"
+                        rows={2}
                         name="title"
                         value={updatedBlog.title}
                         onChange={handleChange}
+                        style={{resize: 'none'}}
                     />
                 </Form.Group>
                 <Form.Group controlId="shortDesc">
                     <Form.Label>Short Description</Form.Label>
                     <Form.Control
                         as="textarea"
-                        rows={3}
+                        rows={4}
                         name="shortDesc"
                         value={updatedBlog.shortDesc}
                         onChange={handleChange}
@@ -48,10 +50,12 @@ const UpdateBlog = ({ show, handleClose, blog, handleUpdate }) => {
                 <Form.Group controlId="image">
                     <Form.Label>Image</Form.Label>
                     <Form.Control
-                        type="text"
+                        as="textarea"
+                        rows={2}
                         name="image"
                         value={updatedBlog.image}
                         onChange={handleChange}
+                        style={{resize: 'none'}}
                     />
                 </Form.Group>
                 <Form.Group controlId="detailBlog">
