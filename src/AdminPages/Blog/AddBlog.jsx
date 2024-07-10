@@ -45,17 +45,11 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
         onSubmit: async (values, { resetForm }) => {
             setLoading(true);
             try {
-<<<<<<< HEAD
                 const response = await axios.post('https://667f687ff2cb59c38dc8cee6.mockapi.io/api/v1/Blog', values);
                 handleAddBlog(response.data); // Notify parent component of successful blog addition
                 resetForm(); // Clear form fields after successful submission
-=======
-                await axios.post('https://667f687ff2cb59c38dc8cee6.mockapi.io/api/v1/Blog', formData);
-                handleAddBlog();
-                resetForm();
->>>>>>> 9ebff4a2cf7b0003d43016eef7d4c7d0b9af8c5e
                 setLoading(false);
-                handleClose();
+                handleClose(); // Close modal after successful submission
             } catch (err) {
                 setError(err.message);
                 setLoading(false);
@@ -70,11 +64,11 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
             </Modal.Header>
             <Modal.Body>
                 {error && <Alert variant="danger">{error}</Alert>}
-                <Form onSubmit={formik.handleSubmit} style={{ padding: '0 15px' }}>
-                    <Form.Group controlId="title" style={{ marginBottom: '20px' }}>
+                <Form onSubmit={formik.handleSubmit}>
+                    <Form.Group controlId="title">
                         <Form.Label>Title</Form.Label>
                         <Form.Control
-                            as='textarea'
+                            type="text"
                             name="title"
                             onChange={formik.handleChange}
                             value={formik.values.title}
@@ -84,7 +78,7 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
                             {formik.errors.title}
                         </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="shortDesc" style={{ marginBottom: '20px' }}>
+                    <Form.Group controlId="shortDesc">
                         <Form.Label>Short Description</Form.Label>
                         <Form.Control
                             as="textarea"
@@ -98,7 +92,7 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
                             {formik.errors.shortDesc}
                         </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="image" style={{ marginBottom: '20px' }}>
+                    <Form.Group controlId="image">
                         <Form.Label>Image</Form.Label>
                         <Form.Control
                             type="text"
@@ -111,20 +105,11 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
                             {formik.errors.image}
                         </Form.Control.Feedback>
                     </Form.Group>
-<<<<<<< HEAD
                     <Form.Group controlId="detailBlog">
                         <Form.Label>Detailed Blog</Form.Label>
                         <ReactQuill
                             value={formik.values.detailBlog}
                             onChange={(value) => formik.setFieldValue('detailBlog', value)}
-=======
-                    <Form.Group controlId="desc" style={{ marginBottom: '50px' }}>
-                        <Form.Label>Description</Form.Label>
-                        <ReactQuill
-                            value={formik.values.desc}
-                            onChange={(value) => formik.setFieldValue('desc', value)}
-                            style={{ height: '150px', marginBottom: '10px' }}
->>>>>>> 9ebff4a2cf7b0003d43016eef7d4c7d0b9af8c5e
                         />
                         {formik.errors.detailBlog && (
                             <div className="invalid-feedback d-block">
@@ -132,18 +117,10 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
                             </div>
                         )}
                     </Form.Group>
-<<<<<<< HEAD
                     <Form.Group controlId="productID">
                         <Form.Label>Product ID</Form.Label>
                         <Form.Select
                             name="productID"
-=======
-                    <Form.Group controlId="status" style={{ marginBottom: '20px' }}>
-                        <Form.Label>Status</Form.Label>
-                        <Form.Control
-                            as="select"
-                            name="status"
->>>>>>> 9ebff4a2cf7b0003d43016eef7d4c7d0b9af8c5e
                             onChange={formik.handleChange}
                             value={formik.values.productID}
                             isInvalid={!!formik.errors.productID}
@@ -161,27 +138,12 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
                             {formik.errors.productID}
                         </Form.Control.Feedback>
                     </Form.Group>
-<<<<<<< HEAD
                     <Button variant="secondary" onClick={handleClose} disabled={loading}>
                         Close
                     </Button>
                     <Button variant="primary" type="submit" disabled={loading}>
                         {loading ? <Spinner animation="border" size="sm" /> : 'Add'}
                     </Button>
-=======
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Button variant="secondary" onClick={handleClose} disabled={loading}>
-                            Close
-                        </Button>
-                        <Button variant="primary" type="submit" disabled={loading}>
-                            {loading ? (
-                                <Spinner animation="border" size="sm" />
-                            ) : (
-                                'Add'
-                            )}
-                        </Button>
-                    </div>
->>>>>>> 9ebff4a2cf7b0003d43016eef7d4c7d0b9af8c5e
                 </Form>
             </Modal.Body>
         </Modal>
