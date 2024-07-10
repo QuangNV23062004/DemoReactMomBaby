@@ -95,7 +95,11 @@ export default function BankPayment() {
       const response = await fetch("https://6684c67c56e7503d1ae11cfd.mockapi.io/Bill", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...orderDetails, paymentDetails: values }),
+        body: JSON.stringify({ 
+          ...orderDetails, 
+          paymentDetails: values,
+          checkoutDate: Math.floor(Date.now() / 1000) // current timestamp in seconds
+        }),
       });
 
       if (response.ok) {

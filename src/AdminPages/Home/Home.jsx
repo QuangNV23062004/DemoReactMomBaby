@@ -3,14 +3,19 @@ import './Home.css'
 import SideBar from '../Components/SideBar/SideBar'
 import Footer from '../Components/Footer/Footer'
 import Header from '../Components/Header/Header'
-
+import Dashboard from '../Dashboard/Dashboard'
+import {Col,Row,Container} from 'react-bootstrap'
 export default function Home() {
   return (
-    <div className='full-page-wrappers'>
-      <Header />
-      <div className='main-content'>
-        <SideBar className="Side"></SideBar>
-        <div className='sidebarFooterContent'>
+    <div className="full-page-wrappers">
+      <Header className="header" />
+      <Container fluid className="main-content">
+        <Row style={{ width: "100%" }}>
+          <Col xs={2} className="p-0">
+            <SideBar className="Side" style={{ width: "100%", display: "block" }} />
+          </Col>
+          <Col xs={10} className="sidebarFooterContent">
+          <div className='sidebarFooterContent'>
           <div className='content'>
             <div id='RedCate'  className='BoxForStuff'>
             <i className="bx bx-category-alt"></i>
@@ -29,12 +34,17 @@ export default function Home() {
               <span>Account</span>
             </div>
           </div>
-          <div className='Something'></div>
-          <div className='FootContainer'>
-          <Footer className="Foot" />
+          <div className='Something'><Dashboard></Dashboard>
           </div>
+          
+          
+          
+          <Footer className="Foot" />
+          
         </div>
-      </div>
+        </Col>
+      </Row>
+      </Container>
     </div>
   )
 }

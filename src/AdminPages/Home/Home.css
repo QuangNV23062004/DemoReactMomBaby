@@ -64,3 +64,12 @@
 .Something{
     height: 70vh;
 }
+
+.sidebarFooterContent {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    
+}

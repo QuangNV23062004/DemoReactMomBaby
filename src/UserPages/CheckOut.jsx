@@ -205,6 +205,7 @@ export default function CheckOut() {
       userID: userId,
       status: "pending",
       voucher: voucher.appliedVoucher ? voucher.appliedVoucher.code : "",
+      checkoutDate: Math.floor(Date.now() / 1000), // current timestamp in seconds
     };
 
     if (values.paymentMethod === "Bank") {
