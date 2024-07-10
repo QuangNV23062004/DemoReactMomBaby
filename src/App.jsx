@@ -57,7 +57,6 @@ function App() {
         <Route path='/SWP391-MomAndBaby/admin' element={user ? <Home /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> 
         <Route path='/SWP391-MomAndBaby/admin/account/update/:id' element={user ? <UpdateAccount /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> 
         <Route path='/SWP391-MomAndBaby/admin/product/update/:id' element={user ? <UpdateProduct /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> 
-        <Route path='/SWP391-MomAndBaby/admin/blog' element={user ? <AdminBlog /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> {/* Add this line */}
         <Route path='/SWP391-MomAndBaby/cart/*' element={<Cart />} />
         <Route path='/SWP391-MomAndBaby/*' element={<UserPage />}></Route>
         <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />

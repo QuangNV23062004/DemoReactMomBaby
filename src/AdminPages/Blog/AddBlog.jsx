@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Spinner, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useFormik } from 'formik';
@@ -9,31 +9,44 @@ import 'react-quill/dist/quill.snow.css';
 const AddBlog = ({ show, handleClose, handleAddBlog }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [data, setData] = useState([]);
+    const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product/";
+
+    const fetchApi = () => {
+        fetch(baseURL)
+            .then((response) => response.json())
+            .then((data) => {
+                // Add a 'selected' property to each item for checkbox control
+                const updatedData = data.map((item) => ({ ...item, selected: false }));
+                setData(updatedData);
+            })
+            .catch((error) => console.log(error));
+    };
+
+    useEffect(() => {
+        fetchApi();
+    }, []);
 
     const formik = useFormik({
         initialValues: {
             title: '',
             shortDesc: '',
-            image: null,
-            desc: '',
-            status: '1',
+            image: '',
+            detailBlog: '',
+            productID: '',
         },
         validationSchema: Yup.object({
             title: Yup.string().required('Title is required'),
             shortDesc: Yup.string().required('Short Description is required'),
-            image: Yup.mixed().required('Image is required'),
-            desc: Yup.string().required('Description is required'),
+            image: Yup.string().required('Image is required'),
+            detailBlog: Yup.string().required('Detailed Blog is required'),
+            productID: Yup.string().required('Product ID is required'),
         }),
         onSubmit: async (values, { resetForm }) => {
             setLoading(true);
-            const formData = new FormData();
-            Object.keys(values).forEach((key) => {
-                formData.append(key, values[key]);
-            });
             try {
-                // Replace with your actual API endpoint
-                await axios.post('https://667f687ff2cb59c38dc8cee6.mockapi.io/api/v1/Blog', formData);
-                handleAddBlog(); // Notify parent component of successful blog addition
+                const response = await axios.post('https://667f687ff2cb59c38dc8cee6.mockapi.io/api/v1/Blog', values);
+                handleAddBlog(response.data); // Notify parent component of successful blog addition
                 resetForm(); // Clear form fields after successful submission
                 setLoading(false);
                 handleClose(); // Close modal after successful submission
@@ -82,50 +95,54 @@ const AddBlog = ({ show, handleClose, handleAddBlog }) => {
                     <Form.Group controlId="image">
                         <Form.Label>Image</Form.Label>
                         <Form.Control
-                            type="file"
+                            type="text"
                             name="image"
-                            onChange={(event) => {
-                                formik.setFieldValue('image', event.currentTarget.files[0]);
-                            }}
+                            onChange={formik.handleChange}
+                            value={formik.values.image}
                             isInvalid={!!formik.errors.image}
                         />
                         <Form.Control.Feedback type="invalid">
                             {formik.errors.image}
                         </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="desc">
-                        <Form.Label>Description</Form.Label>
+                    <Form.Group controlId="detailBlog">
+                        <Form.Label>Detailed Blog</Form.Label>
                         <ReactQuill
-                            value={formik.values.desc}
-                            onChange={(value) => formik.setFieldValue('desc', value)}
+                            value={formik.values.detailBlog}
+                            onChange={(value) => formik.setFieldValue('detailBlog', value)}
                         />
-                        {formik.errors.desc ? (
+                        {formik.errors.detailBlog && (
                             <div className="invalid-feedback d-block">
-                                {formik.errors.desc}
+                                {formik.errors.detailBlog}
                             </div>
-                        ) : null}
+                        )}
                     </Form.Group>
-                    <Form.Group controlId="status">
-                        <Form.Label>Status</Form.Label>
-                        <Form.Control
-                            as="select"
-                            name="status"
+                    <Form.Group controlId="productID">
+                        <Form.Label>Product ID</Form.Label>
+                        <Form.Select
+                            name="productID"
                             onChange={formik.handleChange}
-                            value={formik.values.status}
+                            value={formik.values.productID}
+                            isInvalid={!!formik.errors.productID}
                         >
-                            <option value="1">Active</option>
-                            <option value="0">Hidden</option>
-                        </Form.Control>
+                            <option value="">Select a Product</option>
+                            {data.map((product) => (
+                                <option key={product.id} value={product.id}>
+                                    <div>
+                                        {product.name}
+                                    </div>
+                                </option>
+                            ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type="invalid">
+                            {formik.errors.productID}
+                        </Form.Control.Feedback>
                     </Form.Group>
                     <Button variant="secondary" onClick={handleClose} disabled={loading}>
                         Close
                     </Button>
                     <Button variant="primary" type="submit" disabled={loading}>
-                        {loading ? (
-                            <Spinner animation="border" size="sm" />
-                        ) : (
-                            'Add'
-                        )}
+                        {loading ? <Spinner animation="border" size="sm" /> : 'Add'}
                     </Button>
                 </Form>
             </Modal.Body>

@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Table, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import BlogPersonal from './BlogPersonal';
 import UpdateBlog from './UpdateBlog';
 import AddBlog from './AddBlog';
@@ -69,10 +65,10 @@ const AdminBlog = () => {
         }
     };
 
-    const handleAddBlog = async () => {
+    const handleAddBlog = async (newBlog) => {
         try {
-            const response = await axios.get('https://667f687ff2cb59c38dc8cee6.mockapi.io/api/v1/Blog');
-            setBlogs(response.data);
+            const response = await axios.post('https://667f687ff2cb59c38dc8cee6.mockapi.io/api/v1/Blog', newBlog);
+            setBlogs([...blogs, response.data]);
         } catch (err) {
             setError(err.message);
         }
@@ -120,9 +116,6 @@ const AdminBlog = () => {
                     <tr>
                         <th>Title</th>
                         <th>Image</th>
-                        <th>Date Posted</th>
-                        <th>Date Updated</th>
-                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -135,19 +128,6 @@ const AdminBlog = () => {
                                     <img src={blog.image} alt={blog.title} style={{ width: '100px' }} />
                                 ) : (
                                     'No Image'
-                                )}
-                            </td>
-                            <td>{new Date(blog.datePost).toLocaleDateString()}</td>
-                            <td>
-                                {blog.dateUpdate
-                                    ? new Date(blog.dateUpdate).toLocaleDateString()
-                                    : 'N/A'}
-                            </td>
-                            <td>
-                                {blog.status === '1' ? (
-                                    <span className="badge badge-success">Active</span>
-                                ) : (
-                                    <span className="badge badge-secondary">Hidden</span>
                                 )}
                             </td>
                             <td>

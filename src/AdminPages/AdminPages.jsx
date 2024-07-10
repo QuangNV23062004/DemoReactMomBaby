@@ -48,6 +48,10 @@ export default function AdminPages() {
     nav('/SWP391-MomAndBaby/admin/product/add');
   };
 
+  const handleAddBlog = () => {
+    nav('/SWP391-MomAndBaby/admin/blog/add');
+  };
+
   let content;
   if (currentUrl === "/SWP391-MomAndBaby/admin/product") {
     content = (
@@ -166,18 +170,12 @@ export default function AdminPages() {
         </Row>
       </>
     );
-  } else if (currentUrl === "/SWP391-MomAndBaby/admin/blog") { // Include AdminBlog here
+  } else if (currentUrl === "/SWP391-MomAndBaby/admin/blog") {
     content = (
       <>
         <Row>
           <Col md={2}></Col>
           <Col md={10} style={{ width: 1400 }}>
-            <Row className="contentCa mb-0">
-              <Col className="d-flex justify-content-center">
-                <Button className="AddButton" onClick={handleAddBlog}>Add new</Button>
-              </Col>
-            </Row>
-
             <Row className="SomethingCa content-wrapper">
               <Col className="PaddingWhite">
                 <AdminBlog />
