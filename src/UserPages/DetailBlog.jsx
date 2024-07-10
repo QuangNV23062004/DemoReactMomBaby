@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import Footer from './Footer/Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookMessenger } from '@fortawesome/free-brands-svg-icons';
-import { Link } from 'react-router-dom';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import { Card, Container, Row, Col } from 'react-bootstrap';
@@ -17,6 +16,7 @@ export default function DetailBlog() {
     const navigate = useNavigate();
     const [blogPost, setBlogPost] = useState(null);
     const [priorityOneData, setPriorityOneData] = useState([]);
+    const [linkedProduct, setLinkedProduct] = useState(null);
 
     useEffect(() => {
         fetchBlogPost();
@@ -31,6 +31,7 @@ export default function DetailBlog() {
             }
             const data = await response.json();
             setBlogPost(data);
+            fetchLinkedProduct(data.productID);
         } catch (error) {
             console.error('Error fetching blog post:', error);
         }
@@ -46,6 +47,19 @@ export default function DetailBlog() {
             setPriorityOneData(data.filter(product => product.priority === 1));
         } catch (error) {
             console.error('Error fetching priority one data:', error);
+        }
+    };
+
+    const fetchLinkedProduct = async (productID) => {
+        try {
+            const response = await fetch(`${baseURL}/${productID}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setLinkedProduct(data);
+        } catch (error) {
+            console.error('Error fetching linked product:', error);
         }
     };
 
@@ -89,33 +103,6 @@ export default function DetailBlog() {
                             opacity: 1,
                             transition: 'opacity 0.3s ease'
                         }}>
-                            {product.quantity > 0 ? (
-                                <button
-                                    style={{
-                                        backgroundColor: '#ff469e',
-                                        color: '#fff',
-                                        border: 'none',
-                                        padding: '10px 20px',
-                                        cursor: 'pointer'
-                                    }}
-                                    onClick={() => handleAddToCart(product)}
-                                >
-                                    Add to Cart
-                                </button>
-                            ) : (
-                                <button
-                                    style={{
-                                        backgroundColor: '#ff469e',
-                                        color: '#fff',
-                                        border: 'none',
-                                        padding: '10px 20px',
-                                        cursor: 'pointer'
-                                    }}
-                                    onClick={() => handlePreorder(product)}
-                                >
-                                    Preorder
-                                </button>
-                            )}
                         </div>
                     )}
                 </div>
@@ -161,7 +148,6 @@ export default function DetailBlog() {
     }
 
     return (
-
         <div>
             <nav className="navbar navbar-expand-lg navbar-dark ftco_navbar bg-white ftco-navbar-light" id="ftco-navbar">
                 <div className="container">
@@ -179,7 +165,6 @@ export default function DetailBlog() {
             </nav>
 
             <div
-
                 className="hero-wrap hero-bread"
                 style={{
                     backgroundImage: `url('${blogPost.image}')`,
@@ -217,30 +202,10 @@ export default function DetailBlog() {
             >
                 Back to Blog
             </button>
+
             <div className="container mt-4">
                 <Row>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <div style={{ width: "15px", height: "100%", backgroundColor: "red" }}>|</div>
-                        <div style={{ marginLeft: 10, color: "#db4444" }}>BLOG RELATED PRODUCT</div>
-                    </div>
-                </Row>
-                <br />
-                <Carousel responsive={responsive}>
-                    {priorityOneData.map((product, index) => (
-                        renderProductCard(product, index, setPriorityOneData)
-                    ))}
-                </Carousel>
-                <Row>
-                    <div className="col-md-12 text-center" style={{ marginTop: "55px" }}>
-                        <Link to={'/SWP391-MomAndBaby/product'}>
-                            View More Products
-                        </Link>
-                    </div>
-                </Row>
-            </div>
-            <div className="container mt-4">
-                <div className="row">
-                    <div className="col-md-12">
+                    <Col md={8}>
                         <div className="blog-post card shadow-sm" style={{ borderRadius: '15px', overflow: 'hidden', marginBottom: '20px', border: '1px solid #ddd' }}>
                             <div className="card-body" style={{ padding: '30px', background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)' }}>
                                 <h2 className="card-title mb-3" style={{ fontSize: '28px', fontWeight: 'bold', color: '#343a40', textTransform: 'uppercase', letterSpacing: '1px' }}>{blogPost.title}</h2>
@@ -248,10 +213,28 @@ export default function DetailBlog() {
                                 <div className="card-text" style={{ fontSize: '18px', lineHeight: '1.8', color: '#495057' }} dangerouslySetInnerHTML={{ __html: blogPost.detailBlog }} />
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </Col>
+                    {linkedProduct && (
+                        <Col md={4}>
+                            <Card sx={{ maxWidth: 345, position: 'relative' }}>
+                                <div style={{ position: 'relative' }}>
+                                    <CardMedia sx={{ height: 400 }} image={linkedProduct.mainImg} />
+                                </div>
+                                <CardContent>
+                                    <Typography gutterBottom variant="h6" component="div" style={{ height: 120, marginTop: 30 }}>
+                                        <Link to={`/SWP391-MomAndBaby/product/detail/${linkedProduct.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                            {linkedProduct.name}
+                                        </Link>
+                                    </Typography>
+                                    <Typography gutterBottom variant="h6" component="div" style={{ textAlign: "left", marginLeft: 10, color: "#d10024" }}>
+                                        <b>{linkedProduct.price} VNĐ</b>
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Col>
+                    )}
+                </Row>
             </div>
-
 
             <div
                 style={{
@@ -275,6 +258,28 @@ export default function DetailBlog() {
                     <FontAwesomeIcon icon={faFacebookMessenger} style={{ marginRight: '10px' }} />
                     Chat
                 </a>
+            </div>
+
+            <div className="container mt-4">
+                <Row>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <div style={{ width: "15px", height: "100%", backgroundColor: "red" }}>|</div>
+                        <div style={{ marginLeft: 10, color: "#db4444" }}>BLOG RELATED PRODUCT</div>
+                    </div>
+                </Row>
+                <br />
+                <Carousel responsive={responsive}>
+                    {priorityOneData.map((product, index) => (
+                        renderProductCard(product, index, setPriorityOneData)
+                    ))}
+                </Carousel>
+                <Row>
+                    <div className="col-md-12 text-center" style={{ marginTop: "55px" }}>
+                        <Link to={'/SWP391-MomAndBaby/product'}>
+                            View More Products
+                        </Link>
+                    </div>
+                </Row>
             </div>
             <Footer />
         </div>

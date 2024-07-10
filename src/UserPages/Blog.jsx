@@ -72,11 +72,11 @@ export default function Blog() {
                             <div className="row no-gutters">
                                 {/* Image column */}
                                 <div className="col-md-4">
-                                    <img src={post.image} alt={post.title} width={350} className="img-fluid mb-3" />
+                                    <img src={post.image} alt={post.title} width={430} className="img-fluid mb-3" />
                                 </div>
 
                                 {/* Description column */}
-                                <div className="col-md-8" style={{ marginLeft: '-10px', fontSize: '20px' }}>
+                                <div className="col-md-8" style={{ marginLeft: '0px', fontSize: '20px' }}>
                                     <div className="blog-post">
                                         <h2 className="mb-2">{post.title}</h2>
                                         <p>{post.shortDesc}</p>
