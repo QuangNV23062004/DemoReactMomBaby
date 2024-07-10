@@ -75,16 +75,16 @@ const AdminBlog = () => {
     };
 
     if (loading) {
-        return <Spinner animation="border" />;
+        return <Spinner animation="border" style={{ display: 'block', margin: 'auto', marginTop: '50px' }} />;
     }
 
     if (error) {
-        return <Alert variant="danger">{error}</Alert>;
+        return <Alert variant="danger" style={{ textAlign: 'center', marginTop: '50px' }}>{error}</Alert>;
     }
 
     return (
-        <div>
-            <Button variant="success" onClick={() => setShowModal(true)}>
+        <div style={{ padding: '20px' }}>
+            <Button variant="success" onClick={() => setShowModal(true)} style={{ marginBottom: '20px' }}>
                 Add New
             </Button>
 
@@ -111,8 +111,8 @@ const AdminBlog = () => {
                 />
             )}
 
-            <Table striped bordered hover>
-                <thead>
+            <Table striped bordered hover style={{ backgroundColor: '#f8f9fa', borderRadius: '10px', overflow: 'hidden' }}>
+                <thead style={{ backgroundColor: '#343a40', color: 'white' }}>
                     <tr>
                         <th>Title</th>
                         <th>Image</th>
@@ -121,11 +121,11 @@ const AdminBlog = () => {
                 </thead>
                 <tbody>
                     {blogs.map((blog) => (
-                        <tr key={blog.id}>
+                        <tr key={blog.id} style={{ textAlign: 'center' }}>
                             <td>{blog.title}</td>
                             <td>
                                 {blog.image ? (
-                                    <img src={blog.image} alt={blog.title} style={{ width: '100px' }} />
+                                    <img src={blog.image} alt={blog.title} style={{ width: '100px', borderRadius: '5px' }} />
                                 ) : (
                                     'No Image'
                                 )}
@@ -134,18 +134,21 @@ const AdminBlog = () => {
                                 <Button
                                     variant="info"
                                     onClick={() => handleViewBlog(blog)}
+                                    style={{ marginRight: '10px', padding: '5px 10px' }}
                                 >
                                     View
                                 </Button>
                                 <Button
                                     variant="warning"
                                     onClick={() => handleEditBlog(blog)}
+                                    style={{ marginRight: '10px', padding: '5px 10px' }}
                                 >
                                     Edit
                                 </Button>
                                 <Button
                                     variant="danger"
                                     onClick={() => handleDeleteBlog(blog.id)}
+                                    style={{ padding: '5px 10px' }}
                                 >
                                     Delete
                                 </Button>
