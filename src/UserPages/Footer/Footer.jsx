@@ -48,13 +48,13 @@ export default function Footer() {
             <b>ACCOUNT</b>
           </h2>
           <br />
-          <span><Link to={'/SWP391-MomAndBaby/'}>My Account</Link></span>
+          <span><Link to={'/SWP391-MomAndBaby/admin/personal'}>My Account</Link></span>
           <br />
-          <span><Link to={'/SWP391-MomAndBaby/'}>Login / Register</Link></span>
+          <span><Link to={'/SWP391-MomAndBaby/login'}>Login</Link>  / <Link to={'/SWP391-MomAndBaby/register'}>Register</Link></span>
           <br />
-          <span><Link to={'/SWP391-MomAndBaby/'}>Cart</Link></span>
+          <span><Link to={'/SWP391-MomAndBaby/cart'}>Cart</Link></span>
           <br />
-          <span><Link to={'/SWP391-MomAndBaby/'}>Shop</Link></span>
+          <span><Link to={'/SWP391-MomAndBaby/product'}>Shop</Link></span>
           <br />
         </div>
         <div className="quicklink">
@@ -64,7 +64,7 @@ export default function Footer() {
           <span><Link to={'/SWP391-MomAndBaby/about'}>About</Link></span>
           <br />
           <span><Link to={'/SWP391-MomAndBaby/contact'}>Contact</Link></span> <br />
-          <span><Link to={'/SWP391-MomAndBaby/'}>Blog</Link></span>
+          <span><Link to={'/SWP391-MomAndBaby/blog'}>Blog</Link></span>
           <br />
         </div>
         <div className="socialContact">

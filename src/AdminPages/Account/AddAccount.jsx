@@ -18,6 +18,7 @@ export default function AddAccount() {
       password: '',
       role: '', // Initialize with an empty role for user selection
       avatar: '',
+      point: 0, // Initialize point with a default value of 0
     },
     validationSchema: Yup.object({
       fullname: Yup.string()

@@ -74,7 +74,7 @@ export default function Product() {
       .then(() => {
         fetchApi(); // Refresh data after deletion
         setShowDeleteConfirmation(false); // Hide confirmation modal
-        toast.success("Accounts deleted successfully");
+        toast.success("Product deleted successfully");
       })
       .catch((error) => {
         console.log(error);

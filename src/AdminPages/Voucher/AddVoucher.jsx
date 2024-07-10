@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import DatePicker from "react-multi-date-picker";
 import { useFormik } from "formik";
@@ -13,14 +13,14 @@ export default function AddVoucher() {
       .min(5, 'Code must be at least 5 characters')
       .required('Required')
       .test('checkUnique', 'Code already exists', async function(value) {
-        // Example: Fetch existing voucher codes and check uniqueness
         try {
-          const response = await fetch(`https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher?code=${value}`);
+          const response = await fetch(`https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher`);
           const data = await response.json();
-          return data.length === 0; // Return true if code is unique
+          const isUnique = !data.some(voucher => voucher.code === value);
+          return isUnique;
         } catch (error) {
           console.error('Error checking voucher code:', error);
-          return false; // Handle error scenario
+          return false;
         }
       }),
     discount: Yup.number()

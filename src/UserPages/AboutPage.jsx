@@ -34,11 +34,11 @@ const AboutPage = () => {
             <div className="col-md-12">
               <ul className="breadcrumb-tree" style={{ listStyleType: 'none', display: 'flex', padding: 0, alignItems: 'center' }}>
                 <li style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-                  <a href="/SWP391-MomAndBaby" style={{ textDecoration: 'none', color: '#007bff', fontWeight: 'bold' }}>Home</a>
+                  <Link to="/SWP391-MomAndBaby" style={{ textDecoration: 'none', color: '#007bff', fontWeight: 'bold' }}>Home</Link>
                   <span style={{ marginLeft: '10px', marginRight: '10px', color: '#6c757d' }}>/</span>
                 </li>
                 <li style={{ display: 'flex', alignItems: 'center' }}>
-                  <a href="/SWP391-MomAndBaby/about" style={{ textDecoration: 'none', color: '#007bff', fontWeight: 'bold' }}>About</a>
+                  <Link to="/SWP391-MomAndBaby/about" style={{ textDecoration: 'none', color: '#007bff', fontWeight: 'bold' }}>About</Link>
                 </li>
               </ul>
             </div>

@@ -1,280 +1,305 @@
 import React, { useState } from 'react';
-import { Col, Row, Form, Button } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddProduct() {
-  const baseURL = 'https://66801b4556c2c76b495b2d81.mockapi.io/product/';
-  const nav = useNavigate();
-
   const validationSchema = Yup.object({
-    name: Yup.string().min(5, 'Name must be at least 5 characters').required('Name is required'),
-    price: Yup.number().min(0, 'Price must be greater than or equal to 0').required('Price is required'),
-    quantity: Yup.number().min(0, 'Quantity must be greater than or equal to 0').required('Quantity is required'),
+    name: Yup.string().required('Name is required'),
+    price: Yup.number().positive('Price must be a positive number').required('Price is required'),
     description: Yup.string().required('Description is required'),
     mainImg: Yup.string().required('Main Image URL is required'),
+    quantity: Yup.number().positive('Quantity must be a positive number').required('Quantity is required'),
     model: Yup.string().required('Model is required'),
-    priority: Yup.string().required('Priority is required'),
+    priority: Yup.number().positive('Priority must be a positive number').required('Priority is required'),
     category: Yup.string().required('Category is required'),
     producer: Yup.string().required('Producer is required'),
-    brand: Yup.string().required('Brand is required'),
+    brand: Yup.string().required('Brand is required')
   });
 
+  const nav = useNavigate();
   const formik = useFormik({
     initialValues: {
       name: '',
       price: '',
-      quantity: '',
       description: '',
       mainImg: '',
+      quantity: '',
       model: '',
       priority: '',
       category: '',
       producer: '',
       brand: '',
     },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      const newProductData = { ...values, sold: 0 };
-
-      fetch(baseURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newProductData),
-      })
-        .then(response => response.json())
-        .then(() => {
-          toast.success('Product added successfully', {
-            onClose: () => {
-              nav('/SWP391-MomAndBaby/admin/product');
-            },
-          });
-        })
-        .catch(error => {
-          toast.error(`Failed to add product: ${error.message}`);
+    validationSchema,
+    onSubmit: async (values) => {
+      try {
+        const response = await fetch('https://66801b4556c2c76b495b2d81.mockapi.io/product/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
         });
-    },
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Product added successfully:', data);
+          formik.resetForm();
+          toast.success('Product added successfully', {
+            onClose: () => nav('/SWP391-MomAndBaby/admin/product')
+          });
+        } else {
+          throw new Error('Failed to add product');
+        }
+      } catch (error) {
+        console.error('Error adding product:', error);
+        toast.error(`Failed to add product: ${error.message}`);
+      }
+    }
   });
 
   return (
-    <>
+    <div>
+      <h2>Add New Product</h2>
       <ToastContainer />
-      <div>
-        <div
-          style={{
-            backgroundColor: '#ddede0',
-            textAlign: 'center',
-            padding: '5px 20px',
-          }}
-        >
-          <span style={{ fontSize: 35 }}>ADD PRODUCT</span>
-        </div>
-        <Form onSubmit={formik.handleSubmit}>
-          <Row style={{ margin: '10px 20px' }}>
+      <Form onSubmit={formik.handleSubmit}>
+        <Form.Group className="mb-3" controlId="name">
+          <Row>
             <Col md={3}>
               <Form.Label>Product Name</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control style={{width: "60%"}}
+              <Form.Control
                 type="text"
+                placeholder="Enter product name"
                 name="name"
                 value={formik.values.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                isInvalid={!!formik.errors.name && formik.touched.name}
+                style={{ width: '60%' }}
               />
-              {formik.touched.name && formik.errors.name ? (
-                <div className="error">{formik.errors.name}</div>
-              ) : null}
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.name}
+              </Form.Control.Feedback>
             </Col>
           </Row>
-          <Row style={{ margin: '10px 20px' }}>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="price">
+          <Row>
             <Col md={3}>
               <Form.Label>Price</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control style={{width: "60%"}}
+              <Form.Control
                 type="number"
+                placeholder="Enter price"
                 name="price"
                 value={formik.values.price}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                isInvalid={!!formik.errors.price && formik.touched.price}
+                style={{ width: '60%' }}
               />
-              {formik.touched.price && formik.errors.price ? (
-                <div className="error">{formik.errors.price}</div>
-              ) : null}
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.price}
+              </Form.Control.Feedback>
             </Col>
           </Row>
-          <Row style={{ margin: '10px 20px' }}>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="description">
+          <Row>
             <Col md={3}>
               <Form.Label>Description</Form.Label>
             </Col>
-            <Col md={9} style={{paddingLeft: 60}}>
-              <Form.Control style={{width: "64%"}}
+            <Col md={9}>
+              <Form.Control
                 as="textarea"
-                rows={3}
+                placeholder="Enter description"
                 name="description"
                 value={formik.values.description}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                isInvalid={!!formik.errors.description && formik.touched.description}
+                style={{ width: '60%' }}
               />
-              {formik.touched.description && formik.errors.description ? (
-                <div className="error">{formik.errors.description}</div>
-              ) : null}
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.description}
+              </Form.Control.Feedback>
             </Col>
           </Row>
-          <Row style={{ margin: '10px 20px' }}>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="mainImg">
+          <Row>
             <Col md={3}>
               <Form.Label>Main Image URL</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control style={{width: "60%"}}
+              <Form.Control
                 type="text"
+                placeholder="Enter main image URL"
                 name="mainImg"
                 value={formik.values.mainImg}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                isInvalid={!!formik.errors.mainImg && formik.touched.mainImg}
+                style={{ width: '60%' }}
               />
-              {formik.touched.mainImg && formik.errors.mainImg ? (
-                <div className="error">{formik.errors.mainImg}</div>
-              ) : null}
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.mainImg}
+              </Form.Control.Feedback>
             </Col>
           </Row>
-          <Row style={{ margin: '10px 20px' }}>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="quantity">
+          <Row>
             <Col md={3}>
               <Form.Label>Quantity</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control style={{width: "60%"}}
+              <Form.Control
                 type="number"
+                placeholder="Enter quantity"
                 name="quantity"
                 value={formik.values.quantity}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                isInvalid={!!formik.errors.quantity && formik.touched.quantity}
+                style={{ width: '60%' }}
               />
-              {formik.touched.quantity && formik.errors.quantity ? (
-                <div className="error">{formik.errors.quantity}</div>
-              ) : null}
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.quantity}
+              </Form.Control.Feedback>
             </Col>
           </Row>
-          <Row style={{ margin: '10px 20px' }}>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="model">
+          <Row>
             <Col md={3}>
               <Form.Label>Model</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control style={{width: "60%"}}
+              <Form.Control
                 type="text"
+                placeholder="Enter model"
                 name="model"
                 value={formik.values.model}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                isInvalid={!!formik.errors.model && formik.touched.model}
+                style={{ width: '60%' }}
               />
-              {formik.touched.model && formik.errors.model ? (
-                <div className="error">{formik.errors.model}</div>
-              ) : null}
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.model}
+              </Form.Control.Feedback>
             </Col>
           </Row>
-          <Row style={{ margin: '10px 20px' }}>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="priority">
+          <Row>
             <Col md={3}>
               <Form.Label>Priority</Form.Label>
             </Col>
-            <Col md={9} style={{paddingLeft: 60}}>
-              <Form.Select style={{width: "64%"}}
-                aria-label="Default select example"
+            <Col md={9}>
+              <Form.Control
+                type="number"
+                placeholder="Enter priority"
                 name="priority"
                 value={formik.values.priority}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-              >
-                <option value="">Select Priority</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-              </Form.Select>
-              {formik.touched.priority && formik.errors.priority ? (
-                <div className="error">{formik.errors.priority}</div>
-              ) : null}
+                isInvalid={!!formik.errors.priority && formik.touched.priority}
+                style={{ width: '60%' }}
+              />
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.priority}
+              </Form.Control.Feedback>
             </Col>
           </Row>
-          <Row style={{ margin: '10px 20px' }}>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="category">
+          <Row>
             <Col md={3}>
               <Form.Label>Category</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control style={{width: "60%"}}
+              <Form.Control
                 type="text"
+                placeholder="Enter category"
                 name="category"
                 value={formik.values.category}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                isInvalid={!!formik.errors.category && formik.touched.category}
+                style={{ width: '60%' }}
               />
-              {formik.touched.category && formik.errors.category ? (
-                <div className="error">{formik.errors.category}</div>
-              ) : null}
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.category}
+              </Form.Control.Feedback>
             </Col>
           </Row>
-          <Row style={{ margin: '10px 20px' }}>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="producer">
+          <Row>
             <Col md={3}>
               <Form.Label>Producer</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control style={{width: "60%"}}
+              <Form.Control
                 type="text"
+                placeholder="Enter producer"
                 name="producer"
                 value={formik.values.producer}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                isInvalid={!!formik.errors.producer && formik.touched.producer}
+                style={{ width: '60%' }}
               />
-              {formik.touched.producer && formik.errors.producer ? (
-                <div className="error">{formik.errors.producer}</div>
-              ) : null}
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.producer}
+              </Form.Control.Feedback>
             </Col>
           </Row>
-          <Row style={{ margin: '10px 20px' }}>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="brand">
+          <Row>
             <Col md={3}>
               <Form.Label>Brand</Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control style={{width: "60%"}}
+              <Form.Control
                 type="text"
+                placeholder="Enter brand"
                 name="brand"
                 value={formik.values.brand}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                isInvalid={!!formik.errors.brand && formik.touched.brand}
+                style={{ width: '60%' }}
               />
-              {formik.touched.brand && formik.errors.brand ? (
-                <div className="error">{formik.errors.brand}</div>
-              ) : null}
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.brand}
+              </Form.Control.Feedback>
             </Col>
           </Row>
-          <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
-            <Col md={3}></Col>
-            <Col md={9} style={{paddingLeft: 60}}>
-              <Button
-                style={{
-                  marginLeft: 15,
-                  width: '60%',
-                  backgroundColor: '#337ab7',
-                  color: 'white',
-                }}
-                type="submit"
-              >
-                Save
-              </Button>
-            </Col>
-          </Row>
-          <Row style={{ margin: 20 }}>
-            <Link to="/SWP391-MomAndBaby/admin/product">
-              <Button style={{ width: '15%', color: 'white' }} variant="info">
-                &lt;&lt; Back to Products
-              </Button>
-            </Link>
-          </Row>
-        </Form>
-      </div>
-    </>
+        </Form.Group>
+
+        <Button variant="primary" type="submit">
+          Add Product
+        </Button>
+      </Form>
+    </div>
   );
 }

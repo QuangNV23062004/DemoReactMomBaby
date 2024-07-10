@@ -151,14 +151,14 @@ export default function DetailBlog() {
         <div>
             <nav className="navbar navbar-expand-lg navbar-dark ftco_navbar bg-white ftco-navbar-light" id="ftco-navbar">
                 <div className="container">
-                    <a style={{ color: '#ff469e', fontSize: '28px' }} className="navbar-brand" href="/SWP391-MomAndBaby">Mom And Baby</a>
+                    <Link style={{ color: '#ff469e', fontSize: '28px' }} className="navbar-brand" to="/SWP391-MomAndBaby">Mom And Baby</Link>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="oi oi-menu"></span> Menu
                     </button>
                     <div className="collapse navbar-collapse" id="ftco-nav">
                         <ul className="navbar-nav ml-auto">
-                            <li className="nav-item"><a href="/SWP391-MomAndBaby" className="nav-link">Home</a></li>
-                            <li className="nav-item"><a href="/SWP391-MomAndBaby/blog" className="nav-link">Blog</a></li>
+                            <li className="nav-item"><Link to="/SWP391-MomAndBaby" className="nav-link">Home</Link></li>
+                            <li className="nav-item"><Link to="/SWP391-MomAndBaby/blog" className="nav-link">Blog</Link></li>
                         </ul>
                     </div>
                 </div>
@@ -178,7 +178,7 @@ export default function DetailBlog() {
                         <div className="col-md-9 ftco-animate text-center" style={{ color: '#333' }}>
                             <p style={{ marginTop: '60px' }} className="breadcrumbs">
                                 <span className="mr-2">
-                                    <a href="/SWP391-MomAndBaby" style={{ color: '#', fontSize: '30px', marginRight: '20px' }}>Home</a>
+                                    <Link href="/SWP391-MomAndBaby" style={{ color: '#', fontSize: '30px', marginRight: '20px' }}>Home</Link>
                                 </span>
                                 <span style={{ color: '#', fontSize: '30px' }}>Blog</span>
                             </p>
@@ -216,6 +216,12 @@ export default function DetailBlog() {
                     </Col>
                     {linkedProduct && (
                         <Col md={4}>
+                            <Row>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <div style={{ width: "15px", height: "100%", backgroundColor: "red" }}>|</div>
+                        <div style={{ marginLeft: 10, color: "#db4444" }}>BLOG RELATED PRODUCT</div>
+                    </div>
+                </Row>
                             <Card sx={{ maxWidth: 345, position: 'relative' }}>
                                 <div style={{ position: 'relative' }}>
                                     <CardMedia sx={{ height: 400 }} image={linkedProduct.mainImg} />
@@ -264,7 +270,7 @@ export default function DetailBlog() {
                 <Row>
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <div style={{ width: "15px", height: "100%", backgroundColor: "red" }}>|</div>
-                        <div style={{ marginLeft: 10, color: "#db4444" }}>BLOG RELATED PRODUCT</div>
+                        <div style={{ marginLeft: 10, color: "#db4444" }}>OTHER PRODUCT</div>
                     </div>
                 </Row>
                 <br />

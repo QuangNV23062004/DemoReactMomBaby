@@ -44,6 +44,7 @@ export default function Register() {
         fullname: values.fullname,
         role: 'user',
         avatar: '/assets/default_avatar.jpg',
+        point: 0,
       };
 
       try {

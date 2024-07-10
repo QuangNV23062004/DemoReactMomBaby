@@ -63,7 +63,7 @@ function App() {
         <Route path='/SWP391-MomAndBaby/contact' element={<ContactForm />} />
         <Route path='/SWP391-MomAndBaby/blog' element={<Blog/>}/>
         <Route path='/SWP391-MomAndBaby/detailBlog/:id' element={<DetailBlog/>}/>
-        <Route path="/SWP391-MomAndBaby/admin/personal" element={<PersonalPage />} />
+        <Route path="/SWP391-MomAndBaby/admin/personal" element={ user ? <PersonalPage /> : <Navigate to='/SWP391-MomAndBaby/login' />} />
         <Route path='/bank-payment' element={<BankPayment/>}></Route>
         <Route path='/*' element={<><Header /><NotFound /><Footer /></>}></Route>
       </Routes>
