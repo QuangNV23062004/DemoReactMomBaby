@@ -8,7 +8,9 @@ import Typography from "@mui/material/Typography";
 import { Col, Row } from "react-bootstrap";
 import FilterSidebar from "./FilterSidebar";
 import { toast, ToastContainer } from "react-toastify";
+import Pagination from "react-bootstrap/Pagination";
 import "react-toastify/dist/ReactToastify.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function ProductPage() {
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
@@ -19,6 +21,8 @@ export default function ProductPage() {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
   const nav = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   const fetchApi = () => {
     fetch(baseURL)
@@ -36,6 +40,14 @@ export default function ProductPage() {
   useEffect(() => {
     fetchApi();
   }, [searchQuery]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filteredProducts]);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const handlePreorder = async (product) => {
     const userId = sessionStorage.getItem("userId");
@@ -249,106 +261,130 @@ export default function ProductPage() {
     }
   };
 
+  const currentData = filteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
   return (
-    <Row
-      style={{
-        display: "flex",
-        justifyContent: "space-evenly",
-        margin: 10,
-        marginBottom: 50,
-      }}
-    >
-      <Col md={3} style={{ height: "100%" }}>
-        <FilterSidebar products={data} setFilteredProducts={handleFilteredProducts} />
-      </Col>
-      <Col md={9} style={{ display: "inline" }}>
-        {filteredProducts.map((product, index) => (
-          <Col key={index} md={4} style={{ display: "inline-flex", marginBottom: 20 }}>
-            <Card
-              sx={{ width: "100%", position: "relative" }}
-              onMouseEnter={() => handleMouseEnter(index)}
-              onMouseLeave={() => handleMouseLeave(index)}
-            >
-              <div style={{ position: "relative" }}>
-                <CardMedia
-                  sx={{ height: 300, position: "relative" }}
-                  image={product.mainImg}
-                  title={product.name}
-                />
-                {product.hovered && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "rgba(0, 0, 0, 0.5)",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      opacity: 1,
-                      transition: "opacity 0.3s ease",
-                    }}
+    <>
+      <Row
+        style={{
+          display: "flex",
+          justifyContent: "space-evenly",
+          margin: 10,
+          marginBottom: 50,
+        }}
+      >
+        <Col md={3} style={{ height: "100%" }}>
+          <FilterSidebar products={data} setFilteredProducts={handleFilteredProducts} />
+        </Col>
+        <Col md={9} style={{ display: "inline" }}>
+          {currentData.map((product, index) => (
+            <Col key={index} md={4} style={{ display: "inline-flex", marginBottom: 20 }}>
+              <Card
+                sx={{ width: "100%", position: "relative" }}
+                onMouseEnter={() => handleMouseEnter(index)}
+                onMouseLeave={() => handleMouseLeave(index)}
+              >
+                <div style={{ position: "relative" }}>
+                  <CardMedia
+                    sx={{ height: 300, position: "relative" }}
+                    image={product.mainImg}
+                    title={product.name}
+                  />
+                  {product.hovered && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        opacity: 1,
+                        transition: "opacity 0.3s ease",
+                      }}
+                    >
+                      {product.quantity > 0 ? (
+                        <button
+                          style={{
+                            backgroundColor: "#ff469e",
+                            color: "#fff",
+                            border: "none",
+                            padding: "10px 20px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleAddToCart(product)}
+                        >
+                          Add to Cart
+                        </button>
+                      ) : (
+                        <button
+                          style={{
+                            backgroundColor: "#ff469e",
+                            color: "#fff",
+                            border: "none",
+                            padding: "10px 20px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handlePreorder(product)}
+                        >
+                          Preorder
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <CardContent>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="div"
+                    style={{ height: 120, marginTop: 30 }}
                   >
-                    {product.quantity > 0 ? (
-                      <button
-                        style={{
-                          backgroundColor: "#ff469e",
-                          color: "#fff",
-                          border: "none",
-                          padding: "10px 20px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => handleAddToCart(product)}
-                      >
-                        Add to Cart
-                      </button>
-                    ) : (
-                      <button
-                        style={{
-                          backgroundColor: "#ff469e",
-                          color: "#fff",
-                          border: "none",
-                          padding: "10px 20px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => handlePreorder(product)}
-                      >
-                        Preorder
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h6"
-                  component="div"
-                  style={{ height: 120, marginTop: 30 }}
-                >
-                  <Link
-                    to={`/SWP391-MomAndBaby/product/detail/${product.id}`}
-                    style={{ textDecoration: "none", color: "inherit" }}
+                    <Link
+                      to={`/SWP391-MomAndBaby/product/detail/${product.id}`}
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      {product.name}
+                    </Link>
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="div"
+                    style={{ textAlign: "left", marginLeft: 10, color: "#d10024" }}
                   >
-                    {product.name}
-                  </Link>
-                </Typography>
-                <Typography
-                  gutterBottom
-                  variant="h6"
-                  component="div"
-                  style={{ textAlign: "left", marginLeft: 10, color: "#d10024" }}
-                >
-                  <b>{product.price} VNĐ</b>
-                </Typography>
-              </CardContent>
-              <CardActions>{/* Add actions as needed */}</CardActions>
-            </Card>
-          </Col>
+                    <b>{product.price} VNĐ</b>
+                  </Typography>
+                </CardContent>
+                <CardActions>{/* Add actions as needed */}</CardActions>
+              </Card>
+            </Col>
+          ))}
+        </Col>
+      </Row>
+      <Pagination>
+        <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
+        <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+        {[...Array(totalPages).keys()].map((pageNumber) => (
+          <Pagination.Item
+            key={pageNumber + 1}
+            active={currentPage === pageNumber + 1}
+            onClick={() => handlePageChange(pageNumber + 1)}
+          >
+            {pageNumber + 1}
+          </Pagination.Item>
         ))}
-      </Col>
+        <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+        <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
+      </Pagination>
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -360,6 +396,6 @@ export default function ProductPage() {
         draggable
         pauseOnHover
       />
-    </Row>
+    </>
   );
 }
