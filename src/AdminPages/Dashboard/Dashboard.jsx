@@ -64,52 +64,12 @@ export default function Dashboard() {
     <Container style={{backgroundColor: "whitesmoke",padding: 10,borderRadius: 5}}>
       <h1>Dashboard</h1>
       <Row>
-        <Col md={6}>
-          <Card style={{ width: "100%", height: "100%" }}>
-            <Card.Body>
-              <Card.Title>Order Status Counts</Card.Title>
-              <PieChart
-                width={550}
-                height={300}
-                margin={{
-                  top: 20,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <Pie
-                  data={Object.entries(orderStatusCounts).map(
-                    ([status, count]) => ({ name: status, value: count })
-                  )}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) =>
-                    `${name}: ${(percent * 100).toFixed(0)}% `
-                  }
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {Object.entries(orderStatusCounts).map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={6}>
+        <Col md={12}>
           <Card style={{ width: "100%", height: "100%" }}>
             <Card.Body>
               <Card.Title>Revenue Over Time</Card.Title>
               <BarChart
-                width={550}
+                width={800}
                 height={300}
                 data={revenue}
                 margin={{
