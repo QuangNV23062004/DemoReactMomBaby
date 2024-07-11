@@ -33,6 +33,7 @@ export default function ProductPage() {
           product.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
         setFilteredProducts(filteredData.map((product) => ({ ...product, hovered: false })));
+        setCurrentPage(1); // Reset current page only when new data is fetched
       })
       .catch((error) => console.log(error));
   };
@@ -40,10 +41,6 @@ export default function ProductPage() {
   useEffect(() => {
     fetchApi();
   }, [searchQuery]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filteredProducts]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -105,7 +102,7 @@ export default function ProductPage() {
   const handleMouseEnter = (index) => {
     setFilteredProducts((prevProducts) => {
       const updatedProducts = [...prevProducts];
-      updatedProducts[index].hovered = true;
+      updatedProducts[(currentPage - 1) * itemsPerPage + index].hovered = true;
       return updatedProducts;
     });
   };
@@ -113,7 +110,7 @@ export default function ProductPage() {
   const handleMouseLeave = (index) => {
     setFilteredProducts((prevProducts) => {
       const updatedProducts = [...prevProducts];
-      updatedProducts[index].hovered = false;
+      updatedProducts[(currentPage - 1) * itemsPerPage + index].hovered = false;
       return updatedProducts;
     });
   };
@@ -231,7 +228,6 @@ export default function ProductPage() {
         }
       }
 
-      // Decrement product quantity in the product API
       const updatedProductQuantity = product.quantity - 1;
       const updatedProduct = {
         ...product,

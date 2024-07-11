@@ -13,13 +13,14 @@
 }
 
 .ImageHalf {
-    padding: 10px;
+    padding: 20px;
     width: 80%;
-
+    display: flex;
+    justify-content: space-around;
 }
 
 .ImageHalf img {
-    width: 80%;
+    width: 100%;
 }
 
 .FormHalf {

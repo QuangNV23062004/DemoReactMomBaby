@@ -36,15 +36,18 @@ export default function Carouseler() {
           ))}
         </Col>
         <Col md={10} style={{ border: "1px solid pink" }}>
-          <Carousel data-bs-theme="dark" style={{
-              padding: '0px 0px 0px 50px'
-            }}>
+          <Carousel
+            data-bs-theme="dark"
+            style={{
+              padding: "0px 0px 0px 50px",
+            }}
+          >
             <Carousel.Item>
               <img
                 className="d-block w-100"
                 src="/uploads/banner/052424125501_1715700987-HOME(1).png"
                 alt="First slide"
-                style={{padding: 15}}
+                style={{ padding: 15 }}
               />
             </Carousel.Item>
             <Carousel.Item>

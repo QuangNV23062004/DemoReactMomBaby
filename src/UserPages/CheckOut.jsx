@@ -7,6 +7,8 @@ import Ward from "../Resources/Wards";
 import Form from "react-bootstrap/Form";
 import { Button, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function CheckOut() {
   const baseURLCart = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart/";
@@ -237,6 +239,7 @@ export default function CheckOut() {
             .then((response) => response.json())
             .then((data) => {
               console.log("Order placed successfully:", data);
+              toast.success("Checkout successful!");
               nav("/SWP391-MomAndBaby");
               cart.forEach((item) => {
                 fetch(baseURLCart + item.id, {
@@ -296,6 +299,7 @@ export default function CheckOut() {
         .then((response) => response.json())
         .then((data) => {
           console.log("Order placed successfully:", data);
+          toast.success("Checkout successful!");
           nav("/SWP391-MomAndBaby");
           cart.forEach((item) => {
             fetch(baseURLCart + item.id, {
@@ -363,6 +367,7 @@ export default function CheckOut() {
 
   return (
     <>
+    <ToastContainer />
       <Row
         style={{
           backgroundColor: "whitesmoke",
@@ -440,7 +445,7 @@ export default function CheckOut() {
                   controlId="Province.ControlInput3"
                   style={{ display: "flex", alignItems: "center" }}
                 >
-                  <Form.Label style={{ width: "20%" }}>Province</Form.Label>
+                  <Form.Label style={{ width: "26%" }}>Province</Form.Label>
                   <Field
                     as="select"
                     name="selectedProvince"
@@ -465,7 +470,7 @@ export default function CheckOut() {
                   controlId="District.ControlInput4"
                   style={{ display: "flex", alignItems: "center" }}
                 >
-                  <Form.Label style={{ width: "20%" }}>District</Form.Label>
+                  <Form.Label style={{ width: "26%" }}>District</Form.Label>
                   <Field
                     as="select"
                     name="selectedDistrict"
@@ -491,7 +496,7 @@ export default function CheckOut() {
                   controlId="Ward.ControlInput5"
                   style={{ display: "flex", alignItems: "center" }}
                 >
-                  <Form.Label style={{ width: "20%" }}>Ward</Form.Label>
+                  <Form.Label style={{ width: "26%" }}>Ward</Form.Label>
                   <Field
                     as="select"
                     name="selectedWard"
@@ -532,7 +537,7 @@ export default function CheckOut() {
                   controlId="PaymentMethod.ControlInput7"
                   style={{ display: "flex", alignItems: "center" }}
                 >
-                  <Form.Label style={{ width: "20%" }}>Payment Method</Form.Label>
+                  <Form.Label style={{ width: "26%" }}>Payment Method</Form.Label>
                   <Field
                     as="select"
                     name="paymentMethod"
@@ -560,7 +565,7 @@ export default function CheckOut() {
               controlId="Voucher.ControlInput1"
               style={{ display: "flex", alignItems: "center" }}
             >
-              <Form.Label style={{ width: "20%" }}>Voucher</Form.Label>
+              <Form.Label style={{ width: "20%",marginTop:20 }}>Voucher</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter Voucher"
@@ -573,7 +578,7 @@ export default function CheckOut() {
               <Button
                 variant="primary"
                 onClick={handleApplyVoucher}
-                style={{ width: "20%" }}
+                style={{ width: "20%",marginTop: 20 }}
               >
                 Apply
               </Button>

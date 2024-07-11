@@ -92,15 +92,18 @@ export default function BankPayment() {
     }
 
     try {
-      const response = await fetch("https://6684c67c56e7503d1ae11cfd.mockapi.io/Bill", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          ...orderDetails, 
-          paymentDetails: values,
-          checkoutDate: Math.floor(Date.now() / 1000) // current timestamp in seconds
-        }),
-      });
+      const response = await fetch(
+        "https://6684c67c56e7503d1ae11cfd.mockapi.io/Bill",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...orderDetails,
+            paymentDetails: values,
+            checkoutDate: Math.floor(Date.now() / 1000), // current timestamp in seconds
+          }),
+        }
+      );
 
       if (response.ok) {
         alert("Order placed successfully!");
@@ -108,9 +111,13 @@ export default function BankPayment() {
 
         await Promise.all(
           cart.map((item) =>
-            fetch("https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart/" + item.id, {
-              method: "DELETE",
-            }).then((response) => {
+            fetch(
+              "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart/" +
+                item.id,
+              {
+                method: "DELETE",
+              }
+            ).then((response) => {
               if (!response.ok) {
                 console.error(`Failed to remove cart item ${item.id}`);
               }
@@ -122,30 +129,42 @@ export default function BankPayment() {
           const updatedUsedArray = [...voucher.appliedVoucher.used, userId];
           const updatedQuantity = voucher.appliedVoucher.quantity - 1;
 
-          await fetch("https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher/" + voucher.appliedVoucher.id, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              used: updatedUsedArray,
-              quantity: updatedQuantity,
-            }),
-          });
+          await fetch(
+            "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher/" +
+              voucher.appliedVoucher.id,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                used: updatedUsedArray,
+                quantity: updatedQuantity,
+              }),
+            }
+          );
         }
 
-        const accountResponse = await fetch(`https://66801b4556c2c76b495b2d81.mockapi.io/Account/${userId}`);
+        const accountResponse = await fetch(
+          `https://66801b4556c2c76b495b2d81.mockapi.io/Account/${userId}`
+        );
         const accountData = await accountResponse.json();
 
         if (!accountData.point) {
           accountData.point = 0;
         }
 
-        const updatedAccount = { ...accountData, point: accountData.point + points };
+        const updatedAccount = {
+          ...accountData,
+          point: accountData.point + points,
+        };
 
-        await fetch(`https://66801b4556c2c76b495b2d81.mockapi.io/Account/${userId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedAccount),
-        });
+        await fetch(
+          `https://66801b4556c2c76b495b2d81.mockapi.io/Account/${userId}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedAccount),
+          }
+        );
         console.log("User points updated successfully");
       } else {
         console.error("Error placing order:", response.statusText);
@@ -194,7 +213,7 @@ export default function BankPayment() {
                 controlId="Bank.ControlInput1"
                 style={{ display: "flex", alignItems: "center" }}
               >
-                <Form.Label style={{ width: "20%" }}>Bank</Form.Label>
+                <Form.Label style={{ width: "26%" }}>Bank</Form.Label>
                 <Field
                   as="select"
                   name="bank"

@@ -1,3 +1,5 @@
+// Header.js
+
 import "./Header.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faCartShopping, faUser } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +10,7 @@ import Badge from '@mui/material/Badge';
 function Header() {
   const [userHovered, setUserHovered] = useState(false);
   const [cart, setCart] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
   const navigate = useNavigate();
   const cartAPI = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart";
   const userId = sessionStorage.getItem('userId');
@@ -32,9 +35,9 @@ function Header() {
   }
 
   useEffect(() => {
-    fetchApi(); // Fetch initial data
-    const interval = setInterval(fetchApi, 5000); // Poll every 5 seconds
-    return () => clearInterval(interval); // Cleanup on unmount
+    fetchApi();
+    const interval = setInterval(fetchApi, 5000);
+    return () => clearInterval(interval);
   }, [userId]);
 
   const handleLogout = () => {
@@ -48,6 +51,10 @@ function Header() {
 
   const handleLogin = () => {
     navigate('/SWP391-MomAndBaby/login');
+  };
+
+  const handleSearch = () => {
+    navigate(`/SWP391-MomAndBaby/product?search=${searchInput}`);
   };
 
   return (
@@ -74,8 +81,10 @@ function Header() {
               className="searchInput"
               type="text"
               placeholder="What are you looking for?"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
             />
-            <button className="searchButton">
+            <button className="searchButton" onClick={handleSearch}>
               <FontAwesomeIcon className="glass" icon={faSearch} />
             </button>
           </div>
