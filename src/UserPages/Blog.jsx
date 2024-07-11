@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookMessenger } from '@fortawesome/free-brands-svg-icons';
+import { Pagination } from 'react-bootstrap';
 import Footer from './Footer/Footer';
 
 export default function Blog() {
     const [blogPosts, setBlogPosts] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage] = useState(4); // Adjust this number as needed
 
     useEffect(() => {
         fetchBlogPosts();
-    }, []);
+    }, [currentPage]);
 
     const fetchBlogPosts = async () => {
         try {
@@ -24,18 +27,26 @@ export default function Blog() {
         }
     };
 
+    // Get current posts
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = blogPosts.slice(indexOfFirstPost, indexOfLastPost);
+
+    // Change page
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-dark ftco_navbar bg-white ftco-navbar-light" id="ftco-navbar">
                 <div className="container">
-                    <Link style={{ color: '#ff469e', fontSize:'28px' }} className="navbar-brand" to="/SWP391-MomAndBaby">Mom And Baby</Link>
+                    <a style={{ color: '#ff469e', fontSize: '28px' }} className="navbar-brand" href="/SWP391-MomAndBaby">Mom And Baby</a>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="oi oi-menu"></span> Menu
                     </button>
                     <div className="collapse navbar-collapse" id="ftco-nav">
                         <ul className="navbar-nav ml-auto">
-                            <li className="nav-item"><Link to="/SWP391-MomAndBaby" className="nav-link">Home</Link></li>
-                            <li className="nav-item"><Link to="/SWP391-MomAndBaby/blog" className="nav-link">Blog</Link></li>
+                            <li className="nav-item"><a href="/SWP391-MomAndBaby" className="nav-link">Home</a></li>
+                            <li className="nav-item"><a href="/SWP391-MomAndBaby/blog" className="nav-link">Blog</a></li>
                         </ul>
                     </div>
                 </div>
@@ -55,7 +66,7 @@ export default function Blog() {
                         <div className="col-md-9 ftco-animate text-center" style={{ color: '#333' }}>
                             <p className="breadcrumbs">
                                 <span className="mr-2">
-                                    <Link to="/SWP391-MomAndBaby" style={{ fontSize: '30px', marginRight: '20px', color: '#ff469e' }}>Home</Link>
+                                    <a href="/SWP391-MomAndBaby" style={{ fontSize: '30px', marginRight: '20px', color: '#ff469e' }}>Home</a>
                                 </span>
                                 <span style={{ color: '#ff469e', fontSize: '30px' }}>Blog</span>
                             </p>
@@ -67,7 +78,7 @@ export default function Blog() {
 
             <div className="container mt-4">
                 <div className="row">
-                    {blogPosts.map(post => (
+                    {currentPosts.map(post => (
                         <div className="col-md-12 mb-4" key={post.id}>
                             <div className="row no-gutters">
                                 {/* Image column */}
@@ -102,6 +113,17 @@ export default function Blog() {
                         </div>
                     ))}
                 </div>
+                <Pagination>
+                    <Pagination.First onClick={() => paginate(1)} />
+                    <Pagination.Prev onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)} />
+                    {[...Array(Math.ceil(blogPosts.length / postsPerPage)).keys()].map(number => (
+                        <Pagination.Item key={number + 1} active={number + 1 === currentPage} onClick={() => paginate(number + 1)}>
+                            {number + 1}
+                        </Pagination.Item>
+                    ))}
+                    <Pagination.Next onClick={() => paginate(currentPage < Math.ceil(blogPosts.length / postsPerPage) ? currentPage + 1 : Math.ceil(blogPosts.length / postsPerPage))} />
+                    <Pagination.Last onClick={() => paginate(Math.ceil(blogPosts.length / postsPerPage))} />
+                </Pagination>
             </div>
 
             <div
