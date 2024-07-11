@@ -62,6 +62,10 @@ export default function Bill() {
   };
 
   const statusOptions = ["pending", "accepted", "delivery", "finished"];
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp * 1000);
+    return date.toLocaleDateString();
+  };
 
   return (
     <>
@@ -72,6 +76,7 @@ export default function Bill() {
             <th>Name</th>
             <th>Phone</th>
             <th>Address</th>
+            <th>Checkout date</th>
             <th>Total</th>
             <th>Detail</th>
             <th>Status</th>
@@ -85,6 +90,7 @@ export default function Bill() {
               <td>{bill.name}</td>
               <td>{bill.phone}</td>
               <td>{bill.address}</td>
+              <td>{formatDate(bill.checkoutDate)}</td>
               <td>{bill.total} VNĐ</td>
               
               <td>

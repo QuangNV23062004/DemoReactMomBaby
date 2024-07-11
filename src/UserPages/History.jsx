@@ -1,35 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { Button, Table, Overlay } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 import Rating from "./Rating";
 
 export default function History() {
   const baseURLBill = "https://6684c67c56e7503d1ae11cfd.mockapi.io/Bill";
-  const [Bill, setBill] = useState([]);
+  const [bill, setBill] = useState([]);
   const userId = sessionStorage.getItem("userId");
   const [showDetails, setShowDetails] = useState(false);
   const [target, setTarget] = useState(null);
   const [detail, setDetail] = useState([]);
 
-  const FetchBill = () => {
+  const fetchBill = () => {
     fetch(baseURLBill)
       .then((res) => res.json())
       .then((data) => {
-        const YourBill = data.filter((bill) => bill.userID === userId);
-        setBill(YourBill);
-        console.log(YourBill);
+        const yourBill = data.filter((bill) => bill.userID === userId);
+        yourBill.sort((a, b) => b.checkoutDate - a.checkoutDate);
+        setBill(yourBill);
+        console.log(yourBill);
       })
       .catch((error) => console.log(error));
   };
 
   useEffect(() => {
-    FetchBill();
+    fetchBill();
   }, [userId]);
 
   const handleShowDetails = (details, event) => {
     setDetail(details);
     setTarget(event.target);
     setShowDetails(!showDetails);
+  };
+
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp * 1000);
+    return date.toLocaleDateString();
   };
 
   return (
@@ -43,11 +48,12 @@ export default function History() {
             <th>Address</th>
             <th>Total</th>
             <th>Status</th>
+            <th>Order Date</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {Bill.map((bill, index) => (
+          {bill.map((bill, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
               <td>{bill.name}</td>
@@ -55,6 +61,7 @@ export default function History() {
               <td>{bill.address}</td>
               <td>{bill.total}</td>
               <td>{bill.status}</td>
+              <td>{formatDate(bill.checkoutDate)}</td>
               <td>
                 <Button
                   variant="outline-secondary"

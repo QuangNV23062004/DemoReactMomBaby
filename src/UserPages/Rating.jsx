@@ -20,13 +20,11 @@ export default function Rating({ productId }) {
         }
         const product = await response.json();
         const userRating = product.rating.find(r => r.userID === userId);
-        const userFeedback = product.feedback.find(f => f.userID === userId);
 
         if (userRating) {
           setRating(userRating.rate);
-        }
-        if (userFeedback) {
-          setFeedback(userFeedback.text);
+          setFeedback(userRating.text || "");
+          setFullName(userRating.fullName || "");
         }
       } catch (error) {
         console.error("Error fetching product data:", error);
@@ -56,7 +54,7 @@ export default function Rating({ productId }) {
 
   const handleSave = async () => {
     if (!rating || !feedback || !userId) {
-      alert("Please provide both rating and feedback, and ensure you are logged in.");
+      alert("Please provide both rating and feedback");
       return;
     }
 
@@ -67,29 +65,13 @@ export default function Rating({ productId }) {
       }
       const product = await response.json();
 
-      const existingRatingIndex = product.rating.findIndex(r => r.userID === userId);
-      const existingFeedbackIndex = product.feedback.findIndex(f => f.userID === userId);
-      let updatedRatings;
-      let updatedFeedbacks;
+      const updatedRatings = [...product.rating];
+      const existingRatingIndex = updatedRatings.findIndex(r => r.userID === userId);
 
       if (existingRatingIndex !== -1) {
-        // Update existing rating
-        updatedRatings = product.rating.map((r, index) =>
-          index === existingRatingIndex ? { ...r, rate: rating } : r
-        );
+        updatedRatings[existingRatingIndex] = { userID: userId, rate: rating, text: feedback, fullName };
       } else {
-        // Add new rating
-        updatedRatings = [...product.rating, { userID: userId, rate: rating }];
-      }
-
-      if (existingFeedbackIndex !== -1) {
-        // Update existing feedback
-        updatedFeedbacks = product.feedback.map((f, index) =>
-          index === existingFeedbackIndex ? { ...f, text: feedback, fullName } : f
-        );
-      } else {
-        // Add new feedback
-        updatedFeedbacks = [...product.feedback, { userID: userId, text: feedback, fullName }];
+        updatedRatings.push({ userID: userId, rate: rating, text: feedback, fullName });
       }
 
       await fetch(baseURLProduct, {
@@ -97,7 +79,7 @@ export default function Rating({ productId }) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ rating: updatedRatings, feedback: updatedFeedbacks })
+        body: JSON.stringify({ rating: updatedRatings })
       });
 
       alert("Rating and feedback saved successfully!");
