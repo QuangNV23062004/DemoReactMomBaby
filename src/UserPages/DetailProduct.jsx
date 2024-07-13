@@ -161,25 +161,24 @@ export default function DetailProduct({ id }) {
     }
   };
 
+ //preorder: check login 
+  //    ? { user preorder 
+  //        ? {has product ? toast error : new} 
+  //        : create new preorder }
+  //    : loginPage
   const handlePreorder = async (product) => {
     const userId = sessionStorage.getItem("userId");
-
+  
     if (!userId) {
       nav("/SWP391-MomAndBaby/login");
       return;
     }
-
+  
     try {
       const response = await fetch(`${PreOrderAPI}?userID=${userId}`);
-      const preorders = await response.json();
-
-      const existingPreorder = preorders.find(
-        (item) => item.productID === product.id
-      );
-
-      if (existingPreorder) {
-        toast.error("You've already preordered this product.");
-      } else {
+  
+      if (response.status === 404) {
+        // If no preorders found, proceed with creating a new preorder
         const newPreorder = {
           userID: userId,
           productID: product.id,
@@ -187,7 +186,7 @@ export default function DetailProduct({ id }) {
           productImage: product.mainImg,
           price: product.price,
         };
-
+  
         const createResponse = await fetch(PreOrderAPI, {
           method: "POST",
           headers: {
@@ -195,14 +194,52 @@ export default function DetailProduct({ id }) {
           },
           body: JSON.stringify(newPreorder),
         });
-
+  
         if (!createResponse.ok) {
           throw new Error("Failed to create preorder");
         }
-
+  
         const createdPreorder = await createResponse.json();
         console.log("Preorder created:", createdPreorder);
         toast.success("Preorder placed successfully!");
+      } else {
+        const preorders = await response.json();
+  
+        if (!Array.isArray(preorders)) {
+          throw new Error("Preorders response is not an array");
+        }
+  
+        const existingPreorder = preorders.find(
+          (item) => item.productID === product.id
+        );
+  
+        if (existingPreorder) {
+          toast.error("You've already preordered this product.");
+        } else {
+          const newPreorder = {
+            userID: userId,
+            productID: product.id,
+            productName: product.name,
+            productImage: product.mainImg,
+            price: product.price,
+          };
+  
+          const createResponse = await fetch(PreOrderAPI, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newPreorder),
+          });
+  
+          if (!createResponse.ok) {
+            throw new Error("Failed to create preorder");
+          }
+  
+          const createdPreorder = await createResponse.json();
+          console.log("Preorder created:", createdPreorder);
+          toast.success("Preorder placed successfully!");
+        }
       }
     } catch (error) {
       console.error("Error handling preorder:", error);
