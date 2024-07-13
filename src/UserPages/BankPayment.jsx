@@ -41,6 +41,7 @@ export default function BankPayment() {
   const location = useLocation();
   const nav = useNavigate();
   const { orderDetails, cart, userId, voucher } = location.state;
+  //retrieve checkout related state
 
   const [showOTP, setShowOTP] = useState(false);
 
@@ -92,6 +93,7 @@ export default function BankPayment() {
     }
 
     try {
+      //add bill + remove cart + update voucher
       const response = await fetch(
         "https://6684c67c56e7503d1ae11cfd.mockapi.io/Bill",
         {

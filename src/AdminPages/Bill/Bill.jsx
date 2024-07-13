@@ -17,7 +17,8 @@ export default function Bill() {
   const fetchBill = () => {
     fetch(baseURLBill)
       .then(res => res.json())
-      .then(data => setBill(data))
+      .then(data => {const sortedData = data.sort((a, b) => b.checkoutDate - a.checkoutDate);
+        setBill(sortedData);})
       .catch(error => console.log(error));
   };
 

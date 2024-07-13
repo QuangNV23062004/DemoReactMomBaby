@@ -87,7 +87,7 @@ const ContactForm = () => {
                                                 className="input"
                                                 type="text"
                                                 name="fullname"
-                                                style={{ backgroundColor: 'white', color: 'black' }}
+                                                style={{ backgroundColor: 'white', color: 'black', borderRadius:5 }}
                                                 placeholder="Your Name"
                                                 onChange={formik.handleChange}
                                                 onBlur={formik.handleBlur}
@@ -103,7 +103,7 @@ const ContactForm = () => {
                                                 className="input"
                                                 type="email"
                                                 name="email"
-                                                style={{ backgroundColor: 'white', color: 'black' }}
+                                                style={{ backgroundColor: 'white', color: 'black', borderRadius:5 }}
                                                 placeholder="Email"
                                                 onChange={formik.handleChange}
                                                 onBlur={formik.handleBlur}
@@ -119,7 +119,7 @@ const ContactForm = () => {
                                                 className="input"
                                                 type="tel"
                                                 name="phone"
-                                                style={{ backgroundColor: 'white', color: 'black' }}
+                                                style={{ backgroundColor: 'white', color: 'black', borderRadius:5 }}
                                                 placeholder="Phone number"
                                                 onChange={formik.handleChange}
                                                 onBlur={formik.handleBlur}
@@ -136,7 +136,7 @@ const ContactForm = () => {
                                             className="input"
                                             name="message"
                                             placeholder="Your Message"
-                                            style={{ height: '150px', resize: 'none', width: '100%' }}
+                                            style={{ height: '150px', resize: 'none', width: '94%', borderRadius:5, margin:15 }}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             value={formik.values.message}
@@ -145,7 +145,7 @@ const ContactForm = () => {
                                             <span className="message_error">{formik.errors.message}</span>
                                         ) : null}
                                     </div>
-                                    <div className="text-right" style={{ marginTop: '40px', marginBottom: '9px' }}>
+                                    <div className="text-right" style={{ marginTop: '0px', marginBottom: '9px', marginLeft:20 }}>
                                         <button
                                             id="sendMessage"
                                             name="btn-send-message"

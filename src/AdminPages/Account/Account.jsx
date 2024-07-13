@@ -33,19 +33,23 @@ export default function Account() {
     fetchApi();
   }, []);
 
+
+  // Handle select all checkboxes
   const handleSelectAll = () => {
     const updatedData = data.map((item) => ({
       ...item,
-      selected: !selectAll,
+      selected: !selectAll,//selectAll is false => select all product
+      //selectAll is true => unselect all product
     }));
     setData(updatedData);
     setSelectAll(!selectAll);
   };
 
+  // Handle individual checkbox change
   const handleCheckboxChange = (index) => {
     const updatedData = [...data];
-    updatedData[index].selected = !updatedData[index].selected;
-    setData(updatedData);
+    updatedData[index].selected = !updatedData[index].selected;//true => false and viceversa
+    setData(updatedData);//set new data with new selected of that
   };
 
   const handleDeleteAcc = (id) => {
@@ -84,11 +88,13 @@ export default function Account() {
       });
   };
 
+  // Handle search input change
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
     setCurrentPage(1);
   };
 
+  // Handle entries to show change
   const handleEntriesChange = (event) => {
     setEntriesToShow(parseInt(event.target.value));
     setCurrentPage(1);

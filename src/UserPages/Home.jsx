@@ -24,32 +24,24 @@ export default function Home() {
   const PreOrderAPI = "https://6684c67c56e7503d1ae11cfd.mockapi.io/Preorder"
   const nav = useNavigate();
 
+  //preorder: check login 
+  //    ? { user preorder 
+  //        ? {has product ? toast error : new} 
+  //        : create new preorder }
+  //    : loginPage
   const handlePreorder = async (product) => {
     const userId = sessionStorage.getItem("userId");
-
+  
     if (!userId) {
       nav("/SWP391-MomAndBaby/login");
       return;
     }
-
+  
     try {
       const response = await fetch(`${PreOrderAPI}?userID=${userId}`);
-      const preorders = await response.json();
-
-      console.log("Preorders:", preorders); // Log the preorders response
-      console.log("Preorders type:", typeof preorders); // Log the type of preorders
-
-      if (!Array.isArray(preorders)) {
-        throw new Error("Preorders response is not an array");
-      }
-
-      const existingPreorder = preorders.find(
-        (item) => item.productID === product.id
-      );
-
-      if (existingPreorder) {
-        toast.error("You've already preordered this product.");
-      } else {
+  
+      if (response.status === 404) {
+        // If no preorders found, proceed with creating a new preorder
         const newPreorder = {
           userID: userId,
           productID: product.id,
@@ -57,7 +49,7 @@ export default function Home() {
           productImage: product.mainImg,
           price: product.price,
         };
-
+  
         const createResponse = await fetch(PreOrderAPI, {
           method: "POST",
           headers: {
@@ -65,21 +57,59 @@ export default function Home() {
           },
           body: JSON.stringify(newPreorder),
         });
-
+  
         if (!createResponse.ok) {
           throw new Error("Failed to create preorder");
         }
-
+  
         const createdPreorder = await createResponse.json();
         console.log("Preorder created:", createdPreorder);
         toast.success("Preorder placed successfully!");
+      } else {
+        const preorders = await response.json();
+  
+        if (!Array.isArray(preorders)) {
+          throw new Error("Preorders response is not an array");
+        }
+  
+        const existingPreorder = preorders.find(
+          (item) => item.productID === product.id
+        );
+  
+        if (existingPreorder) {
+          toast.error("You've already preordered this product.");
+        } else {
+          const newPreorder = {
+            userID: userId,
+            productID: product.id,
+            productName: product.name,
+            productImage: product.mainImg,
+            price: product.price,
+          };
+  
+          const createResponse = await fetch(PreOrderAPI, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newPreorder),
+          });
+  
+          if (!createResponse.ok) {
+            throw new Error("Failed to create preorder");
+          }
+  
+          const createdPreorder = await createResponse.json();
+          console.log("Preorder created:", createdPreorder);
+          toast.success("Preorder placed successfully!");
+        }
       }
     } catch (error) {
       console.error("Error handling preorder:", error);
       toast.error("Failed to place preorder. Please try again later.");
     }
   };
-
+  
   const fetchApi = () => {
     fetch(baseURL)
       .then((response) => response.json())
@@ -126,6 +156,15 @@ export default function Home() {
     drift.load('if3cxw4emka3');
   }, []);
 
+
+  // Handle add to cart functionality
+  //    user login 
+  //        ? {quantity > 0 ? 
+  //            {user has cart with that product 
+  //            ? PUT new quantity in cart(+1) and product(-1) 
+  //            : POST new cart and product quantity(-1) } 
+  //        :not happening because of preorder} 
+  //    : loginPage
   const handleAddToCart = async (product) => {
     const userId = sessionStorage.getItem("userId");
 
@@ -143,6 +182,7 @@ export default function Home() {
       const response = await fetch(`${cartAPI}?userID=${userId}`);
 
       if (!response.ok) {
+        //no cart found
         if (response.status === 404) {
           const newCartItem = {
             userID: userId,
@@ -173,12 +213,13 @@ export default function Home() {
           throw new Error("Failed to fetch user cart");
         }
       } else {
+        //found cart
         const cartItems = await response.json();
         const existingCartItem = cartItems.find(
           (item) => item.productID === product.id
         );
 
-        if (existingCartItem) {
+        if (existingCartItem) {//existing cart has product
           const updatedQuantity = existingCartItem.quantity + 1;
           const updatedTotalPrice = updatedQuantity * product.price;
           const updatedCartItem = {
@@ -196,7 +237,7 @@ export default function Home() {
               },
               body: JSON.stringify(updatedCartItem),
             }
-          );
+          );//update cart quantity
 
           if (!updateResponse.ok) {
             throw new Error("Failed to update cart item");
@@ -205,7 +246,7 @@ export default function Home() {
           const updatedItem = await updateResponse.json();
           console.log("Product quantity updated in cart:", updatedItem);
           toast.success(`${product.name} quantity updated in cart successfully!`);
-        } else {
+        } else {//no productID in cart
           const newCartItem = {
             userID: userId,
             productID: product.id,
@@ -222,7 +263,7 @@ export default function Home() {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(newCartItem),
-          });
+          });//add new cart
 
           if (!createResponse.ok) {
             throw new Error("Failed to add product to cart");
@@ -246,15 +287,15 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedProduct),
-      });
+      });//update product quantity in product api
 
       if (!productUpdateResponse.ok) {
         throw new Error("Failed to update product quantity");
       }
 
-      setData(data.map(p => (p.id === product.id ? updatedProduct : p)));
-      setPriorityOneData(priorityOneData.map(p => (p.id === product.id ? updatedProduct : p)));
-      setPriorityTwoData(priorityTwoData.map(p => (p.id === product.id ? updatedProduct : p)));
+      setData(data.map(p => (p.id === product.id ? updatedProduct : p)));//update the data quantity...
+      setPriorityOneData(priorityOneData.map(p => (p.id === product.id ? updatedProduct : p)));//update the data quantity...
+      setPriorityTwoData(priorityTwoData.map(p => (p.id === product.id ? updatedProduct : p)));//update the data quantity...
       console.log("Product quantity updated:", updatedProduct);
     } catch (error) {
       console.error("Error handling add to cart:", error);

@@ -45,7 +45,9 @@ export default function Dashboard() {
         timestamp,
         total,
       })
-    );//object to array of object
+      
+    ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)); // Sort by date;
+    //object to array of object
     setRevenue(revenueArray);
 
     const totalRev = data.reduce((sum, bill) => sum + bill.total, 0);//0 is initial value

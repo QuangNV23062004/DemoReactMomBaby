@@ -11,19 +11,22 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function CheckOut() {
+  
+  //api list
   const baseURLCart = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart/";
   const baseURLAccount = "https://66801b4556c2c76b495b2d81.mockapi.io/Account/";
   const baseURLBill = "https://6684c67c56e7503d1ae11cfd.mockapi.io/Bill";
   const baseURLVoucher = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/Voucher";
   const userId = sessionStorage.getItem("userId");
-  const [account, setAccount] = useState({});
-  const [cart, setCart] = useState([]);
+  
+  const [account, setAccount] = useState({});//store account
+  const [cart, setCart] = useState([]);//store cart
   const [contactInfo, setContactInfo] = useState({
     name: "",
     email: "",
     phone: "",
     address: "",
-  });
+  });//contact info later go into bill
 
   const [location, setLocation] = useState({
     selectedProvince: "",
@@ -31,16 +34,17 @@ export default function CheckOut() {
     selectedDistrict: "",
     filteredWards: [],
     selectedWard: "",
-  });
+  });//location later go into address to go into bill
 
   const [voucher, setVoucher] = useState({
     voucherCode: "",
     discount: 0,
     appliedVoucher: null,
-  });
+  });//voucher info in bill
 
   const nav = useNavigate();
 
+  //fetch the user's account, user's cart based on userId
   useEffect(() => {
     fetch(baseURLAccount + `${userId}`)
       .then((res) => res.json())
@@ -64,6 +68,8 @@ export default function CheckOut() {
       .catch((error) => console.log(error));
   }, [userId]);
 
+
+  //set province and get the filtered district based on that province
   useEffect(() => {
     if (location.selectedProvince) {
       const province = Province.find(
@@ -91,6 +97,8 @@ export default function CheckOut() {
     }));
   }, [location.selectedProvince]);
 
+
+  // Filter wards based on selected district
   useEffect(() => {
     if (location.selectedDistrict) {
       const district = District.find(
@@ -117,6 +125,7 @@ export default function CheckOut() {
     }));
   }, [location.selectedDistrict]);
 
+  //set province
   const handleProvinceChange = (event) => {
     setLocation((prev) => ({
       ...prev,
@@ -124,6 +133,7 @@ export default function CheckOut() {
     }));
   };
 
+  //set district
   const handleDistrictChange = (event) => {
     setLocation((prev) => ({
       ...prev,
@@ -131,6 +141,7 @@ export default function CheckOut() {
     }));
   };
 
+  //set ward
   const handleWardChange = (event) => {
     setLocation((prev) => ({
       ...prev,
@@ -138,6 +149,7 @@ export default function CheckOut() {
     }));
   };
 
+  //fetch the voucher to check if exist, quantity left, and used if user used voucher yet
   const handleApplyVoucher = () => {
     fetch(baseURLVoucher + `?code=${voucher.voucherCode}`)
       .then((res) => res.json())
@@ -160,13 +172,15 @@ export default function CheckOut() {
       .catch((error) => console.error("Error fetching voucher:", error));
   };
 
+
+  
   const handlePlaceOrder = (values) => {
     console.log("Form values on submit:", values); // Debugging line
 
     const totalBeforeDiscount = cart.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
-    );
+    );//get total
 
     let points = 0;
     if (totalBeforeDiscount > 500000) {
@@ -175,7 +189,7 @@ export default function CheckOut() {
       points = 3000;
     } else if (totalBeforeDiscount > 100000) {
       points = 1000;
-    }
+    }//check point based on total
 
     const updateUserPoints = async () => {
       try {
@@ -191,12 +205,13 @@ export default function CheckOut() {
       } catch (error) {
         console.error("Error updating user points:", error);
       }
-    };
+    }; 
 
-    updateUserPoints();
+    updateUserPoints();//add new point
 
-    const total = totalBeforeDiscount - voucher.discount;
+    const total = totalBeforeDiscount - voucher.discount;//new total
     const fullAddress = `${location.selectedProvince}, ${location.selectedDistrict}, ${location.selectedWard}, ${values.address}`;
+    //get full address
 
     const orderDetails = {
       address: fullAddress,
@@ -211,12 +226,12 @@ export default function CheckOut() {
     };
 
     if (values.paymentMethod === "Bank") {
-      nav("/bank-payment", { state: { orderDetails, cart, userId, voucher } });
+      nav("/bank-payment", { state: { orderDetails, cart, userId, voucher } });//send the data to bank component
     } else if (values.paymentMethod === "Points") {
       if (account.point < total) {
         alert(`Insufficient points. You have ${account.point} points.`);
         return;
-      }
+      }//case not enough point
       const updatedAccount = { ...account, point: account.point - total };
       fetch(baseURLAccount + `${userId}`, {
         method: "PUT",
@@ -224,7 +239,7 @@ export default function CheckOut() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedAccount),
-      })
+      })//if enough point deduct point then process bill
         .then((res) => res.json())
         .then((data) => {
           console.log("Points deducted successfully:", data);
@@ -235,16 +250,20 @@ export default function CheckOut() {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(orderDetails),
-          })
+          })//add bill to api
             .then((response) => response.json())
             .then((data) => {
               console.log("Order placed successfully:", data);
-              toast.success("Checkout successful!");
-              nav("/SWP391-MomAndBaby");
+              toast.success("Checkout successful!",{
+                onClose:() => {
+                  nav("/SWP391-MomAndBaby");
+                }
+              });
+              
               cart.forEach((item) => {
                 fetch(baseURLCart + item.id, {
                   method: "DELETE",
-                })
+                })//after add bill remove from all user's cart 
                   .then((response) => {
                     if (response.ok) {
                       console.log(`Cart item ${item.id} removed successfully`);
@@ -257,6 +276,8 @@ export default function CheckOut() {
                   );
               });
 
+
+              //update new quantity and add userId to the used list
               if (voucher.appliedVoucher) {
                 const updatedUsedArray = [...voucher.appliedVoucher.used, userId];
                 const updatedQuantity = voucher.appliedVoucher.quantity - 1;
@@ -288,6 +309,8 @@ export default function CheckOut() {
         })
         .catch((error) => console.error("Error updating user points:", error));
     } else {
+
+      //just simply cash, create bill, handle voucher like above
       orderDetails.paymentDetails = { method: "cash" };
       fetch(baseURLBill, {
         method: "POST",

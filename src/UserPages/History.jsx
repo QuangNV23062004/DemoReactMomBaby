@@ -6,10 +6,12 @@ export default function History() {
   const baseURLBill = "https://6684c67c56e7503d1ae11cfd.mockapi.io/Bill";
   const [bill, setBill] = useState([]);
   const userId = sessionStorage.getItem("userId");
-  const [showDetails, setShowDetails] = useState(false);
-  const [target, setTarget] = useState(null);
-  const [detail, setDetail] = useState([]);
+  const [showDetails, setShowDetails] = useState(false);//for the overlay
+  const [target, setTarget] = useState(null);//for the overlay
+  const [detail, setDetail] = useState([]);//store bill detail
 
+
+  //simply fetch bill
   const fetchBill = () => {
     fetch(baseURLBill)
       .then((res) => res.json())

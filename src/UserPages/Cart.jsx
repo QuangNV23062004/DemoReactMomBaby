@@ -14,15 +14,17 @@ export default function Cart() {
   const baseURLProduct = "https://66801b4556c2c76b495b2d81.mockapi.io/product/";
   const baseURLPreorder =
     "https://6684c67c56e7503d1ae11cfd.mockapi.io/Preorder/";
-  const [dataCart, setDataCart] = useState([]);
+  const [dataCart, setDataCart] = useState([]);  // State to store cart data
   const [loading, setLoading] = useState(true);
-  const [dataPreorder, setDataPreorder] = useState([]);
+  const [dataPreorder, setDataPreorder] = useState([]);  // State to store preorder data
   const nav = useNavigate();
   const handleCheckout = (cart) => {
-    userId === null
+    userId === null 
       ? nav("/SWP391-MomAndBaby/login")
       : nav("/SWP391-MomAndBaby/checkout");
   };
+  
+  //fetch cart and filter based on userID
   const fetchCartData = () => {
     fetch(baseURLCart)
       .then((response) => response.json())
@@ -37,6 +39,7 @@ export default function Cart() {
       });
   };
 
+   // Fetch preorder data still based on userID
   const fetchPreorderData = () => {
     fetch(baseURLPreorder)
       .then((response) => response.json())
@@ -49,11 +52,13 @@ export default function Cart() {
       });
   };
 
+  //fetch product data => get quantity => show in preorder
   const fetchProductData = async (productId) => {
     const response = await fetch(`${baseURLProduct}${productId}`);
     return response.json();
   };
 
+  //simply set the status based on quantity
   const updatePreorderStatus = async () => {
     const updatedPreorder = await Promise.all(
       dataPreorder.map(async (item) => {
@@ -69,6 +74,7 @@ export default function Cart() {
     setLoading(false);
   };
 
+  //fetch cart and preorder on mount
   useEffect(() => {
     fetchCartData();
     fetchPreorderData();
@@ -78,8 +84,13 @@ export default function Cart() {
     if (dataPreorder.length > 0) {
       updatePreorderStatus();
     }
-  }, [dataPreorder]);
+  }, [dataPreorder]);//error ...
 
+
+  //remove from cart: 
+  //confirm 
+  //    ? find cart based on userID,productID, DELETE it and POST the value to product api
+  //    : return
   const handleRemoveFromCart = async (productId) => {
     const confirmed = window.confirm(
       "Are you sure you want to remove this item from your cart?"
@@ -101,7 +112,7 @@ export default function Cart() {
         const updatedCartItems = dataCart.filter(
           (item) => item.id !== itemToRemove.id
         );
-        setDataCart(updatedCartItems);
+        setDataCart(updatedCartItems);//re setDataCart after remove
 
         const productResponse = await fetch(`${baseURLProduct}${productId}`);
         const productData = await productResponse.json();
@@ -126,6 +137,7 @@ export default function Cart() {
     }
   };
 
+  //Simply DELETE from preorder api 
   const handleRemoveFromPreorder = async (productId) => {
     const confirmed = window.confirm(
       "Are you sure you want to remove this item from your preorder?"
@@ -147,10 +159,10 @@ export default function Cart() {
         // Directly update the state without another fetch
         const updatedPreorders = dataPreorder.filter(
           (item) => item.id !== itemToRemove.id
-        );
-        setDataPreorder(updatedPreorders);
+        );//ERROR
+        setDataPreorder(updatedPreorders);//ERROR
         toast.success("Item removed from preorder successfully!");
-        nav("/SWP391-MomAndBaby/");
+        nav("/SWP391-MomAndBaby/");//Error so nav back so user can enter cart page again => new preorder list
       }
     } catch (error) {
       console.error("Error removing item from preorder:", error);

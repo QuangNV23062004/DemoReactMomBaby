@@ -13,22 +13,33 @@ import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function ProductPage() {
+  // Base URLs for APIs
   const baseURL = "https://66801b4556c2c76b495b2d81.mockapi.io/product";
   const cartAPI = "https://6673f53a75872d0e0a947ec9.mockapi.io/api/v1/cart";
   const PreOrderAPI = "https://6684c67c56e7503d1ae11cfd.mockapi.io/Preorder";
-  const [data, setData] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+
+
+  const [data, setData] = useState([]);// State to store fetched product data
+  const [filteredProducts, setFilteredProducts] = useState([]);// State to store filtered product data
+  
+  // State to manage search query from URL
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
+
+
   const nav = useNavigate();
+
+   // State to manage current page number
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  const fetchApi = () => {
+  const fetchApi = () => {// Fetch product data from the API
     fetch(baseURL)
       .then((response) => response.json())
       .then((data) => {
         setData(data);
+
+        // Filter products based on search query
         const filteredData = data.filter((product) =>
           product.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
@@ -38,6 +49,7 @@ export default function ProductPage() {
       .catch((error) => console.log(error));
   };
 
+  // Fetch data when the component mounts or the search query changes
   useEffect(() => {
     fetchApi();
   }, [searchQuery]);
@@ -46,25 +58,21 @@ export default function ProductPage() {
     setCurrentPage(pageNumber);
   };
 
-  const handlePreorder = async (product) => {
+   // Handle pre-order functionality: 
+   //1.Check user login ? {check product preordered ? notify already preordered : create new preorder} : nav loginpage
+   const handlePreorder = async (product) => {
     const userId = sessionStorage.getItem("userId");
-
+  
     if (!userId) {
       nav("/SWP391-MomAndBaby/login");
       return;
     }
-
+  
     try {
       const response = await fetch(`${PreOrderAPI}?userID=${userId}`);
-      const preorders = await response.json();
-
-      const existingPreorder = preorders.find(
-        (item) => item.productID === product.id
-      );
-
-      if (existingPreorder) {
-        toast.error("You've already preordered this product.");
-      } else {
+  
+      if (response.status === 404) {
+        // If no preorders found, proceed with creating a new preorder
         const newPreorder = {
           userID: userId,
           productID: product.id,
@@ -72,7 +80,7 @@ export default function ProductPage() {
           productImage: product.mainImg,
           price: product.price,
         };
-
+  
         const createResponse = await fetch(PreOrderAPI, {
           method: "POST",
           headers: {
@@ -80,25 +88,65 @@ export default function ProductPage() {
           },
           body: JSON.stringify(newPreorder),
         });
-
+  
         if (!createResponse.ok) {
           throw new Error("Failed to create preorder");
         }
-
+  
         const createdPreorder = await createResponse.json();
         console.log("Preorder created:", createdPreorder);
         toast.success("Preorder placed successfully!");
+      } else {
+        const preorders = await response.json();
+  
+        if (!Array.isArray(preorders)) {
+          throw new Error("Preorders response is not an array");
+        }
+  
+        const existingPreorder = preorders.find(
+          (item) => item.productID === product.id
+        );
+  
+        if (existingPreorder) {
+          toast.error("You've already preordered this product.");
+        } else {
+          const newPreorder = {
+            userID: userId,
+            productID: product.id,
+            productName: product.name,
+            productImage: product.mainImg,
+            price: product.price,
+          };
+  
+          const createResponse = await fetch(PreOrderAPI, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newPreorder),
+          });
+  
+          if (!createResponse.ok) {
+            throw new Error("Failed to create preorder");
+          }
+  
+          const createdPreorder = await createResponse.json();
+          console.log("Preorder created:", createdPreorder);
+          toast.success("Preorder placed successfully!");
+        }
       }
     } catch (error) {
       console.error("Error handling preorder:", error);
       toast.error("Failed to place preorder. Please try again later.");
     }
   };
+  
 
+  // Handle filtered products update from the FilterSidebar component
   const handleFilteredProducts = (filteredData) => {
     setFilteredProducts(filteredData.map((product) => ({ ...product, hovered: false })));
   };
-
+// Handle mouse enter event to show the hover effect
   const handleMouseEnter = (index) => {
     setFilteredProducts((prevProducts) => {
       const updatedProducts = [...prevProducts];
@@ -107,6 +155,7 @@ export default function ProductPage() {
     });
   };
 
+// Handle mouse leave event to hide the hover effect
   const handleMouseLeave = (index) => {
     setFilteredProducts((prevProducts) => {
       const updatedProducts = [...prevProducts];
@@ -123,6 +172,15 @@ export default function ProductPage() {
     toast.error(message);
   };
 
+
+  // Handle add to cart functionality
+  //    user login 
+  //        ? {quantity > 0 ? 
+  //            {user has cart with that product 
+  //            ? PUT new quantity in cart(+1) and product(-1) 
+  //            : POST new cart and product quantity(-1) } 
+  //        :not happening because of preorder} 
+  //    : loginPage
   const handleAddToCart = async (product) => {
     const userId = sessionStorage.getItem("userId");
 
@@ -137,10 +195,12 @@ export default function ProductPage() {
     }
 
     try {
+      //fetch cart based on userID
       const response = await fetch(`${cartAPI}?userID=${userId}`);
 
       if (!response.ok) {
         if (response.status === 404) {
+          //no cart found => new cart
           const newCartItem = {
             userID: userId,
             productID: product.id,
@@ -157,7 +217,7 @@ export default function ProductPage() {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(newCartItem),
-          });
+          });//create new cart
 
           if (!createResponse.ok) {
             throw new Error("Failed to create cart");
@@ -173,7 +233,7 @@ export default function ProductPage() {
         const cartItems = await response.json();
         const existingCartItem = cartItems.find(
           (item) => item.productID === product.id
-        );
+        );//find cart has that product
 
         if (existingCartItem) {
           const updatedQuantity = existingCartItem.quantity + 1;
@@ -190,7 +250,7 @@ export default function ProductPage() {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(updatedCartItem),
-          });
+          });//update cart
 
           if (!updateResponse.ok) {
             throw new Error("Failed to update cart item");
@@ -199,7 +259,7 @@ export default function ProductPage() {
           const updatedItem = await updateResponse.json();
           console.log("Product quantity updated in cart:", updatedItem);
           showSuccessToast(product.name);
-        } else {
+        } else {//user have cart, dont have that product
           const newCartItem = {
             userID: userId,
             productID: product.id,
@@ -241,6 +301,7 @@ export default function ProductPage() {
         },
         body: JSON.stringify(updatedProduct),
       });
+      //update product's quantity in product api
 
       if (!productUpdateResponse.ok) {
         throw new Error("Failed to update product quantity");
