@@ -52,6 +52,7 @@ export default function Rating({ productId }) {
     setRating(index + 1); // +1 because index is zero-based
   };
 
+
   const handleSave = async () => {
     if (!rating || !feedback || !userId) {
       alert("Please provide both rating and feedback");
@@ -59,6 +60,7 @@ export default function Rating({ productId }) {
     }
 
     try {
+      
       const response = await fetch(baseURLProduct);
       if (!response.ok) {
         throw new Error('Product not found');

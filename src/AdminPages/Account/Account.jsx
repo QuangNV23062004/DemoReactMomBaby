@@ -38,7 +38,8 @@ export default function Account() {
   const handleSelectAll = () => {
     const updatedData = data.map((item) => ({
       ...item,
-      selected: !selectAll,//selectAll is false => select all product
+      selected: !selectAll,
+      //selectAll is false => select all product
       //selectAll is true => unselect all product
     }));
     setData(updatedData);

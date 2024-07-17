@@ -1,0 +1,15 @@
+Blog can be changed from productID to category:
+        + Now we have 1 attribute productID, which only contain 1 product...
+        + We can changed it to category since the product table also have category
+        + Compare those 2 table and select product.category === blog.category
+
+Can add 1 extra table named batch(or something like that): for expirationDate
+        + Batch will have info like dateImport, productID, productQuantity, expirationDate
+        + When batch is added add the quantity of that batch to the quantity in product API(total quantity of that product)
+        + When a product is sell get all batch and sort them by expirationDate, update quantity in both oldest batch(to know which batch from) and product API(new total quantity)
+        
+
+Can fully implement the preorder function correctly: 
+        + User preorder with quantity, can include checkout method ?
+        + Admin update product quantity to meet the preorder
+        + Admin accept the preorder and turn it into bill, reduce the related quantity in productapi, batch api(if exist)...

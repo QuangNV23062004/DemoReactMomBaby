@@ -254,7 +254,7 @@ export default function CheckOut() {
             .then((response) => response.json())
             .then((data) => {
               console.log("Order placed successfully:", data);
-              toast.success("Checkout successful!",{
+              toast.success("Checkout successful!",{//not toasting
                 onClose:() => {
                   nav("/SWP391-MomAndBaby");
                 }

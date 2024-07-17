@@ -58,10 +58,11 @@ function App() {
         <Route path='/SWP391-MomAndBaby/admin/account/update/:id' element={user ? <UpdateAccount /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> 
         <Route path='/SWP391-MomAndBaby/admin/product/update/:id' element={user ? <UpdateProduct /> : <Navigate to='/SWP391-MomAndBaby/admin/login' />} /> 
         <Route path='/SWP391-MomAndBaby/cart/*' element={<Cart />} />
+        <Route path='/SWP391-MomAndBaby/blog' element={<Blog/>}/>
         <Route path='/SWP391-MomAndBaby/*' element={<UserPage />}></Route>
         <Route path='/SWP391-MomAndBaby/about' element={<AboutPage />} />
         <Route path='/SWP391-MomAndBaby/contact' element={<ContactForm />} />
-        <Route path='/SWP391-MomAndBaby/blog' element={<Blog/>}/>
+        
         <Route path='/SWP391-MomAndBaby/detailBlog/:id' element={<DetailBlog/>}/>
         <Route path="/SWP391-MomAndBaby/admin/personal" element={ user ? <PersonalPage /> : <Navigate to='/SWP391-MomAndBaby/login' />} />
         <Route path='/bank-payment' element={<BankPayment/>}></Route>
